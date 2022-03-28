@@ -270,7 +270,8 @@ class SettingPaymentService
         if (isset($memo05)) {
             $data = unserialize($memo05);
             $form['withCapture']->vars['value']        = $data['withCapture'];
-            $form['item_name']->vars['value']          = $data['item_name'];
+            $form['item_type']->vars['value']          = $data['item_type'];
+            $form['result_mail_target']->vars['value'] = $data['result_mail_target'];
             $form['order_mail_title1']->vars['value']  = $data['order_mail_title1'];
             $form['order_mail_body1']->vars['value']   = $this->util->escapeNewLines($data['order_mail_body1']);
         }
@@ -476,6 +477,28 @@ class SettingPaymentService
             $memo05 = serialize([
                 'withCapture'        => $formData['withCapture']->getData(),
                 'item_name'          => $formData['item_name']->getData(),
+                'result_mail_target' => $formData['result_mail_target']->getData(),
+                'order_mail_title1'  => $formData['order_mail_title1']->getData(),
+                'order_mail_body1'   => $formData['order_mail_body1']->getData(),
+            ]);
+            $Vt4gPayment->setMemo05($memo05);
+            $Vt4gPayment->setUpdateDate(new \DateTime());
+            $this->em->persist($Vt4gPayment);
+            $this->em->flush();
+        }
+    }
+
+    /**
+     * キャリアの設定項目をplg_vt4g_payment_methodに登録します。
+     * @param Vt4gPaymentMethod $Vt4gPayment
+     * @param array $formData
+     */
+    public function saveCarrierData($Vt4gPayment, $formData)
+    {
+        if(isset($formData)){
+            $memo05 = serialize([
+                'withCapture'        => $formData['withCapture']->getData(),
+                'item_type'          => $formData['item_type']->getData(),
                 'result_mail_target' => $formData['result_mail_target']->getData(),
                 'order_mail_title1'  => $formData['order_mail_title1']->getData(),
                 'order_mail_body1'   => $formData['order_mail_body1']->getData(),

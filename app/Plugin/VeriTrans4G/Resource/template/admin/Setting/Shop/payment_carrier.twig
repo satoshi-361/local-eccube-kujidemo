@@ -24,12 +24,21 @@ $('div.card.rounded.border-0.mb-4').append(
 '            </div>'+
 '        </div>'+
 '        <div class="row">'+
-'            <div class="col-3"><span>商品名</span><span'+
-'                        class="badge badge-primary ml-1">必須</span></div>'+
+'            <div class="col-3">'+
+'                 <span>商品タイプ</span><span class="badge badge-primary ml-1">必須</span>'+
+'            </div>'+
 '            <div class="col mb-2">'+
-'                {{ form_widget(form.item_name) }}<span class="text-danger errormsg">（上限255文字）</span>'+
-'                {{ form_errors(form.item_name) | spaceless }}'+
-'                <p class="small text-danger">LINE が提供する消費者向けの画面やメール本文に表示されます。</p>'+
+'                {{ form_widget(form.item_type) | spaceless }}'+
+'                {{ form_errors(form.item_type) | spaceless }}'+
+'            </div>'+
+'        </div>'+
+'        <div class="row">'+
+'            <div class="col-3">'+
+'                <span>要求結果メール送信対象</span><span class="badge badge-primary ml-1">必須</span>'+
+'            </div>'+
+'            <div class="col mb-2">'+
+'                {{ form_widget(form.result_mail_target) | spaceless }}'+
+'                {{ form_errors(form.result_mail_target) | spaceless }}'+
 '            </div>'+
 '        </div>'+
 '        <div class="row">'+

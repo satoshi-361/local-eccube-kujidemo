@@ -7,6 +7,7 @@
 namespace Plugin\VeriTrans4G\Service\Payment;
 
 use Plugin\VeriTrans4G\Form\Type\Shopping\PaymentCarrierType;
+use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
 
 class CarrierService extends BaseService
 {
@@ -142,48 +143,42 @@ class CarrierService extends BaseService
     private function setRequestParam(&$objRequest, $order, $paymentInfo, $formData)
     {        
         $objRequest->setOrderId($this->getMdkOrderId($order->getId()));
-        $objRequest->setAmount("1000");
-        $objRequest->setServiceOptionType("docomo");
-        $objRequest->setTerminalKind("0");
-        $objRequest->setItemType("1");
-        $objRequest->setAccountingType("0");
-        $objRequest->setWithCapture("false");
-        $objRequest->setOpenId("");
+        $objRequest->setAmount(floor($order->getPaymentTotal()));
+
+        $objRequest->setServiceOptionType($formData['service_option_type']);
+
+        $mobileDetector = new mobileDetector();
+
+        if ($mobileDetector->isMobile())
+            $objRequest->setTerminalKind("1");
+        else 
+            $objRequest->setTerminalKind("0");
+
+        $objRequest->setItemType($paymentInfo['item_type']);
+        $objRequest->setAccountingType($formData['accounting_type']);
+
+        if ($formData['accounting_type'] == 0){
+            $objRequest->setWithCapture($paymentInfo['withCapture']);
+        } elseif ($formData['accounting_type'] == 1) {
+            $objRequest->setMpFirstDate($formData['mp_first_date']);
+            $objRequest->setMpDay($formData['mp_day']);
+        }
+        
         $objRequest->setSuccessUrl($this->util->generateUrl('vt4g_shopping_payment', ['mode' => 'success']));
         $objRequest->setCancelUrl($this->util->generateUrl('vt4g_shopping_payment', ['mode' => 'cancel']));
         $objRequest->setErrorUrl($this->util->generateUrl('vt4g_shopping_payment', ['mode' => 'error']));
         $objRequest->setPushUrl('');
-        // $objRequest->setD3Flag('');
-        // $objRequest->setMpFirstDate('20230323');
-        // $objRequest->setMpDay('25');
-        // $objRequest->setItemId('');
-        // $objRequest->setItemInfo('');
-        // $objRequest->setFletsArea('');
 
-        // print_r($this->getMdkOrderId($order->getId())); print_r('::');
-        // print_r(floor($order->getPaymentTotal())); print_r('::');
-        // print_r($formData['service_option_type']); print_r('::');
-        // print_r($formData['terminal_kind']); print_r('::');
-        // print_r($formData['item_type']); print_r('::');
-        // print_r($formData['accounting_type']); print_r('::');
-        // print_r($this->util->generateUrl('vt4g_shopping_payment', ['mode' => 'success'])); print_r('::');
-        // print_r($this->util->generateUrl('vt4g_shopping_payment', ['mode' => 'error'])); print_r('::');
-        
-        // exit;
+        if (isset($formData['item_id'])) $objRequest->setItemId($formData['item_id']);
+        if (isset($formData['item_info'])) $objRequest->setItemInfo($formData['item_info']);
 
-        // $objRequest->setOrderId($this->getMdkOrderId($order->getId()));
-        // $objRequest->setAmount(floor($order->getPaymentTotal()));
-        // // $objRequest->setWithCapture($paymentInfo['withCapture']);
-        // $objRequest->setWithCapture(false);
-        // $objRequest->setServiceOptionType($formData['service_option_type']);
-        // $objRequest->setTerminalKind($formData['terminal_kind']);
-        // $objRequest->setItemType($formData['item_type']);
-        // $objRequest->setAccountingType($formData['accounting_type']);
-        // $objRequest->setItemId('');
-        // // $objRequest->setItemInfo($paymentInfo['item_info']);
-        // $objRequest->setSuccessUrl($this->util->generateUrl('vt4g_shopping_payment', ['mode' => 'success']));
-        // $objRequest->setErrorUrl($this->util->generateUrl('vt4g_shopping_payment', ['mode' => 'error']));
-        // $objRequest->setPushUrl('');
+        if ($formData['service_option_type'] === "docomo" || $formData['service_option_type'] === "au") {
+            $objRequest->setOpenId($formData['open_id']);
+        }
+        if ($formData['service_option_type'] === "s_bikkuri") $objRequest->setSbUid("dummyUID");
+        if ($formData['service_option_type'] === "flets") $objRequest->setFletsArea($formData['flets_area']);
+
+        if ($formData['service_option_type'] === "au") $objRequest->setLoginAuId($formData['login_au_id']);
     }
 
     /**

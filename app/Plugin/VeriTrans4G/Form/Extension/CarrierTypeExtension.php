@@ -77,24 +77,22 @@ class CarrierTypeExtension extends AbstractTypeExtension
                 'mapped' => false,
                 'data' => $savedData['withCapture'] ?? $this->vt4gConst['VT4G_FORM']['DEFAULT']['WITH_CAPTURE'],
             ])
-            ->add('item_name', TextType::class, [
-                'required' => false,
+            ->add('item_type', ChoiceType::class, [
                 'attr' => [
-                    'maxlength' => $this->vt4gConst['VT4G_FORM']["LENGTH"]["MAX"]["ITEM_NAME"],
+                    'class' => 'vt4g_from_input_choice',
                 ],
-                'mapped' => false,
+                'required' => true,
+                'expanded' => true,
+                'choices' => $this->vt4gConst['VT4G_FORM']['CHOICES']['CARRIER_ITEM_TYPE'],
                 'constraints' => [
                     new NotBlank(
                         [
-                            'message' => 'vt4g_plugin.validate.not_blank'
-                        ]
-                    ),
-                    new Length(
-                        [
-                            'max' => $this->vt4gConst['VT4G_FORM']["LENGTH"]["MAX"]["ITEM_NAME"]
+                            'message' => 'vt4g_plugin.validate.not_blank.choice'
                         ]
                     ),
                 ],
+                'mapped' => false,
+                'data' => $savedData['item_type'] ?? $this->vt4gConst['VT4G_FORM']['DEFAULT']['ITEM_TYPE'],
             ])
             ->add('result_mail_target', ChoiceType::class, [
                 'attr' => [

@@ -1,0 +1,104 @@
+
+<div class="carrierPaymentInfo">
+    <div class="row mb-2">
+        <span style="font-weight: bold; font-size: 16px">{{ ' ※ キャリア決済をご利用の場合、以下のフィールドを設定してください。'|trans }}</span>
+    </div>
+    <dl>
+        <dt>
+            {{ form_label(form.service_option_type) }}
+        </dt>
+        <dd>
+            {{ form_widget(form.service_option_type) }}
+            {{ form_errors(form.service_option_type) }}
+            <p class="extra">
+                ※ソフトバンクまとめて支払い（B）：旧ソフトバンクケータイ支払い<br/>
+                ※ソフトバンクまとめて支払い（A）：旧ソフトバンクまとめて支払い
+            </p>
+        </dd>
+    </dl>
+    <dl>
+        <dt>
+            {{ form_label(form.accounting_type) }}
+        </dt>
+        <dd>
+            {{ form_widget(form.accounting_type) }}
+            {{ form_errors(form.accounting_type) }}
+            <p class="extra">
+                ※継続が可能なのはドコモ・au・ソフトバンクまとめて支払い（A）・ソフトバンクまとめて支払い（B）・フレッツまとめて支払い<br/>
+                ※随時が可能なのはドコモ
+            </p>
+        </dd>
+    </dl>
+    <dl>
+        <dt>
+            {{ form_label(form.mp_first_date) }}
+        </dt>
+        <dd>
+            {{ form_widget(form.mp_first_date) }}
+            {{ form_errors(form.mp_first_date) }}
+            <p class="extra">
+                ※継続課金でドコモ・au・ソフトバンクまとめて支払い（B）・フレッツまとめて支払いは指定可能(形式：YYYYMMDD)<br/>
+                ※フレッツまとめて支払いの場合、DD部分は"25"以下しか指定できません。
+            </p>
+        </dd>
+    </dl>
+    <dl>
+        <dt>
+            {{ form_label(form.mp_day) }}
+        </dt>
+        <dd>
+            {{ form_widget(form.mp_day) }}
+            {{ form_errors(form.mp_day) }}
+            <p class="extra">
+                ※継続課金でドコモ・au・ソフトバンクまとめて支払い（B）・フレッツまとめて支払いは指定可能<br/>
+                ※月末日を指定する場合は"99"を指定してください。<br/>
+                ※一桁の場合は数値の前に"0"をつけてください。  例：01<br/>
+                ※フレッツまとめて支払いの場合、"25"以下しか指定できません。
+            </p>
+        </dd>
+    </dl>
+</div>
+<style>
+    .carrierPaymentInfo {
+        margin-top: 20px
+    }
+    .carrierPaymentInfo select {
+        font-size: 14px;
+        display: inline-block;
+        width: auto;
+        background-color: #f8f8f8;
+        -webkit-appearance: menulist;
+        padding: 6px 12px;
+        line-height: 1.42857;
+        color: #555555;
+        background-image: none;
+        border: 1px solid #ccc;
+        box-shadow: none;
+        transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+        border-radius: 3px;
+        min-width: 300px; 
+        background: url(https://dev0002.xsrv.jp/sample_eccube_kuji_1/html/user_data/assets/img/select-arrow.gif) center right 10px no-repeat;
+    }
+    .carrierPaymentInfo input[type="text"] {
+        padding: 0.5714285em;
+        border: 1px solid #bbb;
+        margin-bottom: 16px;
+        font-size: 14px;
+        line-height: 1.42857;
+        color: #555555;
+        background-color: #fff;
+        background-image: none;
+        -webkit-appearance: none;
+        box-shadow: none;
+        transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+        border-radius: 3px;
+    }
+    .carrierPaymentInfo .extra {
+        color: #31877f;
+        font-size: 13px;
+    }
+</style>
+<script>
+    var $carrierPaymentInfo = $('.carrierPaymentInfo');
+    $('.ec-borderedDefs').append($carrierPaymentInfo);
+</script>

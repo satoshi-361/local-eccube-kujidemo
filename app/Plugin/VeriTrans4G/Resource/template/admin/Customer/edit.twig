@@ -1,55 +1,131 @@
-<div class="card rounded border-0 mb-4" id="cardListBlock">
+{% if accountId is not empty %}
+    <div class="card rounded border-0 mb-4" id="cardListBlock">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-8">
+                    <div class="d-inline-block">
+                        <span class="card-title">カード情報</span>
+                    </div>
+                </div>
+                <div class="col-4 text-right">
+                    <a data-toggle="collapse" href="#vt4gAccountIdInfo" aria-expanded="false"
+                        aria-controls="vt4gAccountIdInfo">
+                        <i class="fa fa-angle-up fa-lg"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="collapse show ec-cardCollapse" id="vt4gAccountIdInfo">
+            <div class="card-body">
+
+                <div class="row mb-2">
+                    <div class="col-3">
+                        <div class="d-inline-block">
+                            <span>ベリトランス会員ID</span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <p>{{ accountId }}</p>
+                    </div>
+                </div>
+
+                {% if accountCards|length > 0 %}
+                    <div class="vt4g_card_list">
+                        {% for card in accountCards %}
+                            <div class="vt4g_card_list__item">
+                                <a class="vt4g_card_list__remove" href="{{ url('vt4g_admin_customer_card_delete', { customerId : Customer.id, cardId : card.cardId }) }}" {{ csrf_token_for_anchor() }} data-method="post">
+                                    <div class="ec-icon">
+                                        <img src="{{ asset('assets/icon/cross.svg') }}" alt="remove">
+                                    </div>
+                                </a>
+                                <div class="vt4g_card_list__card">
+                                    <div>カード番号 {{ card.cardNumber }}</div>
+                                    <div>有効期限 {{ card.expire }}</div>
+                                    {% if card.alertMsg is not empty %}
+                                        <div class="text-danger">{{ card.alertMsg }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                この会員のカード情報はありません
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endif %}
+<div class="card rounded border-0 mb-4" id="CarrierInfoBlock">
     <div class="card-header">
         <div class="row">
             <div class="col-8">
                 <div class="d-inline-block">
-                    <span class="card-title">カード情報</span>
+                    <span class="card-title">キャリア決済情報</span>
                 </div>
             </div>
             <div class="col-4 text-right">
-                <a data-toggle="collapse" href="#vt4gAccountIdInfo" aria-expanded="false"
-                    aria-controls="vt4gAccountIdInfo">
+                <a data-toggle="collapse" href="#vt4gCarrierInfo" aria-expanded="false"
+                    aria-controls="vt4gCarrierInfo">
                     <i class="fa fa-angle-up fa-lg"></i>
                 </a>
             </div>
         </div>
     </div>
-    <div class="collapse show ec-cardCollapse" id="vt4gAccountIdInfo">
+    <div class="collapse show ec-cardCollapse" id="vt4gCarrierInfo">
         <div class="card-body">
-
-            <div class="row mb-2">
+            <div class="row mb-3">
+                <div class="col"><span>{{ 'キャリア決済をご利用の場合、以下のフィールドを設定してください。'|trans }}</span></div>
+            </div>
+            <div class="row mb-1">
                 <div class="col-3">
-                    <div class="d-inline-block">
-                        <span>ベリトランス会員ID</span>
-                    </div>
+                    <span>キャリア選択</span>
                 </div>
                 <div class="col">
-                    <p>{{ accountId }}</p>
+                    {{ form_widget(form.service_option_type, { 'attr': {'placeholder': '--'} }) }}
+                    {{ form_errors(form.service_option_type) }}
+                    <p>※ソフトバンクまとめて支払い（B）：旧ソフトバンクケータイ支払い<br/>
+                       ※ソフトバンクまとめて支払い（A）：旧ソフトバンクまとめて支払い</p>
                 </div>
             </div>
-
-            {% if accountCards|length > 0 %}
-                <div class="vt4g_card_list">
-                    {% for card in accountCards %}
-                        <div class="vt4g_card_list__item">
-                            <a class="vt4g_card_list__remove" href="{{ url('vt4g_admin_customer_card_delete', { customerId : Customer.id, cardId : card.cardId }) }}" {{ csrf_token_for_anchor() }} data-method="post">
-                                <div class="ec-icon">
-                                    <img src="{{ asset('assets/icon/cross.svg') }}" alt="remove">
-                                </div>
-                            </a>
-                            <div class="vt4g_card_list__card">
-                                <div>カード番号 {{ card.cardNumber }}</div>
-                                <div>有効期限 {{ card.expire }}</div>
-                                {% if card.alertMsg is not empty %}
-                                    <div class="text-danger">{{ card.alertMsg }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    {% endfor %}
+            <div class="row mb-1">
+                <div class="col-3">
+                    <span>課金種別</span>
                 </div>
-            {% else %}
-            この会員のカード情報はありません
-            {% endif %}
+                <div class="col">
+                    {{ form_widget(form.accounting_type, { 'attr': {'placeholder': '--'} }) }}
+                    {{ form_errors(form.accounting_type) }}
+                    <p>※継続が可能なのはドコモ・au・ソフトバンクまとめて支払い（A）・ソフトバンクまとめて支払い（B）・フレッツまとめて支払い<br/>
+                       ※随時が可能なのはドコモ</p>
+                </div>
+            </div>
+            <div class="row mb-1">
+                <div class="col-3">
+                    <span>初回課金年月日</span>
+                </div>
+                <div class="col">
+                    {{ form_widget(form.mp_first_date, { 'attr': {'placeholder': '--'} }) }}
+                    {{ form_errors(form.mp_first_date) }}
+                    <p>
+                        ※継続課金でドコモ・au・ソフトバンクまとめて支払い（B）・フレッツまとめて支払いは指定可能(形式：YYYYMMDD)<br/>
+                        ※フレッツまとめて支払いの場合、DD部分は"25"以下しか指定できません。
+                    </p>
+                </div>
+            </div>
+            <div class="row mb-1">
+                <div class="col-3">
+                    <span>継続課金日</span>
+                </div>
+                <div class="col">
+                    {{ form_widget(form.mp_day, { 'attr': {'placeholder': '--'} }) }}
+                    {{ form_errors(form.mp_day) }}
+                    <p>
+                        ※継続課金でドコモ・au・ソフトバンクまとめて支払い（B）・フレッツまとめて支払いは指定可能<br/>
+                        ※月末日を指定する場合は"99"を指定してください。<br/>
+                        ※一桁の場合は数値の前に"0"をつけてください。  例：01<br/>
+                        ※フレッツまとめて支払いの場合、"25"以下しか指定できません。
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -79,6 +155,10 @@
 </style>
 <script>
 var $cardListBlock = $("#cardListBlock");
-var $otherBlocks = $(".c-primaryCol .card");
-$otherBlocks.eq($otherBlocks.length-1).before($cardListBlock);
+var $carrierInfoBlock = $("#CarrierInfoBlock");
+var $ordererInfo = $("#ordererInfo").parent();
+{% if accountId is not empty %}
+    $ordererInfo.after($cardListBlock);
+{% endif %}
+$ordererInfo.after($carrierInfoBlock);
 </script>

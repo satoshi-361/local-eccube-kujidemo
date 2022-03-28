@@ -6,6 +6,46 @@ http://www.veritrans.co.jp/
 
 {% block javascript %}
     <script>
+        $(function(){
+            var $mp_first_date = $('#mp_first_date').parents('dl');
+            var $mp_day = $('#mp_day').parents('dl');
+            var $open_id = $('#open_id').parents('dl');
+            var $flets_area = $('#flets_area').parents('dl');
+            var $login_au_id = $('#login_au_id').parents('dl');
+
+            $('#accounting_type').on('change', function(){
+                if ($(this).val() == 1) {
+                    $mp_first_date.show();
+                    $mp_day.show();
+                } else {
+                    $mp_first_date.hide();
+                    $mp_day.hide();
+                }
+            });
+
+            $('#service_option_type').on('change', function(){
+                if ($(this).val() == 'docomo' || $(this).val() == 'au') {
+                    $open_id.show();
+                } else {
+                    $open_id.hide();
+                }
+
+                if ($(this).val() == 'flets') {
+                    $flets_area.show();
+                } else {
+                    $flets_area.hide();
+                }
+
+                if ($(this).val() == 'au') {
+                    $login_au_id.show();
+                } else {
+                    $login_au_id.hide();
+                }
+            });
+
+            $('#accounting_type').change();
+            $('#service_option_type').change();
+        });
     </script>
 {% endblock %}
 
@@ -16,42 +56,65 @@ http://www.veritrans.co.jp/
             {{ form_widget(form._token) }}
             <input type="hidden" name="mode" value="next">
             {% if error.payment is not empty %}
-                    <div class="message">
-                        <p class="errormsg bg-danger">
-                            <div class="ec-alert-warning">
-                                <div class="ec-alert-warning__icon"><img src="{{ asset('assets/icon/exclamation-white.svg') }}"></div>
-                                <div class="ec-alert-warning__text">
-                                    {{ error.payment|raw }}
-                                </div>
+                <div class="message">
+                    <p class="errormsg bg-danger">
+                        <div class="ec-alert-warning">
+                            <div class="ec-alert-warning__icon"><img src="{{ asset('assets/icon/exclamation-white.svg') }}"></div>
+                            <div class="ec-alert-warning__text">
+                                {{ error.payment|raw }}
                             </div>
-                        </p>
-                    </div>
+                        </div>
+                    </p>
+                </div>
             {% else %}
-                    <div class="ec-borderedDefs">
+                <div class="ec-borderedDefs">
+                    {% if is_granted('ROLE_USER') %}
+                        {% set customerRepository = repository('Eccube\\Entity\\Customer') %}
+                        {% set customer = customerRepository.find(app.user.id) %}
+
+                        <dl>
+                            <dt><label for="service_option_type" class="ec-label">サービスオプションタイプ</label><span class="ec-required">必須</span></dt>
+                            <dd>
+                                <div class="ec-input {% if form.service_option_type.vars.errors is not empty %}error{% endif %}">
+                                    {{ form_widget(form.service_option_type, {'id': 'service_option_type', 'value': customer.service_option_type}) }}
+                                    {{ form_errors(form.service_option_type) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt><label for="accounting_type" class="ec-label">課金種別</label><span class="ec-required">必須</span></dt>
+                            <dd>
+                                <div class="ec-input {% if form.accounting_type.vars.errors is not empty %}error{% endif %}">
+                                    {{ form_widget(form.accounting_type, {'id': 'accounting_type', 'value': customer.accounting_type}) }}
+                                    {{ form_errors(form.accounting_type) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt><label for="mp_first_date" class="ec-label">初回課金年月日</label><span class="ec-required">必須</span></dt>
+                            <dd>
+                                <div class="ec-input {% if form.mp_first_date.vars.errors is not empty %}error{% endif %}">
+                                    {{ form_widget(form.mp_first_date, {'id': 'mp_first_date', 'value': customer.mp_first_date}) }}
+                                    {{ form_errors(form.mp_first_date) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt><label for="mp_day" class="ec-label">継続課金日</label><span class="ec-required">必須</span></dt>
+                            <dd>
+                                <div class="ec-input {% if form.mp_day.vars.errors is not empty %}error{% endif %}">
+                                    {{ form_widget(form.mp_day, {'id': 'mp_day', 'value': customer.mp_day}) }}
+                                    {{ form_errors(form.mp_day) }}
+                                </div>
+                            </dd>
+                        </dl>
+                    {% else %}
                         <dl>
                             <dt><label for="service_option_type" class="ec-label">サービスオプションタイプ</label><span class="ec-required">必須</span></dt>
                             <dd>
                                 <div class="ec-input {% if form.service_option_type.vars.errors is not empty %}error{% endif %}">
                                     {{ form_widget(form.service_option_type, {'id': 'service_option_type'}) }}
                                     {{ form_errors(form.service_option_type) }}
-                                </div>
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt><label for="terminal_kind" class="ec-label">端末種別</label><span class="ec-required">必須</span></dt>
-                            <dd>
-                                <div class="ec-input {% if form.terminal_kind.vars.errors is not empty %}error{% endif %}">
-                                    {{ form_widget(form.terminal_kind, {'id': 'terminal_kind'}) }}
-                                    {{ form_errors(form.terminal_kind) }}
-                                </div>
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt><label for="item_type" class="ec-label">商品タイプ</label><span class="ec-required">必須</span></dt>
-                            <dd>
-                                <div class="ec-input {% if form.item_type.vars.errors is not empty %}error{% endif %}">
-                                    {{ form_widget(form.item_type, {'id': 'item_type'}) }}
-                                    {{ form_errors(form.item_type) }}
                                 </div>
                             </dd>
                         </dl>
@@ -64,15 +127,79 @@ http://www.veritrans.co.jp/
                                 </div>
                             </dd>
                         </dl>
-                    </div>
-                    <div class="ec-orderRole__actions">
-                        <div class="ec-off4Grid">
-                            <div class="ec-off4Grid__cell">
-                                <p class="ec-para-normal"><button class="ec-blockBtn--action" id="vt4g_btn_token">入力したクレジットカード情報でお支払い</button></p>
-                                <a class="ec-blockBtn--cancel" id="vt4g_btn_token_back" href="{{ url('vt4g_shopping_payment_back', { 'no': orderNo }) }}">ご注文手続きに戻る</a>
-                            </div>
+                        <dl>
+                            <dt><label for="mp_first_date" class="ec-label">初回課金年月日</label><span class="ec-required">必須</span></dt>
+                            <dd>
+                                <div class="ec-input {% if form.mp_first_date.vars.errors is not empty %}error{% endif %}">
+                                    {{ form_widget(form.mp_first_date, {'id': 'mp_first_date'}) }}
+                                    {{ form_errors(form.mp_first_date) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt><label for="mp_day" class="ec-label">継続課金日</label><span class="ec-required">必須</span></dt>
+                            <dd>
+                                <div class="ec-input {% if form.mp_day.vars.errors is not empty %}error{% endif %}">
+                                    {{ form_widget(form.mp_day, {'id': 'mp_day'}) }}
+                                    {{ form_errors(form.mp_day) }}
+                                </div>
+                            </dd>
+                        </dl>
+                    {% endif %}
+                        <dl>
+                            <dt><label for="item_id" class="ec-label">商品番号</label></dt>
+                            <dd>
+                                <div class="ec-input {% if form.item_id.vars.errors is not empty %}error{% endif %}">
+                                    {{ form_widget(form.item_id, {'id': 'item_id'}) }}
+                                    {{ form_errors(form.item_id) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt><label for="item_info" class="ec-label">商品情報</label></dt>
+                            <dd>
+                                <div class="ec-input {% if form.item_info.vars.errors is not empty %}error{% endif %}">
+                                    {{ form_widget(form.item_info, {'id': 'item_info'}) }}
+                                    {{ form_errors(form.item_info) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt><label for="open_id" class="ec-label">OpenID</label></dt>
+                            <dd>
+                                <div class="ec-input {% if form.open_id.vars.errors is not empty %}error{% endif %}">
+                                    {{ form_widget(form.open_id, {'id': 'open_id'}) }}
+                                    {{ form_errors(form.open_id) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt><label for="flets_area" class="ec-label">フレッツエリア</label></dt>
+                            <dd>
+                                <div class="ec-input {% if form.flets_area.vars.errors is not empty %}error{% endif %}">
+                                    {{ form_widget(form.flets_area, {'id': 'flets_area'}) }}
+                                    {{ form_errors(form.flets_area) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt><label for="login_au_id" class="ec-label">auIDログインフラグ</label></dt>
+                            <dd>
+                                <div class="ec-input {% if form.login_au_id.vars.errors is not empty %}error{% endif %}">
+                                    {{ form_widget(form.login_au_id, {'id': 'login_au_id'}) }}
+                                    {{ form_errors(form.login_au_id) }}
+                                </div>
+                            </dd>
+                        </dl>
+                </div>
+                <div class="ec-orderRole__actions">
+                    <div class="ec-off4Grid">
+                        <div class="ec-off4Grid__cell">
+                            <p class="ec-para-normal"><button class="ec-blockBtn--action" id="vt4g_btn_token">入力したクレジットカード情報でお支払い</button></p>
+                            <a class="ec-blockBtn--cancel" id="vt4g_btn_token_back" href="{{ url('vt4g_shopping_payment_back', { 'no': orderNo }) }}">ご注文手続きに戻る</a>
                         </div>
                     </div>
+                </div>
             {% endif %}
         </form>
     </div>

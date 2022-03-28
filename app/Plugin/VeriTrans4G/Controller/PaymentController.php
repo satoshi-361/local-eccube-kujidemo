@@ -619,7 +619,6 @@ class PaymentController extends AbstractController
      */
     private function execCarrierProcess($request, $payload)
     {
-
         $carrier = $this->container->get('vt4g_plugin.service.payment_carrier');
         $form    = $carrier->createCarrierForm();
         $error   = [

@@ -356,6 +356,8 @@ parameters:
                     'ドコモケータイ払い':             'docomo'
                     'ソフトバンクまとめて支払い（A）': 'sb_matomete'
                     'ソフトバンクまとめて支払い（B）': 'sb_ktai'
+                    'S!まとめて支払い': 's_bikkuri'
+                    'フレッツまとめて支払い': 'flets'
                 CARRIER_TERMINAL_KIND:
                     'PC':               0
                     'スマートフォン':     1
@@ -415,6 +417,7 @@ parameters:
                 RESULT_MAIL_TARGET: 0
                 CARDINFO_REGIST_DEFAULT: 2
                 CARDINFO_REGIST_MAX: 5
+                ITEM_TYPE: 1
 
         VT4G_REQUEST:
             CREDIT:

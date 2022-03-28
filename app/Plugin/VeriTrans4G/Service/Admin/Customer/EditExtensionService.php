@@ -70,15 +70,18 @@ class EditExtensionService
     public function onRenderBefore(TemplateEvent $event)
     {
         $parameters = $event->getParameters();
-        if (property_exists($parameters['Customer'], 'vt4g_account_id')) {
-            $accountId = $parameters['Customer']->vt4g_account_id;
-            if ($accountId) {
-                $cards = $this->container->get('vt4g_plugin.service.vt4g_account_id')->getAccountCardsWithMsg($accountId);
-                $parameters['accountCards'] = $cards;
-                $parameters['accountId'] = $accountId;
-                $event->setParameters($parameters);
-                $event->addSnippet('@VeriTrans4G/admin/Customer/edit.twig');
-            }
+        $accountId = $parameters['Customer']->vt4g_account_id;
+        if ($accountId) {
+            $cards = $this->container->get('vt4g_plugin.service.vt4g_account_id')->getAccountCardsWithMsg($accountId);
+            $parameters['accountCards'] = $cards;
+            $parameters['accountId'] = $accountId;
+            $event->setParameters($parameters);
+        } else {
+            $parameters['accountCards'] = '';
+            $parameters['accountId'] = '';
+            $event->setParameters($parameters);
         }
+        
+        $event->addSnippet('@VeriTrans4G/admin/Customer/edit.twig');
     }
 }

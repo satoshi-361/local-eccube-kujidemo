@@ -73,23 +73,55 @@ class PaymentCarrierType extends AbstractType
         $builder
             ->add('service_option_type', ChoiceType::class, [
                 'label' => 'サービスオプションタイプ',
-                'placeholder' => '--',
                 'choices' => $this->vt4gConst['VT4G_FORM']['CHOICES']['CARRIER_SERVICE_TYPE'],
             ])
-            ->add('terminal_kind', ChoiceType::class, [
-                'label' => '端末種別',
-                'placeholder' => '--',
-                'choices' => $this->vt4gConst['VT4G_FORM']['CHOICES']['CARRIER_TERMINAL_KIND'],
-            ])
-            ->add('item_type', ChoiceType::class, [
-                'label' => '商品タイプ',
-                'placeholder' => '--',
-                'choices' => $this->vt4gConst['VT4G_FORM']['CHOICES']['CARRIER_ITEM_TYPE'],
-            ])
+            // ->add('terminal_kind', ChoiceType::class, [
+            //     'label' => '端末種別',
+            //     'choices' => $this->vt4gConst['VT4G_FORM']['CHOICES']['CARRIER_TERMINAL_KIND'],
+            // ])
+            // ->add('item_type', ChoiceType::class, [
+            //     'label' => '商品タイプ',
+            //     'choices' => $this->vt4gConst['VT4G_FORM']['CHOICES']['CARRIER_ITEM_TYPE'],
+            // ])
             ->add('accounting_type', ChoiceType::class, [
                 'label' => '課金種別',
-                'placeholder' => '--',
                 'choices' => $this->vt4gConst['VT4G_FORM']['CHOICES']['CARRIER_ACCOUNT_TYPE'],
+            ])
+            ->add('mp_first_date', TextType::class, [
+                'label' => '初回課金年月日',
+                'required' => false
+            ])
+            ->add('mp_day', TextType::class, [
+                'label' => '継続課金日',
+                'required' => false
+            ])
+            ->add('item_id', TextType::class, [
+                'label' => '商品番号',
+                'required' => false
+            ])
+            ->add('item_info', TextType::class, [
+                'label' => '商品情報',
+                'required' => false
+            ])
+            ->add('open_id', TextType::class, [
+                'label' => 'OpenID',
+                'required' => false
+            ])
+            ->add('flets_area', ChoiceType::class, [
+                'label' => 'フレッツエリア',
+                'required' => false,
+                'choices' => [
+                    '東日本' => 0,
+                    '西日本' => 1
+                ]
+            ])
+            ->add('login_au_id', ChoiceType::class, [
+                'label' => 'auIDログインフラグ',
+                'required' => false,
+                'choices' => [
+                    'ID連携' => 0,
+                    'auIDログイン' => 1
+                ]
             ]);
     }
 }

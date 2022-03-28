@@ -221,7 +221,7 @@ class EditController extends AbstractController
         }
 
         $PrizesPerProductRepo = $this->getDoctrine()->getRepository(PrizesPerProduct::class);
-        $array = $PrizesPerProductRepo->findBy(['orderId' => $id, 'prizeGrade' => 0]); 
+        $array = $PrizesPerProductRepo->findBy(['orderId' => $id, 'prizeGrade' => NULL]); 
 
         $text = '';
         foreach($array as $item) {

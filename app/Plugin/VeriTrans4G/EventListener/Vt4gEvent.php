@@ -74,6 +74,9 @@ class Vt4gEvent implements EventSubscriberInterface
             '@admin/Product/product_class.twig' => 'adminProductClassRenderBefore',
             '@admin/Product/product.twig' => 'adminProductRenderBefore',
             'Cart/index.twig' => 'cartRenderBefore',
+            'Entry/index.twig' => 'entryRenderBefore',
+            'Entry/confirm.twig' => 'entryConfirmRenderBefore',
+            'Mypage/change.twig' => 'entryRenderBefore',
             EccubeEvents::ADMIN_ORDER_CSV_EXPORT_ORDER => 'adminOrderCsvExportOrder',
         ];
     }
@@ -311,6 +314,24 @@ class Vt4gEvent implements EventSubscriberInterface
     {
         $event->addSnippet('@VeriTrans4G/default/Cart/subsc_product_duplicate_warn.twig');
         $this->container->get('vt4g_plugin.service.cart.index_extension')->onCartRenderBefore($event);
+    }
+    
+    /**
+     * @param  TemplateEvent $event
+     * @return void
+     */
+    public function entryRenderBefore(TemplateEvent $event)
+    {
+        $event->addSnippet('@VeriTrans4G/default/Entry/subsc_index.twig');
+    }
+    
+    /**
+     * @param  TemplateEvent $event
+     * @return void
+     */
+    public function entryConfirmRenderBefore(TemplateEvent $event)
+    {
+        $event->addSnippet('@VeriTrans4G/default/Entry/subsc_confirm.twig');
     }
 
     /**

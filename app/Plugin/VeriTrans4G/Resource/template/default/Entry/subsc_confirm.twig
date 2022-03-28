@@ -1,0 +1,42 @@
+<div class="carrierPaymentInfo">
+  <dl>
+      <dt>
+          {{ form_label(form.service_option_type) }}
+      </dt>
+      <dd>
+          {{ form.service_option_type.vars.data }}
+          {{ form_widget(form.service_option_type, { type : 'hidden' }) }}
+      </dd>
+  </dl>
+  <dl>
+      <dt>
+          {{ form_label(form.accounting_type) }}
+      </dt>
+      <dd>
+          {{ form.accounting_type.vars.data }}
+          {{ form_widget(form.accounting_type, { type : 'hidden' }) }}
+      </dd>
+  </dl>
+  <dl>
+      <dt>
+          {{ form_label(form.mp_first_date) }}
+      </dt>
+      <dd>
+          {{ form.mp_first_date.vars.data }}
+          {{ form_widget(form.mp_first_date, { type : 'hidden' }) }}
+      </dd>
+  </dl>
+  <dl>
+      <dt>
+          {{ form_label(form.mp_day) }}
+      </dt>
+      <dd>
+          {{ form.mp_day.vars.data }}
+          {{ form_widget(form.mp_day, { type : 'hidden' }) }}
+      </dd>
+  </dl>
+</div>
+<script>
+    var $carrierPaymentInfo = $('.carrierPaymentInfo');
+    $('.ec-borderedDefs').append($carrierPaymentInfo);
+</script>
