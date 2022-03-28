@@ -1,0 +1,68 @@
+{#
+Copyright (c) 2018 VeriTrans Inc., a Digital Garage company. All rights reserved.
+http://www.veritrans.co.jp/
+#}
+<script>
+$(function() {
+$('div.card.rounded.border-0.mb-4').append(
+'<div class="card rounded border-0 mb-4">'+
+'    <div class="card-header"><span>ベリトランス4G設定</span></div>'+
+'    <div class="card-body">'+
+'        <div class="row">'+
+'            <div class="col-3"><span>決済種別</span></div>'+
+'            <div class="col mb-2">'+
+'                {{ vt4g.payName }}'+
+'            </div>'+
+'        </div>'+
+'        <div class="row">'+
+'            <div class="col-3"><span>支払期限</span><span'+
+'                        class="badge badge-primary ml-1">必須</span></div>'+
+'            <div class="col mb-2">'+
+'                {{ form_widget(form.payment_term_day) }}日 <br /><span class="text-danger errormsg">（半角数字で入力）</span>'+
+'                {{ form_errors(form.payment_term_day) | spaceless }}'+
+'            </div>'+
+'        </div>'+
+'        <div class="row">'+
+'            <div class="col-3"><span>請求内容（漢字）</span><span'+
+'                        class="badge badge-primary ml-1">必須</span></div>'+
+'            <div class="col mb-2">'+
+'                {{ form_widget(form.contents) }}<span class="text-danger errormsg">（上限12文字）</span>'+
+'                {{ form_errors(form.contents) | spaceless }}'+
+'            </div>'+
+'        </div>'+
+'        <div class="row">'+
+'            <div class="col-3"><span>請求内容（カナ）</span><span'+
+'                        class="badge badge-primary ml-1">必須</span></div>'+
+'            <div class="col mb-2">'+
+'                {{ form_widget(form.contents_kana) }}<span class="text-danger errormsg">（上限24文字）</span>'+
+'                {{ form_errors(form.contents_kana) | spaceless }}'+
+'            </div>'+
+'        </div>'+
+'        <div class="row">'+
+'            <div class="col-3"><span>注文完了メール送信タイミング</span><span'+
+'                        class="badge badge-primary ml-1">必須</span></div>'+
+'            <div class="col mb-2">'+
+'                {{ form_widget(form.mailTiming) | spaceless }}'+
+'                {{ form_errors(form.mailTiming) | spaceless }}'+
+'            </div>'+
+'        </div>'+
+'        <div class="row">'+
+'            <div class="col-3"><span>決済完了案内タイトル</span></div>'+
+'            <div class="col mb-2">'+
+'                {{ form_widget(form.order_mail_title1) }}<span class="text-danger errormsg">（上限50文字）</span>'+
+'                {{ form_errors(form.order_mail_title1) | spaceless }}'+
+'                <p class="small text-danger">ご注文完了画面とご注文完了メールに、支払いに関する案内文を入れる場合にはタイトルと本文を入れて下さい。(両方入っていない場合は有効になりません。)</p>'+
+'            </div>'+
+'        </div>'+
+'        <div class="row">'+
+'            <div class="col-3"><span>決済完了案内本文</span></div>'+
+'            <div class="col mb-2">'+
+'                {{ form_widget(form.order_mail_body1) }}<span class="text-danger">（上限1000文字）</span>'+
+'                {{ form_errors(form.order_mail_body1) | spaceless }}'+
+'            </div>'+
+'        </div>'+
+'</div>'
+);
+
+});
+</script>

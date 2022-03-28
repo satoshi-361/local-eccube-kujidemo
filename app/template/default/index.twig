@@ -1,0 +1,195 @@
+{#
+This file is part of EC-CUBE
+
+Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+
+http://www.ec-cube.co.jp/
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+#}
+{% extends 'default_frame.twig' %}
+
+{% set body_class = 'front_page' %}
+
+{% block stylesheet %}
+    <style>
+        .slick-slider {
+            margin-bottom: 30px;
+        }
+
+        .slick-dots {
+            position: absolute;
+            bottom: -45px;
+            display: block;
+            width: 100%;
+            padding: 0;
+            list-style: none;
+            text-align: center;
+        }
+
+        .slick-dots li {
+            position: relative;
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin: 0 5px;
+            padding: 0;
+
+            cursor: pointer;
+        }
+
+        .slick-dots li button {
+            font-size: 0;
+            line-height: 0;
+            display: block;
+            width: 20px;
+            height: 20px;
+            padding: 5px;
+            cursor: pointer;
+            color: transparent;
+            border: 0;
+            outline: none;
+            background: transparent;
+        }
+
+        .slick-dots li button:hover,
+        .slick-dots li button:focus {
+            outline: none;
+        }
+
+        .slick-dots li button:hover:before,
+        .slick-dots li button:focus:before {
+            opacity: 1;
+        }
+
+        .slick-dots li button:before {
+            content: " ";
+            line-height: 20px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 12px;
+            height: 12px;
+            text-align: center;
+            opacity: .25;
+            background-color: black;
+            border-radius: 50%;
+
+        }
+
+        .slick-dots li.slick-active button:before {
+            opacity: .75;
+            background-color: black;
+        }
+
+        .slick-dots li button.thumbnail img {
+            width: 0;
+            height: 0;
+        }
+    </style>
+{% endblock %}
+{% block javascript %}
+    <script>
+        $('.main_slider').slick({
+          dots: true,
+          infinite: false,
+          speed: 1000,
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          autoplay: true,
+          responsive: [
+            {
+              breakpoint: 1024,
+              settings: {
+                slidesToShow: 1,
+                slidesToScroll: 1,
+                infinite: true,
+                dots: true
+              }
+            },
+            {
+              breakpoint: 600,
+              settings: {
+                slidesToShow: 1,
+                slidesToScroll: 1
+              }
+            },
+            {
+              breakpoint: 480,
+              settings: {
+                slidesToShow: 1,
+                slidesToScroll: 1
+              }
+            }
+          ]
+        });
+    </script>
+{% endblock javascript %}
+
+{% block main %}
+{% if Products|length > 0 %}
+	<section id="item_list" class="block">
+		<h3 class="orange text-center mgb30">Line Up</h3>
+		<div class="container">
+			<div class="row">
+                {% for Product in Products %}
+                {% set ProductClasses = Product.getProductClasses() %}
+                {% set break = false %}
+                {% for pc in ProductClasses if break == false %}
+                    {% if pc.getClassCategory1() != null %}
+                    {% elseif pc.isVisible() %}
+                        {% set ProductClass = pc %}
+                        {% if ProductClass.getRemainStatus() == 1 %}
+                            
+                        <article id="post-{{ Product.id }}">
+                            <a href="{{ url('product_detail', {'id': Product.id}) }}" title="{{ Product.name }} | {{ BaseInfo.shop_name }}" class="article_inner">
+                                <div class="itemimg">
+                                    {% if Product.getProductImage() | length > 1 %}
+                                    <img width="500" height="500" src="{{ asset(Product.getProductImage()[3], 'save_image') }}" class="img-responsive center-block" loading="lazy">
+                                    {% else %}
+                                    <img width="500" height="500" src="{{ asset(Product.main_list_image|no_image_product, 'save_image') }}" class="img-responsive center-block" loading="lazy">
+                                    {% endif %}
+                                </div>
+                                <div class="content">
+                                    <div class="itemname">{{ Product.name }}</div>
+                                    <div class="date">{% if Product.product_assist_id and assists[Product.id] != ""%}販売期間：{{ assists[Product.id] }}まで {% else %} &nbsp;&nbsp;&nbsp; {% endif %}</div>
+                                    <div class="ribbon ischannel_isticket_isdate">
+                                        <h2>
+                                            {% set double_case = 0 %}
+                                            {% if Product.limit_count == "1日に1回" or Product.limit_count == "1アカウントに1回" %}
+                                                {% if Product.premium == "1" and Product.niconico >= "1" %} ニコニコプレミアム会員 & ニコニコチャンネル会員 {% set double_case = 1 %} {% endif %}
+                                                {% if Product.premium == "1" and Product.specifics >= "1" %} ニコニコプレミアム会員 & ニコニコチケット購入者 {% set double_case = 1 %} {% endif %}
+                                                {% if Product.niconico >= "1" and Product.specifics >= "1" %} ニコニコチャンネル会員 & ニコニコチケット購入者 {% set double_case = 1 %}  {% endif %}
+                                                {% if double_case == 0 %}  
+                                                    {% if Product.premium == "1" %} ニコニコプレミアム会員 {% endif %}
+                                                    {% if Product.niconico >= "1" %} ニコニコチャンネル会員 {% endif %} 
+                                                    {% if Product.specifics >= "1" %} ニコニコチケット購入者 {% endif %}    
+                                                {% endif %}
+                                                {{ Product.limit_count}} 限定 
+                                            {% else %}
+                                                {% if Product.premium == "1" and Product.niconico >= "1" %} ニコニコプレミアム会員 & ニコニコチャンネル会員限定 {% set double_case = 1 %} {% endif %}
+                                                {% if Product.premium == "1" and Product.specifics >= "1" %} ニコニコプレミアム会員 & ニコニコチケット購入者限定 {% set double_case = 1 %} {% endif %}
+                                                {% if Product.niconico >= "1" and Product.specifics >= "1" %} ニコニコチャンネル会員 & ニコニコチケット購入者限定 {% set double_case = 1 %}  {% endif %}
+                                                {% if double_case == 0 %}  
+                                                    {% if Product.premium == "1" %} ニコニコプレミアム会員限定 {% endif %}
+                                                    {% if Product.niconico >= "1" %} ニコニコチャンネル会員限定 {% endif %} 
+                                                    {% if Product.specifics >= "1" %} ニコニコチケット購入者限定 {% endif %} 
+                                                {% endif %}
+                                            {% endif %}
+                                            &nbsp;&nbsp;&nbsp;
+                                        </h2>
+                                    </div>
+                                </div>
+                            </a>
+                        </article>
+                        {% endif %}
+                        {% set break = true %}
+                    {% endif %}
+                {% endfor %}
+                {% endfor %}
+			</div>
+		</div>
+	</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,27 @@
+# Copyright (c) 2018 VeriTrans Inc., a Digital Garage company. All rights reserved.
+# http://www.veritrans.co.jp/
+
+vt4g_plugin.validate.num: 半角数字で入力してください。
+vt4g_plugin.validate.alnum: 半角英数で入力してください。
+vt4g_plugin.validate.alnum.hyphen: 半角英数記号(-のみ許可)で入力してください。
+vt4g_plugin.validate.alnum.hyphen.underscore: 半角英数記号(-_のみ許可)で入力してください。
+vt4g_plugin.validate.alnum.hyphen.underscore.period: 半角英数記号(.-_のみ許可)で入力してください。
+vt4g_plugin.validate.kana: カタカナで入力してください。
+vt4g_plugin.validate.not.halfwidth: 半角を含めることはできません。
+vt4g_plugin.validate.used.mail.flg.not.blank: 「本番モードで稼働」を指定した場合は必須です。
+vt4g_plugin.validate.not_blank: 入力されていません。
+vt4g_plugin.validate.not_blank.choice: 選択されていません。
+vt4g_plugin.validate.positive_or_zero: 半角数字で0以上の数字を入力してください。
+vt4g_plugin.validate.regist.enable_payment_type.not_blank: お支払い方法が選択されていません。
+
+vt4g_plugin.validate.credit.card_no.not_blank: ※ クレジットカード番号が入力されていません。
+vt4g_plugin.validate.credit.card_no.length: ※ クレジットカード番号が14桁〜16桁の範囲ではありません。
+vt4g_plugin.validate.credit.card_no.regex: ※ クレジットカード番号に数字以外の文字が含まれています。
+vt4g_plugin.validate.credit.security_code.not_blank: ※ セキュリティコードが入力されていません。
+vt4g_plugin.validate.credit.security_code.length: ※ セキュリティコードが3桁〜4桁の範囲ではありません。
+vt4g_plugin.validate.credit.security_code.regex: ※ セキュリティコードに数字以外の文字が含まれています。
+vt4g_plugin.validate.credit.card_name.not_blank: ※ カード名義人名が入力されていません。
+vt4g_plugin.validate.credit.card_name.regex: ※ カード名義は半角英字(半角スペースのみ許可)で入力してください。
+vt4g_plugin.validate.credit.expiry_mon.not_blank: ※ カード有効期限(月)が選択されていません。
+vt4g_plugin.validate.credit.expiry_year.not_blank: ※ カード有効期限(年)が選択されていません。
+vt4g_plugin.validate.credit.payment_type.not_blank: ※ お支払い方法が選択されていません。

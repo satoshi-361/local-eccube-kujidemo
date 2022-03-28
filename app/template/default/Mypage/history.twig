@@ -1,0 +1,295 @@
+{#
+This file is part of EC-CUBE
+
+Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+
+http://www.ec-cube.co.jp/
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+#}
+{% extends 'default_frame.twig' %}
+
+{% set mypageno = 'index' %}
+
+{% set body_class = 'mypage' %}
+
+{% block stylesheet %}
+<style>
+    .col-md-5 {
+        text-align: center;
+    }
+    @media only screen and (max-width: 575px) {
+        .flex-row {
+            display: flex;
+        }
+        .col-md-2 {
+            width: 16.7%;
+            padding: 0;
+        }
+        .col-md-5 {
+            width: 41.6%;
+            font-size: 12px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block main %}
+    <div class="ec-layoutRole__main">
+        <div class="ec-mypageRole">
+            <div class="ec-pageHeader">
+                <h1>{{ 'マイページ'|trans }}/{{ 'ご注文履歴詳細'|trans }}</h1>
+            </div>
+            {% include 'Mypage/navi.twig' %}
+        </div>
+
+        {% set remessage = false %}
+
+        <div class="ec-orderRole">
+            <div class="ec-orderRole__detail">
+                <div class="ec-orderOrder">
+                    <div class="ec-definitions">
+                        <dt>{{ 'ご注文日時'|trans }}</dt>
+                        <dd>{{ Order.create_date|date_sec }}</dd>
+                    </div>
+                    <div class="ec-definitions">
+                        <dt>{{ 'ご注文番号'|trans }}</dt>
+                        <dd>{{ Order.order_no }}</dd>
+                    </div>
+                    {% if BaseInfo.option_mypage_order_status_display %}
+                        <div class="ec-definitions">
+                            <dt>{{ 'ご注文状況'|trans }}</dt>
+                            <dd>{{ Order.CustomerOrderStatus }}</dd>
+                        </div>
+                    {% endif %}
+                    {% if BaseInfo.isOptionPoint %}
+                        <div class="ec-definitions">
+                            <dt>{{ 'ご利用ポイント'|trans }}</dt>
+                            <dd>{{ Order.usePoint|number_format }} pt</dd>
+                        </div>
+                        <div class="ec-definitions">
+                            <dt>{{ '加算ポイント'|trans }}</dt>
+                            <dd>{{ Order.addPoint|number_format }} pt</dd>
+                        </div>
+                    {% endif %}
+
+                </div>
+                <div class="ec-orderDelivery">
+                    <div class="ec-rectHeading">
+                        <h2>{{ '配送情報'|trans }}</h2>
+                    </div>
+                    {% for Shipping in Order.Shippings %}
+                        {% set isShowReducedTaxMess = false %}
+                        <div class="ec-orderDelivery__title">{{ 'お届け先'|trans }}{% if Order.multiple %}({{ loop.index }}){% endif %}</div>
+                        {% for orderItem in Shipping.productOrderItems %}
+                            <div class="ec-orderDelivery__item">
+                                <div class="ec-imageGrid">
+                                    <div class="ec-imageGrid__img">                                        
+                                        {% if orderItem.product is null %} <img src="" alt="{{ orderItem.productName }}">
+                                        {% elseif orderItem.product.ProductImage | length > 1 %} <img src="{{ asset( orderItem.product.ProductImage[4]|no_image_product, 'save_image') }}" alt="{{ orderItem.productName }}">
+                                        {% else %}<img src="{{ asset((orderItem.product.MainListImage)|no_image_product, 'save_image') }}" alt="{{ orderItem.productName }}" width="100" height="73">
+                                        {% endif %}
+                                    </div>
+                                    <div class="ec-imageGrid__content">
+                                        <p>
+                                            {% if orderItem.Product is not null and orderItem.Product.Status.id == constant('Eccube\\Entity\\Master\\ProductStatus::DISPLAY_SHOW') %}
+                                                <a href="{{ url('product_detail', {'id': orderItem.Product.id}) }}">{{ orderItem.productName }}</a>
+                                            {% else %}
+                                                {{ orderItem.productName }}
+                                            {% endif %} ×{{ orderItem.quantity }} {% if is_reduced_tax_rate(orderItem) %}{{ '※'|trans }}{% set isShowReducedTaxMess = true %}{% endif %}
+                                        </p>
+                                        {% if orderItem.ProductClass is not null %}
+                                            {% if orderItem.ProductClass.ClassCategory1 is not null %}
+                                                {{ orderItem.productClass.classCategory1.className.name }}：{{ orderItem.productClass.classCategory1 }}
+                                            {% endif %}
+                                            {% if orderItem.ProductClass.ClassCategory2 %}
+                                                <br>{{ orderItem.productClass.classCategory2.className.name }}：{{ orderItem.productClass.classCategory2 }}
+                                            {% endif %}
+                                        {% endif %}
+                                        <p>{{ orderItem.price_inc_tax|price }}
+                                            × {{ orderItem.quantity|number_format }}</p>
+                                        {% if orderItem.product and orderItem.price_inc_tax != orderItem.productClass.price02IncTax %}
+                                            <p class="ec-color-accent">
+                                                {{ '【現在価格】'|trans }}{{ orderItem.productClass.price02IncTax|price }}</p>
+                                            {% set remessage = true %}
+                                        {% endif %}
+
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <p>{{ isShowReducedTaxMess ? '※ は軽減税率対象商品です。'|trans }}</p>
+                        <div class="ec-orderDelivery__address">
+                            <p>{{ Shipping.name01 }}&nbsp;{{ Shipping.name02 }}&nbsp;
+                                ({{ Shipping.kana01 }}&nbsp;{{ Shipping.kana02 }})</p>
+                            <p>{{ '〒'|trans }}{{ Shipping.postal_code }} {{ Shipping.Pref }}{{ Shipping.addr01 }}{{ Shipping.addr02 }}</p>
+                            <p>{{ Shipping.phone_number }}</p>
+                        </div>
+                        <div class="ec-definitions--soft">
+                            <dt>{{ '配送方法'|trans }} :</dt>
+                            <dd>{{ Shipping.shipping_delivery_name }}</dd>
+                        </div>
+                        <div class="ec-definitions--soft">
+                            <dt>{{ 'お届け日'|trans }} :</dt>
+                            <dd>{{ Shipping.shipping_delivery_date|date_day_with_weekday|default('指定なし'|trans) }}</dd>
+                        </div>
+                        <div class="ec-definitions--soft">
+                            <dt>{{ 'お届け時間'|trans }} :</dt>
+                            <dd>{{ Shipping.shipping_delivery_time|default('指定なし'|trans) }}</dd>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="ec-orderPayment">
+                    <div class="ec-rectHeading">
+                        <h2>{{ 'お支払い情報'|trans }}</h2>
+                    </div>
+                    <p>{{ 'お支払い方法'|trans }} : {{ Order.PaymentMethod }}</p>
+                </div>
+                <div class="ec-orderConfirm">
+                    <div class="ec-rectHeading">
+                        <h2>{{ 'お問い合わせ'|trans }}</h2>
+                    </div>
+                    <p>{{ Order.message|default('記載なし'|trans)|nl2br }}</p>
+                </div>
+                <div class="ec-orderMails">
+                    <div class="ec-rectHeading">
+                        <h2>{{ 'メール配信履歴一覧'|trans }}</h2>
+                    </div>
+                    {% for MailHistory in Order.MailHistories %}
+                        <div class="ec-orderMail">
+                            <div class="ec-orderMail__time">{{ MailHistory.send_date|date_sec }}</div>
+                            <div class="ec-orderMail__link"><a>{{ MailHistory.mail_subject }}</a></div>
+                            <div class="ec-orderMail__body">{{ MailHistory.mail_body|nl2br }}<p class="ec-orderMail__close"><a>{{ '閉じる'|trans }}</a></p></div>
+                        </div>
+                    {% else %}
+                        <p class="ec-reportDescription">{{ 'メール履歴はありません。'|trans }}</p>
+                    {% endfor %}
+                </div>
+                {% if pagination.totalItemCount > 0 %}
+                <div>
+                    <center><h3>くじ結果</h3></center>
+                    {% set is_hr = 0 %}
+                    {% set product_id = 0 %}
+                    <p class="ec-para-normal">{{ '%count%件の履歴があります'|trans({'%count%':pagination.totalItemCount - 1}) }}</p>
+                    {% for item in pagination if item != null %}
+                    {% set arr = item.prizeImage | split('###') %}
+                    {% if item.productId != product_id %}
+                        {% set is_hr = 1 %}
+                        {% set product_id = item.productId %}
+                    {% endif %}
+                    {% if is_hr %}
+                        <hr style="margin: 10px">
+                        {% set is_hr = 0 %}
+                    {% endif %}
+                    <div class="row" style="margin: 5px;">
+                        {% if arr | length > 1 %}
+                            {% set item_prizes = repository('Plugin\\PrizeShow\\Entity\\PrizeList').find(item.getPrizeListId()).getSettings() %}
+                            {% for i, ele in arr if ele != '' %}
+                                <div class="row flex-row"  style="display:flex; align-items:center; margin: 5px 16px;" >
+                                    <div class="col-md-2"><img src="{{ asset('', 'temp_image') }}{{ item_prizes[i].image }}" class="img-responsive"/></div>
+                                    <span class="col-md-5"><h3>{{ item.prizeGrade }}{{ item.prizeClassName }}</h3></span>
+                                    <span class="col-md-5"><h3>{{ ele }}</h3></span><br>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            {% set arr = item.prizeName | split('###') %}
+                            {% set prize_list = repository('Plugin\\PrizeShow\\Entity\\PrizeList').findAll() %}
+                            {% if arr | length > 1 %}
+                                {% for ele in arr %}
+                                {% set bulk_loop_item = ele | split(': ') %}
+                                {% if bulk_loop_item[0] is defined %}
+                                    {% set break = false %}
+                                    {% for prize_list_item in prize_list if break == false %}
+                                        {% if prize_list_item.name == bulk_loop_item[0] %}
+                                            {% set bulk_prizes = prize_list_item.getSettings() %}
+                                            {% for bulk_prize_item in bulk_prizes %}
+                                                <div class="row flex-row"  style="display:flex; align-items:center; margin: 5px 16px;" >
+                                                    <div class="col-md-2"><img src="{{ asset('', 'temp_image') }}{{ bulk_prize_item.image }}" class="img-responsive"/></div>
+                                                    <span class="col-md-5"><h3>{{ bulk_prize_item.name }}</h3></span>
+                                                    <span class="col-md-5"><h3>{{ bulk_loop_item[1]}} </h3></span>
+                                                </div>
+                                            {% endfor %}
+                                            {% set break = true %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                                {% endfor %}
+                            {% else %}
+                            <div  style="display:flex; align-items:center; margin: 5px 16px;"  class="row flex-row">
+                                {% if item.prizeImage != ""  %}
+                                    <div class="col-md-2"><img src="{{ asset('', 'temp_image') }}{{ item.prizeImage }}" class="img-responsive"/></div>
+                                {% endif %}
+                                <span class="col-md-5"><h3>{{ item.prizeGrade }}{{ item.prizeClassName }}</h3></span>
+                                <span class="col-md-5"><h3>{{ item.prizeName }}</h3></span>
+                            </div>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    <div class="ec-pagerRole">
+                        {% set routes = path('mypage_history', {'order_no': order_no}) %}
+                        {% include "pager.twig" with {'pages': pagination.paginationData, 'routes': routes} %}
+                    </div>
+                </div>
+                {% else %}
+                    <p class="ec-para-normal">{{ 'ご注文履歴はありません。'|trans }}</p>
+                {% endif %}
+            </div>
+            <div class="ec-orderRole__summary">
+                <div class="ec-totalBox">
+                    <dl class="ec-totalBox__spec">
+                        <dt>{{ '小計'|trans }}</dt>
+                        <dd>{{ Order.subtotal|price }}</dd>
+                    </dl>
+                    <dl class="ec-totalBox__spec">
+                        <dt>{{ '手数料'|trans }}</dt>
+                        <dd>{{ Order.charge|price }}</dd>
+                    </dl>
+                    <dl class="ec-totalBox__spec">
+                        <dt>{{ '送料'|trans }}</dt>
+                        <dd>{{ Order.delivery_fee_total|price }}</dd>
+                    </dl>
+                    {% if Order.taxable_discount < 0 %}
+                    <dl class="ec-totalBox__spec">
+                        <dt>{{ '値引き'|trans }}</dt>
+                        <dd>{{ Order.taxable_discount|price }}</dd>
+                    </dl>
+                    {% endif %}
+                    <div class="ec-totalBox__total">{{ '合計'|trans }}<span
+                                class="ec-totalBox__price">{{ Order.payment_total|price }}</span><span
+                                class="ec-totalBox__taxLabel">{{ '税込'|trans }}</span></div>
+                    {% for rate, total in Order.taxable_total_by_tax_rate %}
+                    <dl class="ec-totalBox__taxRate">
+                        <dt>{{ '税率 %rate% %対象'|trans({ '%rate%': rate }) }}</dt>
+                        <dd>{{ Order.payment_total|price }}</dd>
+                    </dl>
+                    {% endfor %}
+                    {% for item in Order.tax_free_discount_items %}
+                        {% if loop.first %}<div class="ec-totalBox__total"></div>{% endif %}
+                        <dl class="ec-totalBox__spec">
+                            <dt>{{ item.product_name }}</dt>
+                            <dd>{{ item.total_price|price }}</dd>
+                        </dl>
+                    {% endfor %}
+                    <div class="ec-totalBox__paymentTotal">{{ '合計'|trans }}<span
+                                class="ec-totalBox__price">{{ Order.payment_total|price }}</span><span
+                                class="ec-totalBox__taxLabel">{{ '税込'|trans }}</span></div>
+                    {% if stockOrder %}
+                        <a href="{{ url('mypage_order', {'order_no': Order.order_no }) }}"
+                       class="ec-blockBtn--action load-overlay" {{ csrf_token_for_anchor() }} data-method="put"
+                       data-confirm="false">{{ '再注文する'|trans }}</a>
+                    {% endif %}
+                </div>
+                {% if remessage %}
+                    <p class="ec-color-accent">
+                        <strong>{{ '※金額が変更されている商品があるため、再注文時はご注意ください。'|trans }}</strong>
+                    </p>
+                {% endif %}
+            </div>
+        </div>  
+        <div class="ec-role">
+            <a href="{{ url('mypage') }}" class="ec-inlineBtn">{{ '戻る'|trans }}</a>
+        </div>
+    </div>
+{% endblock %}

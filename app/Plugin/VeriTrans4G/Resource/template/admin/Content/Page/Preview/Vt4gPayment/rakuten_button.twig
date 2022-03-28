@@ -1,0 +1,18 @@
+{#
+Copyright (c) 2018 VeriTrans Inc., a Digital Garage company. All rights reserved.
+http://www.veritrans.co.jp/
+#}
+<html lang="{{ eccube_config.locale }}">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>プレビュー</title>
+        <link rel="icon" href="{{ asset('assets/img/favicon.ico', 'admin') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/app.css', 'admin') }}">
+    </head>
+
+    <body id="page_{{ app.request.get('_route') }}">
+        <p>画像が表示されない場合はページ管理でタグの記載をご確認ください。</p>
+        {% include("VeriTrans4G/Resource/template/default/Shopping/vt4g_button_rakuten.twig") %}
+    </body>
+</html>

@@ -1,0 +1,27 @@
+{#
+Copyright(c) 2018 VeriTrans Inc. All rights reserved.
+http://www.veritrans.co.jp/
+#}
+
+<div class="ec-reportDescription ec-para-normal">
+    {% if arrOther.title is defined and arrOther.message is defined %}
+        <div class="ec-rectHeading">
+            <h2>■{{ arrOther.title }}情報</h2>
+        </div>
+    {% endif %}
+
+    {% if arrOther.message is defined %}
+        <div class="text-left">
+            {% for key, item in arrOther.message %}
+                <p style="word-break:break-all;">
+                    {% if item.title is defined and item.title != '' %}
+                        {{ item.title }}:
+                    {% endif %}
+                    {% if item.content is defined and item.content != '' %}
+                        {{ item.content|nl2br }}
+                    {% endif %}
+                </p>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>

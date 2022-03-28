@@ -1,0 +1,151 @@
+{#
+    This file is part of EC-CUBE
+    Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+    http://www.ec-cube.co.jp/
+    For the full copyright and license information, please view the LICENSE
+    file that was distributed with this source code.
+    #}
+    {% extends 'default_frame.twig' %}
+    
+    {% set mypageno = 'index' %}
+    
+    {% set body_class = 'mypage' %}
+    
+    {% block stylesheet %}
+        <style>
+            .btn.buy font {
+                font-size: 14px;
+            }
+            .ec-imageGrid img {
+                max-width: 200px !important;
+                height: auto;
+                object-fit: cover;
+            }
+
+            @media only screen and (max-width: 575px) {
+                .buy-right {
+                    display: none !important;
+                }
+                .btn-bottom {
+                    display: block !important;
+                }
+                h3 {
+                    font-size: 16px !important;
+                    padding: 5px 5px !important;
+                }
+            }
+            @media only screen and (min-width: 576px) {
+                .buy-right {
+                    display: block !important;
+                }
+                .buy-bottom {
+                    display: none !important;
+                }
+            }
+        </style>
+    {% endblock %}
+    {% block main %}
+        <div class="ec-layoutRole__main">
+            <div class="ec-mypageRole">
+                <div class="ec-pageHeader">
+                    <h1>{{ 'マイページ'|trans }}/{{ 'ご注文履歴'|trans }}</h1>
+                </div>
+                {% include 'Mypage/navi.twig' %}
+            </div>
+            <div class="ec-mypageRole">
+                {% if pagination.totalItemCount > 0 %}
+                    <p class="ec-para-normal">{{ '%count%件の履歴があります'|trans({'%count%':pagination.totalItemCount}) }}</p>
+                    {% for i,Order in pagination %}
+                        <div class="ec-historyRole">
+                            <div class="ec-historyRole__contents">
+    
+                                <div class="ec-historyRole__header">
+                                    <div class="ec-historyListHeader">
+                                        <p class="ec-historyListHeader__date">{{ Order.order_date|date_sec }}</p>
+                                        <dl class="ec-definitions">
+                                            <dt>{{ 'ご注文番号'|trans }}</dt>
+                                            <dd>{{ Order.order_no }}</dd>
+                                        </dl>
+                                        {% if (BaseInfo.option_mypage_order_status_display) %}
+                                            <dl class="ec-definitions">
+                                                <dt>{{ 'ご注文状況'|trans }}</dt>
+                                                <dd>{{ Order.CustomerOrderStatus }}</dd>
+                                            </dl>
+                                        {% endif %}
+                                        <p class="ec-historyListHeader__action">
+                                            <a href="{{ url('mypage_history', {'order_no': Order.order_no}) }}" class="ec-inlineBtn" title=" 詳細を見る | {{ BaseInfo.shop_name }} ">{{ '詳細を見る'|trans }}</a>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="ec-historyRole__detail">
+                                    {% for j,OrderItem in Order.MergedProductOrderItems %}
+                                        <div class="ec-imageGrid" style="margin-bottom: 20px; padding-top: 20px;">
+                                            <div>
+                                                <div style="margin-bottom: 2rem; display:flex; justify-content: space-around;">
+                                                        {% if OrderItem.Product is null %}
+                                                        <div>
+                                                            <img src="{{ asset(''|no_image_product, 'save_image') }}" />
+                                                        </div>
+                                                        {% else %}
+                                                            {% if OrderItem.Product.ProductImage | length > 1 %}
+                                                            <div>
+                                                            <img src="{{ asset(OrderItem.Product.getProductImage()[4], 'save_image') }}" class="img-responsive center-block" loading="lazy">
+                                                            </div>
+                                                            {% else %}
+                                                            <div>
+                                                            <img src="{{ asset(OrderItem.Product.MainListImage|no_image_product, 'save_image') }}"  class="img-responsive center-block" loading="lazy"/>
+                                                            </div>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    
+                                                    <div style="display: block;width: 50%;">
+                                                         <h3 style="text-align: center;">{{ OrderItem.product_name }}</h3>
+                                                        {% if OrderItem.class_category_name1 is not empty %}
+                                                            {{ OrderItem.class_category_name1 }}
+                                                        {% endif %}
+                                                        {% if OrderItem.class_category_name1 is not empty %}
+                                                            / {{ OrderItem.class_category_name2 }}
+                                                        {% endif %}
+                                                        <h3 style="text-align: center;">{{ OrderItem.price_inc_tax|price }}
+                                                            × {{ OrderItem.quantity }}</h3>
+                                                        {%if counts[i][j] > 0 and Categories[i][j] is defined %}
+                                                            <a href="{{ path('winning_start', {order_no: Order.order_no, product_id: OrderItem.Product.id }) }}" class="btn buy buy-right" title="くじの結果を見る | {{ BaseInfo.shop_name }}">
+                                                                <font style="vertical-align: inherit">
+                                                                    {% if Categories[i][j] == 0 %}
+                                                                    <font style="vertical-align: inherit">くじの結果を見る</font>
+                                                                    {% else %}
+                                                                    <font style="vertical-align: inherit">くじを引く <br/>（残り{{counts[i][j]}}個ひくことができます。）</font>
+                                                                    {% endif %}
+                                                                </font>
+                                                            </a>
+                                                        {% endif %}
+                                                    </div>   
+                                                </div>
+                                                {%if counts[i][j] > 0 and Categories[i][j] is defined %}
+                                                    <a href="{{ path('winning_start', {order_no: Order.order_no, product_id: OrderItem.Product.id }) }}" class="btn buy buy-bottom" title="くじの結果を見る | {{ BaseInfo.shop_name }}">
+                                                        <font style="vertical-align: inherit">
+                                                            {% if Categories[i][j] == 0 %}
+                                                            <font style="vertical-align: inherit">くじの結果を見る</font>
+                                                            {% else %}
+                                                            <font style="vertical-align: inherit">くじを引く <br/>（残り{{counts[i][j]}}個ひくことができます。）</font>
+                                                            {% endif %}
+                                                        </font>
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                     
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div class="ec-pagerRole">
+                        {% include "pager.twig" with {'pages': pagination.paginationData} %}
+                    </div>
+                {% else %}
+                    <p class="ec-para-normal">{{ 'ご注文履歴はありません。'|trans }}</p>
+                {% endif %}
+            </div>
+        </div>
+    {% endblock %}

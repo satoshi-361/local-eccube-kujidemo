@@ -1,0 +1,1 @@
+{"name":"ec-cube\/CMBlog","version":"1.0.1","description":"\u7c21\u5358\u30d6\u30ed\u30b0","type":"eccube-plugin","require":{"ec-cube\/plugin-installer":"~0.0.7"},"extra":{"code":"CMBlog","id":2217}}

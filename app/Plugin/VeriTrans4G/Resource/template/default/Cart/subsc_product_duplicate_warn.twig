@@ -1,0 +1,15 @@
+<script>
+$(function() {
+$('.ec-cartRole__totalText').append(
+'{% if subscProductDuplicateWarnFlg %}' +
+'    <div class="ec-cartRole__error">' +
+'        <div class="ec-alert-warning">' +
+'            <div class="ec-alert-warning__text">' +
+'                {{ '購入済みの継続課金商品が含まれています。'|trans|nl2br }}' +
+'            </div>' +
+'        </div>' +
+'    </div>' +
+'{% endif %}'
+);
+});
+</script>

@@ -1,0 +1,251 @@
+# Copyright (c) 2018 VeriTrans Inc., a Digital Garage company. All rights reserved.
+# http://www.veritrans.co.jp/
+
+# 共通
+vt4g_plugin.db.regist.error: DB登録でエラーになりました。
+vt4g_plugin.no_data: 対象データがありませんでした。
+vt4g_plugin.file_name: "ファイル名：%s "
+vt4g_plugin.db.deadlock: "%sの処理でdeadlockを検知。もう一方の通信で処理します。"
+
+# 管理画面メニュー
+vt4g_plugin.admin.menu.product.subsc_salestype: 継続課金用販売種別管理
+vt4g_plugin.admin.menu.order.csv_upload: 受注CSVアップロード(決済更新)
+vt4g_plugin.admin.menu.order.csv_registration: CSV決済依頼登録
+vt4g_plugin.admin.menu.order.csv_request: CSV決済依頼管理
+vt4g_plugin.admin.menu.order.csv_result: CSV決済結果反映
+vt4g_plugin.admin.menu.customer.subsc_history: 継続課金会員管理
+vt4g_plugin.admin.menu.setting.system.log_download: ベリトランス4G ログダウンロード
+
+# プラグイン設定
+vt4g_plugin.admin.config.save.payment.success: 支払方法ID：%s 支払名称：%s をdtb_paymentに登録しました。
+vt4g_plugin.admin.config.save.vt4gpaymethod.success: 支払方法ID：%s 支払名称：%s をplg_vt4g_payment_methodに登録しました。
+vt4g_plugin.admin.config.unvisible.paymet.success: dtb_paymentの支払方法ID：%s を非表示にしました。
+vt4g_plugin.admin.config.used.mail.success: ご利用状況メールを送信しました。
+vt4g_plugin.admin.config.used.mail.failed: ご利用状況メールの送信に失敗しました。
+vt4g_plugin.admin.config.save.subdata.success: サブデータをplg_vt4g_pluginに登録しました。
+vt4g_plugin.admin.config.save.pagedata: dtb_pageとdtb_page_layoutに%sのページ情報を登録しました。
+vt4g_plugin.admin.config.save.csvdata: dtb_csvに%sの項目情報を登録しました。
+vt4g_plugin.admin.config.save.complete: 設定の登録が完了しました。
+
+# 支払方法設定
+vt4g_plugin.admin.payment.save.vt4gpaymethod.success: 支払方法ID：%s 支払名称：%s の設定情報をplg_vt4g_payment_methodに登録しました。
+
+# 受注管理
+vt4g_plugin.admin.order.update_payment_status.error: 決済状況が更新できませんでした。
+vt4g_plugin.admin.order.update_payment_status.unsupport: ベリトランス4G決済プラグインの決済ではありません。
+vt4g_plugin.admin.order.update_payment_status.missing: 決済の受注がありませんでした。
+vt4g_plugin.admin.order.update_payment_status.unavailable: 対象の決済には変更できません。
+vt4g_plugin.admin.order.update_payment_status.subsc_few_credit: 少額与信取引のため対象の決済は実施できません。
+vt4g_plugin.admin.order.update_payment_status.complete: 決済状況が更新されました。
+vt4g_plugin.admin.order.update_payment_and_order_status.complete: 対応状況と決済状況が更新されました。
+vt4g_plugin.admin.order.update_payment_status.complete.no_order_status: 決済状況を更新しましたが、mtb_order_statusに入金済みの情報がなかったため更新しませんでした。
+vt4g_plugin.admin.order.update_payment_status.part.complete: 決済状況を更新しましたが、対応状況は新規受付ではないため更新しませんでした。
+vt4g_plugin.admin.order.credit.newly.start: 管理者%s[新規決済]通信実行
+vt4g_plugin.admin.order.credit.cancel.start: 管理者%s[取消]通信実行
+vt4g_plugin.admin.order.credit.capture.start: 管理者%s[売上確定]通信実行
+vt4g_plugin.admin.order.credit.again.start: 管理者%s[再決済]通信実行
+vt4g_plugin.admin.order.credit.param.error: 決済に必要なパラメータの過剰または不足が発生しました。ベリトランス会員ID：%s かんたん決済：%s お支払方法：%s 売上フラグ：%s
+
+# 入金(結果)通知
+vt4g_plugin.payment.recv.start: 通知受信処理を開始します。
+vt4g_plugin.payment.recv.not.exist.length: Content-Lengthがありません。
+vt4g_plugin.payment.recv.recv.failed: 通知データの受信に失敗しました。
+vt4g_plugin.payment.recv.not.exist.hmac: content-hmacがありません。
+vt4g_plugin.payment.recv.valid.failed: 通知データの検証に失敗しました。
+vt4g_plugin.payment.recv.valid.success: 通知データの検証に成功しました。
+vt4g_plugin.payment.recv.non.post: POSTではないため処理を終了します。
+vt4g_plugin.payment.recv.non.data: 該当データがないため処理を終了します。
+vt4g_plugin.payment.recv.header.info: 通知件数：%s 送信時刻：%s 識別ID：%s
+vt4g_plugin.payment.recv.data.count: 対象明細[%s件目]：
+vt4g_plugin.payment.recv.order.id: 取引ID[%s]：
+vt4g_plugin.payment.recv.order.auth.failure: 注文情報が存在しませんが決済申込に対する通知の処理結果が成功以外のため、スキップします。
+vt4g_plugin.payment.recv.order.not.exist: 注文情報が存在しません。注文が削除されている可能性があります。
+vt4g_plugin.payment.recv.order.not.payment: 通知項目に該当する決済方法がありません。
+vt4g_plugin.payment.recv.not.txn_type: トランザクションタイプを特定できません。 txnType：%s
+vt4g_plugin.payment.recv.save.start: "%s通知 - %s処理 開始"
+vt4g_plugin.payment.recv.mstatus.error: "%sの処理結果コードが%sでした。"
+vt4g_plugin.payment.recv.payment_type_id.error: 決済情報と注文情報の支払方法が異なりました。決済：%s 注文：%s
+vt4g_plugin.payment.recv.payment_status.error: 決済状況が想定値と異なりました。現在：%s 想定：%s
+vt4g_plugin.payment.recv.order_status.error: 対応状況が想定値と異なりました。現在：%s 想定：%s
+vt4g_plugin.payment.recv.result.different: 過去の受信結果と異なる結果を受信しました。
+vt4g_plugin.payment.recv.order.retry: 再度注文していただくなどの対応が必要です。
+vt4g_plugin.payment.recv.paypal.fixed.failure: 確報の処理結果が成功ではありませんでした。
+vt4g_plugin.payment.recv.paypal.fixed.not.prompt: 速報を受信していませんが確報を受信しました。(処理結果：成功)
+vt4g_plugin.payment.recv.order.update: 受注データ更新 受注番号：%d
+vt4g_plugin.payment.recv.save.end: "%s通知 - %s処理 終了"
+vt4g_plugin.payment.recv.show.error_mail: エラー報知メール本文 >
+vt4g_plugin.payment.recv.send.error_mail: 結果通知エラー報知メール送信
+vt4g_plugin.payment.recv.reason.error_mail: 結果通知エラー報知メール送信理由：%s
+vt4g_plugin.payment.recv.send.request_mail: 要求結果メール送信
+vt4g_plugin.payment.recv.complete: 通知受信処理を終了します。
+
+# 決済
+vt4g_plugin.payment.shopping.error: 決済でエラーが発生しました。
+vt4g_plugin.payment.shopping.system.error: システムエラーが発生しました。
+vt4g_plugin.payment.shopping.not.order: 注文情報が無効です。この手続きは無効となりました。
+vt4g_plugin.payment.shopping.mdk.error: レスポンス生成に失敗
+vt4g_plugin.payment.shopping.mdk.start: "%s通信実行"
+vt4g_plugin.payment.shopping.mdk.start.mpi: "%s通信実行(本人認証)"
+vt4g_plugin.payment.shopping.mdk.restart: リトライ実行
+vt4g_plugin.payment.shopping.mpi.payment.start: 本人認証の結果検証通信実行
+vt4g_plugin.payment.shopping.paypal.payment.start: PayPal決済の検証通信実行
+vt4g_plugin.payment.shopping.get.result.start: "%s結果取得"
+vt4g_plugin.payment.shopping.get.result.error: レスポンス取得に失敗
+vt4g_plugin.payment.shopping.get.result.error.msg: 結果取得でエラーが発生しました。
+vt4g_plugin.payment.shopping.auth.result.error: 認証に失敗
+vt4g_plugin.payment.shopping.auth.result.error.msg: 結果認証でエラーが発生しました。
+
+
+
+# クレジット決済
+vt4g_plugin.shopping.credit.payment.status: "[%s]成功"
+vt4g_plugin.shopping.credit.recv.status: "[%s]決済結果通知受信"
+vt4g_plugin.shopping.credit.account.payment: ベリトランス会員IDを使用(登録済み)：
+vt4g_plugin.shopping.credit.account.payment.new: ベリトランス会員IDを使用(新規登録)：
+vt4g_plugin.shopping.credit.order.id: 決済取引ID：
+vt4g_plugin.shopping.credit.capture.amount: 売上確定金額：
+vt4g_plugin.shopping.credit.cancel.amount: 取消金額：
+vt4g_plugin.shopping.credit.again.amount: 再決済金額：
+vt4g_plugin.shopping.credit.account.card: 登録済みカードを使用：
+vt4g_plugin.shopping.credit.token: トークン取得：%s(有効期限：%s)
+vt4g_plugin.shopping.credit.order.card: 取得カード番号：
+vt4g_plugin.shopping.credit.fatal.request.id: リクエストID取得失敗
+vt4g_plugin.shopping.credit.fatal.order.id: 対象取引IDの取得に失敗
+vt4g_plugin.shopping.credit.fatal.mdk: カード情報の取得に失敗
+vt4g_plugin.shopping.credit.fatal.payment: クレジットカード決済に失敗
+vt4g_plugin.shopping.credit.fatal.complete: 受注完了処理に失敗
+vt4g_plugin.shopping.credit.fatal.mpi.continue: 本人認証による決済は不可能です
+vt4g_plugin.shopping.credit.fatal.mpi.payment: 本人認証に失敗
+vt4g_plugin.shopping.credit.fatal.credit.payment: カード与信処理に失敗
+vt4g_plugin.shopping.credit.fatal.restart: レスポンス生成に失敗(リトライ)
+vt4g_plugin.shopping.credit.fatal.restart.end: リトライ終了(失敗)
+vt4g_plugin.shopping.credit.mErrMsg.retrade: 選択されたカードの元取引が存在しません。
+vt4g_plugin.shopping.credit.mErrMsg.transaction: 本人認証が未認証の可能性があります
+vt4g_plugin.shopping.credit.mErrMsg.mpi.payment: 本人認証に失敗しました
+vt4g_plugin.shopping.credit.mErrMsg.credit.payment: カード与信処理に失敗しました
+vt4g_plugin.shopping.credit.saved.subsc.order: "継続課金注文情報を登録しました。order_id：%s "
+
+# ネットバンク決済
+vt4g_plugin.shopping.bank.payment.complete: "注文ID：%s ネットバンク決済の注文状況と決済状況を更新しました。 "
+vt4g_plugin.shopping.bank.payment.part.complete: "注文ID：%s 注文状況の更新に失敗したため、ネットバンク決済の決済状況のみ更新しました。 "
+vt4g_plugin.shopping.bank.error.status_update: "注文ID：%s mtb_order_statusテーブルに新規受付(id = %s)のデータが存在せず、注文状況の更新に失敗しました。"
+
+
+# mail
+vt4g_plugin.payment.mail.start: 受注メール送信処理実行
+vt4g_plugin.payment.mail.complete: 受注メール送信処理完了
+vt4g_plugin.payment.mail.expla.atm: ATM端末でお支払いの際には「収納機関番号[58191]」・「お客様番号(数字20桁) 」・「確認番号(数字6桁) 」が必要となります。
+vt4g_plugin.payment.mail.expla.bank.note1: ネットバンクでのお支払いの画面が開かなかった場合、もしくは途中でブラウザを閉じてしまった場合は、このURLから再度お支払いのための画面を開くことができます。
+vt4g_plugin.payment.mail.expla.bank.note2: お支払い完了後にこのURLをクリックするとエラー画面が表示されますが、既に完了したお支払い手続きには影響することはございません。
+
+# ベリトランス会員ID
+vt4g_plugin.account.card.get: ベリトランス会員IDに登録済みのカード情報を取得
+vt4g_plugin.account.card.del: ベリトランス会員IDに登録済みのカード情報を削除
+vt4g_plugin.account.card.del.mdk.success: カード情報の削除に成功
+vt4g_plugin.account.card.del.mdk.failed: カード情報の削除に失敗
+vt4g_plugin.account.card.del.success: カード情報を削除しました。
+vt4g_plugin.account.card.del.failed: カード情報の削除に失敗しました。
+vt4g_plugin.account.card.expired: 有効期限が切れています。
+vt4g_plugin.account.error.message: 再度お試しいただくか、時間をおいてからお試しください。
+vt4g_plugin.account.del: ベリトランス会員IDを削除
+vt4g_plugin.account.del.mdk.success: ベリトランス会員IDの削除に成功
+vt4g_plugin.account.del.mdk.failed: ベリトランス会員IDの削除に失敗
+vt4g_plugin.account.del.send.error_mail: ベリトランス会員ID削除エラー報知メール送信
+vt4g_plugin.account.del.mdk.failed.msg: ベリトランス会員IDの退会処理に失敗しました。エラー原因はエラー報知メールまたはmdk.logをご参照ください。
+
+# 受注CSVアップロード
+vt4g_plugin.order.csv.upload.start: 受注CSVアップロード(決済更新)処理開始
+vt4g_plugin.order.csv.upload.order.not.exist: 受注が存在しないか、削除されています。
+vt4g_plugin.order.csv.upload.order.duplicate: 注文番号の項目を一つにしてください。
+vt4g_plugin.order.csv.upload.invalid.number: "%s行目の%sを数値にしてください。"
+vt4g_plugin.order.csv.upload.not.plugin.payment: "%sの決済ではありません。"
+vt4g_plugin.order.csv.upload.processing: 処理中のため更新できません。
+vt4g_plugin.order.csv.upload.unauthoriz: この受注の決済では%s処理は許可されていません。
+vt4g_plugin.order.csv.upload.subsc_few_credit: 少額与信取引のため%s処理は許可されていません。
+vt4g_plugin.order.csv.upload.success: 決済が更新されました。
+vt4g_plugin.order.csv.update_payment_and_order_status.success: 対応状況と決済状況が更新されました。
+vt4g_plugin.order.csv.upload.part.success: 決済状況を更新しましたが、対応状況は新規受付ではないため更新しませんでした。
+vt4g_plugin.order.csv.upload.success.no_order_status: 決済状況を更新しましたが、mtb_order_statusに入金済みの情報がなかったため更新しませんでした。
+vt4g_plugin.order.csv.upload.end: 受注CSVアップロード(決済更新)処理終了
+
+# 継続課金用販売種別管理
+vt4g_plugin.admin.product.sale_type: 販売種別
+vt4g_plugin.admin.product.few_credit_flg: 少額与信利用有無
+vt4g_plugin.admin.product.few_credit_flg_resence: 有り
+vt4g_plugin.admin.product.few_credit_flg_absence: 無し
+
+# 継続課金決済履歴詳細
+vt4g_plugin.maypage.subsc_payment_history.not.exist: 決済履歴はありません。
+
+# 決済依頼登録
+vt4g_plugin.admin.payment_request.save.complete: 決済依頼情報を登録しました。
+vt4g_plugin.admin.payment_request.event_id: "決済依頼イベント番号：%s "
+vt4g_plugin.admin.payment_request.sale_type: "販売種別ID：%s "
+
+# 決済依頼イベント一覧
+vt4g_plugin.admin.payment_request.csv_request_detail_export: 決済依頼明細情報を出力します。
+
+# 決済依頼一覧
+vt4g_plugin.admin.payment_request.list.require_price_or_point: 金額またはポイントを入力してください。
+vt4g_plugin.admin.payment_request.list.allenable: 全件CVSの対象に変更しました。
+vt4g_plugin.admin.payment_request.list.alldisable: 全件CVSの対象外に変更しました。
+vt4g_plugin.admin.payment_request.list.allsetfee: 決済手数料を一括変更しました。
+vt4g_plugin.admin.payment_request.list.allsetprice: 商品金額・送料・ポイントを一括変更しました。
+vt4g_plugin.admin.payment_request.csv_request_export: 決済依頼CSVを出力します。
+vt4g_plugin.admin.payment_request.fee: "決済手数料：%s "
+vt4g_plugin.admin.payment_request.price_and_point: "金額：%s ポイント：%s "
+vt4g_plugin.admin.payment_request.prduct_class_id: "商品規格ID：%s "
+
+# 決済依頼詳細
+vt4g_plugin.admin.payment_request.detail.not_applicable: CSV対象の明細が存在しないため、決済依頼ステータスを「対象外」に更新しました。出力済みのCSVで決済結果反映を行っても決済依頼に反映されませんのでご注意ください。
+vt4g_plugin.admin.payment_request.detail.before_creation: CSV対象が存在するため、決済依頼ステータスを「対象外」から「CSV未作成」に更新しました。
+vt4g_plugin.admin.payment_request.update.start: 決済依頼情報を変更します。
+vt4g_plugin.admin.payment_request.update.complete: 決済依頼情報を変更しました。
+vt4g_plugin.admin.payment_request.price: "金額：%s "
+vt4g_plugin.admin.payment_request.point: "ポイント：%s "
+vt4g_plugin.admin.payment_request.request_id: "決済依頼番号：%s "
+vt4g_plugin.admin.payment_request.request_detail_id: "決済依頼明細番号：%s "
+vt4g_plugin.admin.payment_request.csv_target: "CSV対象：%s "
+
+
+# CSV決済依頼結果反映
+vt4g_plugin.admin.order_csv_result.csv_upload.complete: アップロードを行いました。結果はCSV決済依頼管理でご確認ください。
+vt4g_plugin.admin.order_csv_result.complete: "%s の決済結果反映が完了しました。"
+vt4g_plugin.admin.order_csv_result.start: "%s の決済結果反映を開始します。"
+vt4g_plugin.admin.order_csv_result.format_error: csvファイルのフォーマットが違います。
+vt4g_plugin.admin.order_csv_result.mid_unmatch: マーチャントIDが一致しませんでした。
+vt4g_plugin.admin.order_csv_result.not_exists_transaction_id: 取引IDが存在しません。
+vt4g_plugin.admin.order_csv_result.plugin_data_error: プラグイン設定情報を取得できませんでした。
+vt4g_plugin.admin.order_csv_result.row: "%s行目"
+vt4g_plugin.admin.order_csv_result.payment_result: "取引ID：%s 処理結果コード：%s"
+vt4g_plugin.admin.order_csv_result.skip: "決済依頼ステータスが反映待ちではないのでスキップします。取引ID：%s"
+
+# 継続課金会員管理
+vt4g_plugin.admin.subsc_customer.change_status.complete: "継続課金ステータスを%sに変更しました。"
+vt4g_plugin.admin.subsc_customer.change_status.add_msg: "会員ID：%s 初回注文番号：%s 出荷ID：%s 商品ID：%s 商品規格ID：%s"
+
+# 継続課金用販売種別管理
+vt4g_plugin.admin.subsc_sales_type.save.complete: 継続課金用販売種別の登録が完了しました。
+vt4g_plugin.admin.subsc_sales_type.db.save.error: 継続課金用販売種別の登録エラーが起きました。
+vt4g_plugin.admin.subsc_sales_type.del.complete: 継続課金用販売種別の削除が完了しました。
+
+# 商品管理
+vt4g_plugin.admin.subsc_order_mail.save.complete: "継続課金用注文完了メールの登録が完了しました。商品ID：%s"
+vt4g_plugin.admin.subsc_order_mail.del.complete: "継続課金用注文完了メールの削除が完了しました。商品ID：%s"
+vt4g_plugin.admin.subsc_product.save.complete: "継続課金用商品マスタの登録が完了しました。商品ID：%s"
+vt4g_plugin.admin.subsc_product.del.complete: "継続課金用商品マスタの削除が完了しました。商品ID：%s"
+vt4g_plugin.admin.subsc_product_class.del.complete: "継続課金用商品マスタの削除が完了しました。商品ID：%s 商品規格ID：%s"
+
+
+
+# 以下のようにメッセージを定義すると、vResultCodeごとのメッセージを追加できます。
+# front.order.vt4g.vresult_code_AG48: 無効カードです。
+#
+# "front.order.vt4g.vresult_code_"の後にメッセージを編集したいvResultCodeを指定してください。
+# メッセージの定義がない場合は、DEFAULTのメッセージのみ表示されます。
+#
+# 注意点
+# ・メッセージの追加はクレジットカード決済のみご利用になれます。
+# ・メッセージの追加、変更後は、管理画面の「コンテンツ管理」>「キャッシュ管理」で、
+#  「キャッシュ削除」を押下してください。
+front.order.vt4g.vresult_code_DEFAULT: 入力したカード情報にお間違いがないかご確認ください。<br>お間違いない場合は、ご利用のカード会社にお問い合わせいただくか、別のカードでのご購入をお試しください。

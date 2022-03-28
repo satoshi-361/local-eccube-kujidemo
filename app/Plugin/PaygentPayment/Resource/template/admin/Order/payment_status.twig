@@ -1,0 +1,626 @@
+{#
+This file is part of EC-CUBE
+
+Copyright (c) 2006 PAYGENT Co.,Ltd. All rights reserved.
+
+https://www.paygent.co.jp/
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#}
+
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['order', 'paygent_payment_admin_payment_status'] %}
+
+{% block title %}{{ 'paygent_payment.admin.payment_status.title'|trans }}{% endblock %}
+{% block sub_title %}{{ 'paygent_payment.admin.payment_status.sub_title'|trans }}{% endblock %}
+
+{% form_theme searchForm '@admin/Form/bootstrap_4_layout.html.twig' %}
+
+{% block stylesheet %}
+    <style type="text/css">
+        th {text-align: center;}
+
+        .css-balloon_comment {
+            position: relative;
+            padding: 0;
+        }
+        .balloon_text {
+            width: 10px;
+            padding: 3px;
+            border: 0px;
+            color: #39C;
+        }
+        .balloon_text:before {
+            content: '!';
+            height: 0px;
+            width: 0px;
+            position: absolute;
+            border: transparent solid;
+            border-bottom-color: #F00;
+            border-width: 15px 10px 15px 10px;
+            color: #ffffff;
+            font-family: Verdana;
+            font-weight: bold;
+            font-size: 12px;
+            line-height: 17px;
+            text-indent: -2.5px;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+        }
+        .balloon_comment {
+            display: none;
+            width: 300px;
+            position: absolute;
+            padding: 16px;
+            border-radius: 5px;
+            color: #fff;
+            border-style: solid;
+            border-width: 1px;
+            border-color: #000;
+            font-weight: bold;
+            text-align: left;
+            margin-top: -185px;
+            margin-left: -8px;
+            background: #787878;
+        }
+
+        .balloon_comment:after, .balloon_comment:before {
+            top: 100%;
+            left: 5%;
+            border: solid transparent;
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .balloon_comment:after {
+            border-color: rgba(136, 183, 213, 0);
+            border-style: solid;
+            border-top-color: #787878;
+            border-top-width: 0px;
+        }
+        .balloon_comment:before {
+            border-color: rgba(194, 225, 245, 0);
+            border-style: solid;
+            border-top-color: #787878;
+            border-top-width: 0px;
+        }
+
+        .balloon_text:hover + .balloon_comment {
+            display: block;
+        }
+    </style>
+{% endblock stylesheet %}
+
+{% block javascript %}
+    <script>
+        function funcPaymentCommit(){
+            if($( "#paymentCommit" ).prop("checked") == true){
+                var totalTr = $(".table").find("tbody tr");
+                for (i = 0; i < totalTr.length; i++) {
+                    var arrItem = $(totalTr[i]).find("td.paycommit");
+                    var checkBox = arrItem.find("input");
+                    $(checkBox).prop("checked", true);
+                }
+            }else{
+                var totalTr = $(".table").find("tbody tr");
+                for (i = 0; i < totalTr.length; i++) {
+                    var arrItem = $(totalTr[i]).find("td.paycommit");
+                    var checkBox = arrItem.find("input");
+                    $(checkBox).prop("checked", false);
+                }
+            }
+        }
+
+        function funcPaymentCancel(){
+            if($( "#paymentCancel" ).prop("checked") == true){
+                var totalTr = $(".table").find("tbody tr");
+                for (i = 0; i < totalTr.length; i++) {
+                    var arrItem = $(totalTr[i]).find("td.paycancel");
+                    var checkBox = arrItem.find("input");
+                    $(checkBox).prop("checked", true);
+                }
+            }else{
+                var totalTr = $(".table").find("tbody tr");
+                for (i = 0; i < totalTr.length; i++) {
+                    var arrItem = $(totalTr[i]).find("td.paycancel");
+                    var checkBox = arrItem.find("input");
+                    $(checkBox).prop("checked", false);
+                }
+            }
+        }
+
+        function funcPaymentChange(){
+            if($( "#paymentChange" ).prop("checked") == true){
+                var totalTr = $(".table").find("tbody tr");
+                for (i = 0; i < totalTr.length; i++) {
+                    var arrItem = $(totalTr[i]).find("td.paychange");
+                    var checkBox = arrItem.find("input");
+                    $(checkBox).prop("checked", true);
+                }
+            }else{
+                var totalTr = $(".table").find("tbody tr");
+                for (i = 0; i < totalTr.length; i++) {
+                    var arrItem = $(totalTr[i]).find("td.paychange");
+                    var checkBox = arrItem.find("input");
+                    $(checkBox).prop("checked", false);
+                }
+            }
+        }
+
+        function fnPaygentSubmit(type) {
+            event.preventDefault();
+            switch (type) {
+                // Commit process
+                case 'paygent_commit':
+                    // get order commit
+                    var orderCommit ="";
+                    var totalTr = $(".table").find("tbody tr");
+                    for (i = 0; i < totalTr.length; i++) {
+                        var arrItem = $(totalTr[i]).find("td.paycommit");
+                        var checkBox = arrItem.find("input");
+                        if($(checkBox).prop("checked") == true){
+                            orderCommit += $(checkBox).val()+"--";
+                        }
+                    }
+                    // check no checkbox checked
+                    var chkCommit = orderCommit.match(/\d+/g);
+                    if (chkCommit == null) {
+                        alert('1件も選択されていません。');
+                        return false;
+                    }
+                    $('#mode').val(type);
+                    orderCommit = orderCommit.slice(0, orderCommit.length - 2);
+                    var commit_flg = confirm('一括売上処理を実行します。よろしいですか？');
+                    break;
+
+                // Cancel process
+                case 'paygent_cancel':
+                    // get order cancel
+                    var orderCancel="";
+                    var totalTr = $(".table").find("tbody tr");
+                    for (i = 0; i < totalTr.length; i++) {
+                        var arrItem = $(totalTr[i]).find("td.paycancel");
+                        var checkBox = arrItem.find("input");
+                        if($(checkBox).prop("checked") == true){
+                            orderCancel += $(checkBox).val()+"--";
+                        }
+                    }
+                    // check no checkbox checked
+                    var chkCancel= orderCancel.match(/\d+/g);
+                    if (chkCancel == null) {
+                        alert('1件も選択されていません。');
+                        return false;
+                    }
+                    $('#mode').val(type);
+                    orderCancel = orderCancel.slice(0, orderCancel.length - 2);
+                    var cancel_flg = confirm('一括取消処理を実行します。よろしいですか？');
+                    break;
+            }
+	        if (commit_flg === true || cancel_flg === true || change_flg === true) {
+                $('#form_bulk').submit();
+            }
+        }
+
+        // ロールバック処理の実行
+        function executeRollback(){
+            if(confirm("「決済処理中」の注文の取り消し処理を実行します。\n在庫数とポイントが元に戻ります。")){
+                $('#form_rollback').submit();
+            }
+        }
+        $(function(){
+            $('.alert-dismissible span').css('white-space','pre-line');
+        });
+    </script>
+{% endblock javascript %}
+
+{% block main %}
+    <!--検索条件設定テーブルここから-->
+    <div class="c-outsideBlock">
+        <form name="search_form" method="POST" action="{{ url('paygent_payment_admin_payment_status') }}">
+            <div class="c-outsideBlock__contents">
+                <div class="row">
+                    <div class="col-12">
+
+                        {{ form_widget(searchForm._token) }}
+                        <div>
+                            <label class="col-form-label" data-tooltip="true" data-placement="top" title="{{ 'paygent_payment.tooltip.order.multi_search_label'|trans }}">{{ 'paygent_payment.admin.order.multi_search_label'|trans }}<i class="fa fa-question-circle fa-lg ml-1"></i></label>
+                            {{ form_widget(searchForm.multi) }}
+                            {{ form_errors(searchForm.multi) }}
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-12">
+                                <label class="col-form-label"  data-tooltip="true" data-placement="top" title="{{ 'paygent_payment.tooltip.order.order_search_status'|trans }}">{{ 'paygent_payment.admin.order.order_status'|trans }}<i class="fa fa-question-circle fa-lg ml-1"></i></label>
+                                <div id="admin_search_order_status">
+                                    {% set statusForm = searchForm.status %}
+                                    <!-- 各対応状況の件数を表示する -->
+                                    {% for status_id, child in statusForm.children %}
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox"
+                                                   id="{{ child.vars.id }}"
+                                                   name="{{ child.vars.full_name }}"
+                                                   class="form-check-input"
+                                                   value="{{ child.vars.value }}"{{ child.vars.checked ? ' checked="checked"' }}>
+                                            <label class="form-check-label" for="{{ child.vars.id }}">{{ child.vars.label }}</label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                {{ form_errors(searchForm.status) }}
+                            </div>
+                        </div>
+                        <div class="d-inline-block mb-3 collapsed" data-toggle="collapse" href="#searchDetail" aria-expanded="false" aria-controls="searchDetail">
+                            <a>
+                                <i class="fa font-weight-bold mr-1 fa-plus-square-o">
+                                    <span class="font-weight-bold">{{ 'paygent_payment.admin.order.search_detail'|trans }}</span>
+                                </i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="c-subContents ec-collapse collapse{{ has_errors ? ' show' }}" id="searchDetail">
+                <div class="row">
+                    <div class="col">
+                        <label class="col-form-label">{{ 'paygent_payment.admin.order.orderer_name'|trans }}</label>
+                        {{ form_widget(searchForm.name) }}
+                        {{ form_errors(searchForm.name) }}
+                    </div>
+                    <div class="col">
+                        <div class="form-row">
+                            <div class="col-12">
+                                <p class="col-form-label">{{ 'paygent_payment.admin.order.payment_method'|trans }}</p>
+                                {{ form_widget(searchForm.payment, { 'label_attr': { 'class': 'checkbox-inline'}}) }}
+                                {{ form_errors(searchForm.payment) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label class="col-form-label">{{ 'paygent_payment.admin.order.orderer_kana'|trans }}</label>
+                        {{ form_widget(searchForm.kana) }}
+                        {{ form_errors(searchForm.kana) }}
+                    </div>
+                    <div class="col">
+                        <label class="col-form-label">{{ 'paygent_payment.admin.order.order_date'|trans }}</label>
+                        <div class="form-row align-items-center">
+                            <div class="col">
+                                {{ form_widget(searchForm.order_date_start) }}
+                                {{ form_errors(searchForm.order_date_start) }}
+                            </div>
+                            <div class="col-auto text-center">{{ 'paygent_payment.admin.order.separator__range'|trans }}</div>
+                            <div class="col">
+                                {{ form_widget(searchForm.order_date_end) }}
+                                {{ form_errors(searchForm.order_date_end) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label class="col-form-label">{{ 'paygent_payment.admin.order.orderer_company_name'|trans }}</label>
+                        {{ form_widget(searchForm.company_name) }}
+                        {{ form_errors(searchForm.company_name) }}
+                    </div>
+                    <div class="col">
+                        <label class="col-form-label">{{ 'paygent_payment.admin.order.payment_date'|trans }}</label>
+                        <div class="form-row align-items-center">
+                            <div class="col">
+                                {{ form_widget(searchForm.payment_date_start) }}
+                                {{ form_errors(searchForm.payment_date_start) }}
+                            </div>
+                            <div class="col-auto text-center">{{ 'paygent_payment.admin.order.separator__range'|trans }}</div>
+                            <div class="col">
+                                {{ form_widget(searchForm.payment_date_end) }}
+                                {{ form_errors(searchForm.payment_date_end) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label class="col-form-label">{{ 'paygent_payment.admin.order.mail_address'|trans }}</label>
+                        {{ form_widget(searchForm.email) }}
+                        {{ form_errors(searchForm.email) }}
+                    </div>
+                    <div class="col">
+                        <label class="col-form-label">{{ 'paygent_payment.admin.order.update_date'|trans }}</label>
+                        <div class="form-row align-items-center">
+                            <div class="col">
+                                {{ form_widget(searchForm.update_date_start) }}
+                                {{ form_errors(searchForm.update_date_start) }}
+                            </div>
+                            <div class="col-auto text-center">{{ 'paygent_payment.admin.order.separator__range'|trans }}</div>
+                            <div class="col">
+                                {{ form_widget(searchForm.update_date_end) }}
+                                {{ form_errors(searchForm.update_date_end) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label class="col-form-label">{{ 'paygent_payment.admin.order.phone_number'|trans }}</label>
+                        {{ form_widget(searchForm.phone_number) }}
+                        {{ form_errors(searchForm.phone_number) }}
+                    </div>
+                    <div class="col">
+                        <label class="col-form-label">{{ 'paygent_payment.admin.order.delivery_date'|trans }}</label>
+                        <div class="form-row align-items-center">
+                            <div class="col">
+                                <div class="input-group">
+                                    {{ form_widget(searchForm.shipping_delivery_date_start) }}
+                                    {{ form_errors(searchForm.shipping_delivery_date_start) }}
+                                </div>
+                            </div>
+                            <div class="col-auto text-center">{{ 'paygent_payment.admin.order.separator__range'|trans }}</div>
+                            <div class="col">
+                                <div class="input-group">
+                                    {{ form_widget(searchForm.shipping_delivery_date_end) }}
+                                    {{ form_errors(searchForm.shipping_delivery_date_end) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label class="col-form-label">{{ 'paygent_payment.admin.order.order_no'|trans }}</label>
+                        {{ form_widget(searchForm.order_no) }}
+                        {{ form_errors(searchForm.order_no) }}
+                    </div>
+                    <div class="col">
+                        <label class="col-form-label">{{ 'paygent_payment.admin.order.purchase_price'|trans }}</label>
+                        <div class="form-row align-items-center">
+                            <div class="col">
+                                <div class="input-group">
+                                    {{ form_widget(searchForm.payment_total_start) }}
+                                    {{ form_errors(searchForm.payment_total_start) }}
+                                </div>
+                            </div>
+                            <div class="col-auto text-center">{{ 'paygent_payment.admin.order.separator__range'|trans }}</div>
+                            <div class="col">
+                                <div class="input-group">
+                                    {{ form_widget(searchForm.payment_total_end) }}
+                                    {{ form_errors(searchForm.payment_total_end) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-row">
+                            <div class="col-12">
+                                <p class="col-form-label">{{ 'paygent_payment.admin.order.tracking_number'|trans }}</p>
+                                {{ form_widget(searchForm.tracking_number) }}
+                                {{ form_errors(searchForm.tracking_number) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <label class="col-form-label">{{ 'paygent_payment.admin.order.purchase_product'|trans }}</label>
+                        {{ form_widget(searchForm.buy_product_name) }}
+                        {{ form_errors(searchForm.buy_product_name) }}
+                    </div>
+                </div>
+
+                <div class="row mb-2">
+                    <div class="col">
+                        <div class="form-row">
+                            <div class="col-12">
+                                <p class="col-form-label">{{ 'paygent_payment.admin.order.shipping_mail'|trans }}</p>
+                                {{ form_widget(searchForm.shipping_mail,  { 'label_attr': { 'class': 'checkbox-inline' }}) }}
+                                {{ form_errors(searchForm.shipping_mail) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col"></div>
+                </div>
+
+                {# エンティティ拡張の自動出力 #}
+                {% for f in searchForm if f.vars.eccube_form_options.auto_render %}
+                    {# TODO 1項目1行になるのを改善 #}
+                    <div class="row mb-2">
+                        {% if f.vars.eccube_form_options.form_theme %}
+                            {% form_theme f f.vars.eccube_form_options.form_theme %}
+                            {{ form_row(f) }}
+                        {% else %}
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label>{{ f.vars.label|trans }}</label>
+                                    {{ form_widget(f) }}
+                                    {{ form_errors(f) }}
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="c-outsideBlock__contents">
+                <div class="row">
+                    <div class="mb-4">
+                        <div class="col-12">
+                            <button class="btn btn-ec-conversion px-5" type="submit">{{ 'paygent_payment.admin.payment_status.search'|trans }}</button>
+                            {% if pagination %}
+                                <span class="font-weight-bold ml-2">{{ 'paygent_payment.admin.payment_status.search_result_count'|trans({ '%count%': pagination.totalItemCount }) }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="c-outsideBlock__contents mb-5">
+                {{ include('@admin/search_items.twig', { 'form': searchForm }, ignore_missing = true) }}
+            </div>
+        </form>
+    </div>
+    <!--検索条件設定テーブルここまで-->
+
+    <div class="c-contentsArea__cols">
+        <div class="c-contentsArea__primaryCol">
+            <div class="c-primaryCol">
+                {% if pagination and pagination.totalItemCount %}
+                    <form id="form_bulk" method="POST" action="{{ url('paygent_payment_admin_payment_status_request') }}">
+                        <input type="hidden" name="mode" id="mode" value="" />
+                        <input type="hidden" name="{{ constant('Eccube\\Common\\Constant::TOKEN_NAME') }}" value="{{ csrf_token(constant('Eccube\\Common\\Constant::TOKEN_NAME')) }}">
+                        <div class="row justify-content-between mb-2">
+                            <div class="col-6"></div>
+                            <div class="col-5 text-right">
+                                <div class="d-inline-block">
+                                    <select class="custom-select" onchange="location.href = this.value;">
+                                        {% for pageMax in pageMaxis %}
+                                            <option {% if pageMax.name == page_count%} selected {% endif %}
+                                                    value="{{ path('paygent_payment_admin_payment_status_pageno', {'page_no': 1, 'page_count': pageMax.name}) }}">
+                                                {{ 'paygent_payment.admin.payment_status.display_count'|trans({ '%count%': pageMax.name|e }) }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card rounded border-0 mb-4">
+                            <div class="card-body p-0">
+                                <table class="table table-sm" id="search_result">
+                                    <thead>
+                                    <tr>
+                                        <th class="border-top-0 pt-2 pb-2 text-center">{{ 'paygent_payment.admin.payment_status.col_order_date'|trans }}</th>
+                                        <th class="border-top-0 pt-2 pb-2 text-center">{{ 'paygent_payment.admin.payment_status.col_order_no'|trans }}</th>
+                                        <th class="border-top-0 pt-2 pb-2 text-center">{{ 'paygent_payment.admin.payment_status.col_paygent_order_status'|trans|raw  }}</th>
+                                        <th class="border-top-0 pt-2 pb-2 text-center">
+                                            {{ 'paygent_payment.admin.payment_status.col_paygent_order_commit'|trans }}<br>
+                                            <input type="button" value="実行" onclick="fnPaygentSubmit('paygent_commit');"><br>
+                                            <input type="checkbox" id ="paymentCommit" name="paygent_commit" onclick="funcPaymentCommit();">
+                                        </th>
+                                        <th class="border-top-0 pt-2 pb-2 text-center">
+                                            {{ 'paygent_payment.admin.payment_status.col_paygent_order_cancel'|trans }}<br>
+                                            <input type="button" value="実行" onclick="fnPaygentSubmit('paygent_cancel');"><br>
+                                            <input type="checkbox" id ="paymentCancel" name="paygent_cancel" onclick="funcPaymentCancel();">
+                                        </th>
+                                        <th class="border-top-0 pt-2 pb-2 text-center">{{ 'paygent_payment.admin.payment_status.col_order_name'|trans }}</th>
+                                        <th class="border-top-0 pt-2 pb-2 text-center">{{ 'paygent_payment.admin.payment_status.col_order_payment'|trans }}</th>
+                                        <th class="border-top-0 pt-2 pb-2 text-center">{{ 'paygent_payment.admin.payment_status.col_order_price'|trans }}</th>
+                                        <th class="border-top-0 pt-2 pb-2 text-center">{{ 'paygent_payment.admin.payment_status.col_order_staus'|trans }}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for Order in pagination %}
+                                        <tr>
+                                            <td class="align-middle text-left" id="order_date--{{ Order.id }}">{{ Order.order_date|date_min }}</td>
+                                            <td class="align-middle text-center" id="id--{{ Order.id }}"><a class="action-edit" href="{{ url('admin_order_edit', { id : Order.id }) }}">{{ Order.order_no }}</a></td>
+
+                                            <td class="align-middle text-center" id="paygent_status--{{ Order.id }}">
+                                                {% if Order is not empty and Order.getPaygentKind is not empty %}
+                                                    {{ arrDispKind[Order.getPaygentKind] }}
+                                                {% endif %}
+                                            </td>
+                                            <td class="align-middle text-center paycommit">
+                                                {# クレジットカード決済 #}
+                                                {% if Order.getPaygentPaymentMethod == paymentMethod['PAYGENT_CREDIT']
+                                                    and not ((Order.OrderStatus is not empty and Order.OrderStatus.id == constant('Eccube\\Entity\\Master\\OrderStatus::PENDING') and Order.getResponseResult == 7 )
+                                                    or (Order.OrderStatus is not empty and Order.OrderStatus.id == constant('Eccube\\Entity\\Master\\OrderStatus::PROCESSING') and Order.getResponseResult != 0 ))
+                                                    and (Order.getPaygentKind == 0 or Order.getPaygentKind == paymentMethod['PAYGENT_CREDIT'])
+                                                    and Order.getPaygentPaymentStatus != '33' and Order.getPaygentPaymentId|length > 0 %}
+                                                    <input type="checkbox" name="commit_id[]" id="commit_check_{{ Order.id }}" value="card_commit,{{ Order.id }}"/><label for="commit_check_{{ Order.id }}">売上</label><br/>
+                                                {% endif %}
+                                                {# 携帯キャリア決済 #}
+                                                {% if (Order.getPaygentPaymentMethod == paymentMethod['PAYGENT_CAREER_D'] and (Order.getPaygentPaymentStatus == '21' or Order.getPaygentPaymentStatus == '20') and Order.getPaygentKind is empty)
+                                                    or (Order.getPaygentPaymentMethod == paymentMethod['PAYGENT_CAREER_A'] and Order.getPaygentPaymentStatus == '20' and Order.getPaygentKind is empty)
+                                                    or (Order.getPaygentPaymentMethod == paymentMethod['PAYGENT_CAREER_S'] and (Order.getPaygentPaymentStatus == '21' or Order.getPaygentPaymentStatus == '20') and Order.getPaygentKind is empty) %}
+                                                    <input type="checkbox" name="commit_id[]" id="commit_check_{{ Order.id }}" value="career_commit,{{ Order.id }}"/><label for="commit_check_{{ Order.id }}">売上</label><br/>
+                                                {% endif %}
+                                                {# Paidy決済 #}
+                                                {% if Order.getId in arrPaidyAlertId %}
+                                                    <div class="css-balloon_comment">
+                                                        <p class="balloon_text"></p>
+                                                        <p class="balloon_comment">Paidyへ送信された購入金額と受注情報の購入金額が一致していません。</p>
+                                                    </div>
+                                                {% endif %}
+                                                {% if Order.getPaygentKind == paymentMethod['PAYGENT_PAIDY_AUTHORIZED'] %}
+                                                    <input type="checkbox" name="commit_id[]" id="commit_check_{{ Order.id }}" value="paidy_commit,{{ Order.id }}"/><label for="commit_check_{{ Order.id }}">売上</label><br/>
+                                                {% endif %}
+                                            </td>
+                                            <td class="align-middle text-center paycancel">
+                                                {# クレジットカード決済 #}
+                                                {% if Order.getPaygentPaymentMethod == paymentMethod['PAYGENT_CREDIT'] and Order.getPaygentPaymentId|length > 0
+                                                    and not ((Order.OrderStatus is not empty and Order.OrderStatus.id == constant('Eccube\\Entity\\Master\\OrderStatus::PENDING') and Order.getResponseResult == 7 )
+                                                    or (Order.OrderStatus is not empty and Order.OrderStatus.id == constant('Eccube\\Entity\\Master\\OrderStatus::PROCESSING') and Order.getResponseResult != 0 ))
+                                                    and ((Order.getPaygentPaymentStatus != '33' and (Order.getPaygentKind|length == 0 or Order.getPaygentKind == paymentMethod['PAYGENT_CREDIT']))
+                                                        or (Order.getPaygentPaymentStatus != '41' and Order.getPaygentKind == paymentMethod['PAYGENT_CARD_COMMIT']))
+                                                        or (Order.getPaygentPaymentMethod == paymentMethod['PAYGENT_CREDIT'] and Order.getPaygentKind == '029')
+                                                        or (Order.getPaygentPaymentMethod == paymentMethod['PAYGENT_CREDIT'] and Order.getPaygentKind == '022')%}
+                                                    <input type="checkbox" name="cancel_id[]" id="cancel_check_{{ Order.id }}" value="{% if Order.getPaygentKind|length == 0 or Order.getPaygentKind == paymentMethod['PAYGENT_CREDIT'] %}auth_cancel{% else %}card_commit_cancel{% endif %},{{ Order.id }}"/><label for="cancel_check_{{ Order.id }}">取消</label><br/>
+                                                {% endif %}
+                                                {# 携帯キャリア決済 #}
+                                                {% if (Order.getPaygentPaymentMethod == paymentMethod['PAYGENT_CAREER_D'] and (Order.getPaygentPaymentStatus == '21' or Order.getPaygentPaymentStatus == '20') and Order.getPaygentKind is empty)
+                                                    or (Order.getPaygentPaymentMethod == paymentMethod['PAYGENT_CAREER_D'] and Order.getPaygentPaymentStatus == '44' and (Order.getPaygentKind == '101' or Order.getPaygentKind == '103'))
+                                                    or (Order.getPaygentPaymentMethod == paymentMethod['PAYGENT_CAREER_A'] and Order.getPaygentPaymentStatus == '20' and (Order.getPaygentKind is empty or Order.getPaygentKind == '101' or Order.getPaygentKind == '103'))
+                                                    or (Order.getPaygentPaymentMethod == paymentMethod['PAYGENT_CAREER_A'] and Order.getPaygentPaymentStatus == '40' and (Order.getPaygentKind is empty or Order.getPaygentKind == '101' or Order.getPaygentKind == '103'))
+                                                    or (Order.getPaygentPaymentMethod == paymentMethod['PAYGENT_CAREER_S'] and (Order.getPaygentPaymentStatus == '21' or Order.getPaygentPaymentStatus == '20' or Order.getPaygentPaymentStatus == '40') and (Order.getPaygentKind is empty or Order.getPaygentKind == '101' or Order.getPaygentKind == '103')) %}
+                                                  <input type="checkbox" name="cancel_id[]" id="cancel_check_{{ Order.id }}" value="career_commit_cancel,{{ Order.id }}"/><label for="cancel_check_{{ Order.id }}">取消</label><br/>
+                                                {% endif %}
+                                                {# Paidy決済 #}
+                                                {% if Order.getPaygentKind == paymentMethod['PAYGENT_PAIDY_AUTHORIZED'] or Order.getPaygentKind == paymentMethod['PAYGENT_PAIDY_COMMIT'] %}
+                                                    <input type="checkbox" name="cancel_id[]" id="cancel_check_{{ Order.id }}" value="paidy_cancel,{{ Order.id }}"/><label for="cancel_check_{{ Order.id }}">取消</label><br/>
+                                                {% endif %}
+                                            </td>
+
+                                            <td class="align-middle text-center" id="name--{{ Order.id }}">{{ Order.name01 }} {{ Order.name02 }}</td>
+                                            <td class="align-middle text-center" id="payment_method--{{ Order.id }}">{{ Order.payment_method }}</td>
+                                            <td class="align-middle text-right" id="payment_total--{{ Order.id }}">{{ Order.payment_total|price }}</td>
+                                            <td class="align-middle text-center"  id="order_status--{{ Order.id }}">
+                                                <span class="badge badge-ec-blue" style="background-color: #fff; color: {{ Order.OrderStatusColor }}; border-color: {{ Order.OrderStatusColor }}">{{ Order.OrderStatus }}</span>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                                <div class="row justify-content-md-center mb-4"></div>
+                            </div>
+                            <div class="row justify-content-md-center mb-4">
+                                {% if pagination.totalItemCount > 0 %}
+                                    {% include "@admin/pager.twig" with { 'pages' : pagination.paginationData, 'routes' : 'paygent_payment_admin_payment_status_pageno' } %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </form>
+                {# 検索条件エラー時 #}
+                {% elseif has_errors %}
+                    <div class="card rounded border-0">
+                        <div class="card-body p-4">
+                            <div class="text-center text-muted mb-4 h5">{{ 'paygent_payment.admin.payment_status.invalid_condition'|trans }}</div>
+                            <div class="text-center text-muted">{{ 'paygent_payment.admin.payment_status.change_condition'|trans }}</div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="card rounded border-0">
+                        <div class="card-body p-4">
+                            <div class="text-center text-muted mb-4 h5">{{ 'paygent_payment.admin.payment_status.no_result'|trans }}</div>
+                            <div class="text-center text-muted">{{ 'paygent_payment.admin.payment_status.change_condition'|trans }}</div>
+                        </div>
+                    </div>
+                {% endif %}
+                <button class="btn btn-ec-conversion px-5 ladda-button mt-3" type="button" onclick='executeRollback()'>{{ 'paygent_payment.admin.payment_status.execute'|trans }}</button>
+                <form id="form_rollback" method="POST" action="{{ url('paygent_order_rollback') }}">
+                    <input type="hidden" name="{{ constant('Eccube\\Common\\Constant::TOKEN_NAME') }}" value="{{ csrf_token(constant('Eccube\\Common\\Constant::TOKEN_NAME')) }}">
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

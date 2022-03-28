@@ -1,0 +1,382 @@
+
+{% import _self as selfMacro %}
+{% macro printPrize(item) %}
+<div class="saved_prize mt-4" style="border: 1px solid #ccc;">
+    <div class="row mt-2 mx-4 float-right" style="padding:20px"><a class="btn btn-block btn-ec-regular mt-1 remove-prize">削除</a></div>
+    <div class="row mt-3">
+        <div class="col-3 pt-4 text-center"><span>商品画像</span></div>
+        <div class="col">
+            <div class="progress" style="display: none;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <div class="thumb" class="c-form__fileUploadThumbnails clearfix"></div>
+            <!-- {% if item.vars.value != null %}
+                <img src="{{ asset('', 'temp_image') }}{{ item.vars.value.image }}" style="width: 170px; height:auto">
+            {% endif %} -->
+            
+            <div class="c-form__fileUploadThumbnail" style="background-image:{%if item.vars.value != null %}url({{ asset('', 'temp_image') }}{{ item.vars.value.image }}{% else %}url(\'__path__\'){% endif %});">
+                <a class="delete-image"><i class="fa fa-times" aria-hidden="true"></i></a>
+            </div>
+            
+            <p id="message"></p>
+            <div class="upload-zone" class="media py-5 border-ec-dashed mb-2 rounded">
+                <div class="media-body">
+                    <a class="btn btn-ec-regular mr-2 file_upload" style="display: {%if item.vars.value == null %}block{% else %}none{% endif %}; width: 130px">画像の選択</a>
+                    <!-- <i class="fa fa-cloud-upload fa-3x text-ec-lightGray mx-3 align-middle" aria-hidden="true"></i> -->
+                    {{ form_widget(item.image, { attr : { style : 'display:none;', class : 'product_image' } }) }}
+                    {{ form_errors(item.image) }}
+                    <input type="file" style="display:none" class="image_upload" accept="image/*">
+                </div><!-- /.media-body -->
+            </div><!-- /.media -->
+        </div>
+    </div>
+    <div class="row mt-3">
+            <div class="col-3 text-center"><span>商品名</span></div>
+            <div class="col-7">
+                {{ form_widget(item.name) }}
+                {{ form_errors(item.name) }}
+            </div>
+    </div>
+    <div class="row mt-3 mb-3">
+            <div class="col-3 text-center"><span>在庫数</span></div>
+            <div class="col-7">
+                {{ form_widget(item.remain) }}
+                {{ form_errors(item.remain) }}
+            </div>
+    </div>
+</div>  
+{% endmacro %}
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['product', 'prize_show'] %}
+
+{% block title %}当選商品管理{% endblock %}
+{% block sub_title %}当選商品登録{% endblock %}
+
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{{ asset('assets/css/fileupload/jquery.fileupload.css', 'admin') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/fileupload/jquery.fileupload-ui.css', 'admin') }}">
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <style>
+        #thumb div {
+            float: left;
+            margin: 4px
+        }
+
+        .ui-state-highlight {
+            height: 70px;
+            width: 70px;
+            border: dashed 1px #ccc;
+            background: #fff;
+        }
+    </style>
+{% endblock stylesheet %}
+
+{% block javascript %}
+    <script src="{{ asset('assets/js/vendor/fileupload/vendor/jquery.ui.widget.js', 'admin') }}"></script>
+    <script src="{{ asset('assets/js/vendor/fileupload/jquery.iframe-transport.js', 'admin') }}"></script>
+    <script src="{{ asset('assets/js/vendor/fileupload/jquery.fileupload.js', 'admin') }}"></script>
+    <script src="{{ asset('assets/js/vendor/fileupload/jquery.fileupload-process.js', 'admin') }}"></script>
+    <script src="{{ asset('assets/js/vendor/fileupload/jquery.fileupload-validate.js', 'admin') }}"></script>
+    <script>var bootstrapTooltip = $.fn.tooltip.noConflict();</script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script>
+        $(function() {
+            // var proto_img = '<div class="c-form__fileUploadThumbnail" style="background-image:url(\'__path__\');">' +
+            //     '<a class="delete-image"><i class="fa fa-times" aria-hidden="true"></i></a>' +
+            //     '</div>';
+            // $('.file_upload').on('click', function() {
+            //     $(".image_upload").click();
+            //     console.log("ewr");
+            // });
+
+            $(".image_upload").fileupload({
+                url: "{{ path('prize_show_admin_add_image') }}",
+                type: "post",
+                dataType: "json",
+                disableImageResize: false,
+                maxImageWidth: 273,
+                maxImageHeight: 273,
+                done: function(e, data) {
+                    $('.progress-bar').hide();
+                    var file = data.result.files[0];
+                    var path = '{{ asset('', 'temp_image') }}' + file;
+
+                    $("#item_image").text(file);
+                    $("#item_image_path").text(path);
+
+                    var attr_style = "background-image:url("+path+")";
+
+                    $(this).parent().parent().parent().find(".c-form__fileUploadThumbnail").attr('style', attr_style);
+                    $(this).parent().parent().parent().find(".c-form__fileUploadThumbnail").css('display', 'block');
+                    $(this).parent().find(".file_upload").hide();
+                    // var $img = $(proto_img.replace(/__path__/g, path));
+                    // $('.thumb:last').append($img);
+
+                    // $('.upload-zone:last').hide();
+                    $(this).parent().find(".product_image").val(file);
+                },
+                fail: function(e, data) {
+                    alert("{{ 'admin.common.upload_error'|trans }}");
+                },
+                always: function(e, data) {
+                    $('.progress').hide();
+                    $('.progress .progress-bar').width('0%');
+                },
+                start: function(e, data) {
+                    $(this).parent().parent().parent().find('.progress').show();
+                },
+                acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+                maxFileSize: 10000000,
+                maxNumberOfFiles: 1,
+                progressall: function(e, data) {
+                    var progress = parseInt(data.loaded / data.total * 100, 10);
+                    $('.progress .progress-bar').css(
+                        'width',
+                        progress + '%'
+                    );
+                },
+                processalways: function(e, data) {
+                    if (data.files.error) {
+                        alert("{{ 'admin.common.upload_error'|trans }}");
+                    }
+                }
+            });
+            var confirmFormChange = function(form, target, modal) {
+                var returnLink = form.find('input[type="hidden"][name*="return_link"]'),
+                    saveBtn = modal.find('a[data-action="save"]'),
+                    cancelBtn = modal.find('a[data-action="cancel"]');
+                modal.on('hidden.bs.modal', function() {
+                    returnLink.val('');
+                });
+                saveBtn.on('click', function() {
+                    returnLink.val($(this).data('return-link'));
+                    $(this).addClass('disabled');
+                    form.submit();
+                });
+                target.on('click', function() {
+                    modal.find('.modal-body .screen-name').text($(this).attr('title'));
+                    modal.modal('show');
+                    saveBtn.data('return-link', $(this).attr('href'));
+                    cancelBtn.attr('href', $(this).attr('href'));
+                    return false;
+                });
+            };
+            confirmFormChange($('#form1'), $('a[data-action="confirm"]'), $('#confirmFormChangeModal'))
+        });
+    </script>
+    <script>
+        const addPrize = (e) => {
+           const collectionHolder = document.querySelector('.prize_list');
+
+           const item = document.createElement('div');
+		//    item.innerHTML = '<div class="row mt-2 mx-4 float-right" style="padding:20px"><a class="btn btn-block btn-ec-regular mt-1 remove-prize">削除</a></div>'
+
+           item.innerHTML += collectionHolder
+           .dataset
+           .prototype
+           .replace(
+           /__name__/g,
+           collectionHolder.dataset.index);
+
+        //    item.className = "ml-4 my-2 mr-2";
+        //    item.style = "border: 1px solid rgba(0, 0, 0, 0.125);";
+        //    $(item).find(".media-body").append('<a class="btn btn-ec-regular mr-2 file_upload">画像の選択</a>');
+
+           collectionHolder.appendChild(item);
+
+           collectionHolder.dataset.index++;
+
+           $('.remove-prize').click(function(e) {
+               e.preventDefault();
+               
+               $(this).parent().parent().remove();
+               
+               return false;
+           });
+           $('.file_upload').on('click', function() {
+                $(this).parent().find(".image_upload").click();
+           });
+           $('.delete-image').on('click', function() {
+                $(this).parent().css('display', 'none');
+                // $(this).parent().find('file_upload').text('eeeee');
+                // console.log($(this).parent().parent().html());
+                $(this).parent().parent().find('.file_upload').css('display', 'block');
+                $(this).parent().parent().find('.file_upload').css('width', '130px');
+           });
+           $('.c-form__fileUploadThumbnail').on('click', function() {
+                $(this).parent().find(".image_upload").click();
+           });
+           $(".image_upload").fileupload({
+                url: "{{ path('prize_show_admin_add_image') }}",
+                type: "post",
+                dataType: "json",
+                disableImageResize: false,
+                maxImageWidth: 273,
+                maxImageHeight: 273,
+                done: function(e, data) {
+                    $('.progress-bar').hide();
+                    var file = data.result.files[0];
+                    var path = '{{ asset('', 'temp_image') }}' + file;
+
+                    $("#item_image").text(file);
+                    $("#item_image_path").text(path);
+
+                    var attr_style = "background-image:url("+path+")";
+
+                    $(this).parent().parent().parent().find(".c-form__fileUploadThumbnail").attr('style', attr_style);
+                    $(this).parent().parent().parent().find(".c-form__fileUploadThumbnail").css('display', 'block');
+                    $(this).parent().find(".file_upload").hide();
+                    // var $img = $(proto_img.replace(/__path__/g, path));
+                    // $('.thumb:last').append($img);
+
+                    // $('.upload-zone:last').hide();
+                    $(this).parent().find(".product_image").val(file);
+                },
+                fail: function(e, data) {
+                    alert("{{ 'admin.common.upload_error'|trans }}");
+                },
+                always: function(e, data) {
+                    $('.progress').hide();
+                    $('.progress .progress-bar').width('0%');
+                },
+                start: function(e, data) {
+                    $(this).parent().parent().parent().find('.progress').show();
+                },
+                acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+                maxFileSize: 10000000,
+                maxNumberOfFiles: 1,
+                progressall: function(e, data) {
+                    var progress = parseInt(data.loaded / data.total * 100, 10);
+                    $('.progress .progress-bar').css(
+                        'width',
+                        progress + '%'
+                    );
+                },
+                processalways: function(e, data) {
+                    if (data.files.error) {
+                        alert("{{ 'admin.common.upload_error'|trans }}");
+                    }
+                }
+            });
+           
+       };
+
+       
+       document
+           .querySelectorAll('.add_prize_list')
+           .forEach(btn => btn.addEventListener("click", addPrize));
+
+    //    $(document).ready(function(){
+    //         $(".saved_prize").prepend('<div class="row mt-2 mx-4"><a class="btn btn-block btn-ec-regular mt-1 remove-prize">削除</a></div>')
+    //    })
+        $(document).ready(function(){
+            $('.remove-prize').click(function(e) {
+                e.preventDefault();
+                $(this).parent().parent().remove();
+                   
+                return false;
+            });
+           $('.file_upload').on('click', function() {
+                $(this).parent().find(".image_upload").click();
+           });
+           $('.delete-image').on('click', function() {
+                $(this).parent().css('display', 'none');
+                // $(this).parent().find('file_upload').text('eeeee');
+                // console.log($(this).parent().parent().html());
+                $(this).parent().parent().find('.file_upload').css('display', 'block');
+                $(this).parent().parent().find('.file_upload').css('width', '130px');
+           });
+           $('.c-form__fileUploadThumbnail').on('click', function() {
+                $(this).parent().find(".image_upload").click();
+           });
+        });
+    </script>
+{% endblock javascript %}
+
+{% block main %}
+    <div class="modal fade" id="confirmFormChangeModal" tabindex="-1" role="dialog"
+         aria-labelledby="confirmFormChangeModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ 'admin.common.move_to_confirm_title'|trans }}</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="screen-name"></p>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-ec-conversion" data-action="save" href="javascript:void(0)">
+                        {{ 'admin.common.move_to_confirm_save_and_move'|trans }}
+                    </a>
+                    <a class="btn btn-ec-sub" data-action="cancel" href="javascript:void(0)">
+                        {{ 'admin.common.move_to_confirm_move_only'|trans }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form name="prize_form" role="form" method="post" id="prize_form" action="{% if id == null %}{{ path('prize_show_admin_new') }} {% else %}{{path('prize_show_admin_edit', {id: id})}}{%endif%}" novalidate>
+        <span class="p-country-name" style="display:none;">Japan</span>
+
+        <div class="c-contentsArea__cols">
+            <div class="c-contentsArea__primaryCol">
+                <div class="c-primaryCol ml-5 mr-5">
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header  ml-5 mr-5">
+                            <div class="row">
+                                <h3 class="col-4  text-center">当選商品</h3>
+                                <div class="col-6">
+                                    {{ form_widget(form.name) }}
+                                    {{ form_errors(form.name) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body item-group prize_form  ml-5 mr-5" id="item-group">
+                            <div class="card rounded border-0 mb-4">
+                                <div class="card-header ml-5"><h4>商品</span></h4>
+                                <div class="card-body prize_list" data-prototype="{{ selfMacro.printPrize(form.prize_list.vars.prototype)|e('html_attr') }}" data-index="{{ form.prize_list|length }}">
+                                    {% for item in form.prize_list %}
+                                        {{ selfMacro.printPrize(item) }}
+                                    {% endfor %}
+                                </div>
+                                <button type="button" class="add_prize_list btn btn-ec-regular mr-1" data-collection-holder-class="prize_list" style="width:20%">追加</button> 
+                                <!-- <input type="file" style="display:none" class="image_upload" accept="image/*"> -->
+                                <span style="display: none;" id="item_image"></span>
+                                <span style="display: none;" id="item_image_path"></span> 
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="c-conversionArea">
+            <div class="c-conversionArea__container">
+                <div class="row justify-content-between align-items-center">
+                    <div class="col-6">
+                        <div class="c-conversionArea__leftBlockItem">
+                            <a class="c-baseLink"
+                               href="{{ url('admin_store_plugin') }}">
+                                <i class="fa fa-backward" aria-hidden="true"></i>
+                                <span>プラグイン一覧</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row align-items-center justify-content-end">
+                            <div class="col-auto">
+                                <button class="btn btn-ec-conversion px-5"
+                                        type="submit" id="submit">登録</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}

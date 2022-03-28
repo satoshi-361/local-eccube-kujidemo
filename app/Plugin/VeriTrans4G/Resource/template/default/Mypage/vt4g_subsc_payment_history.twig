@@ -1,0 +1,58 @@
+{#
+Copyright (c) 2018 VeriTrans Inc., a Digital Garage company. All rights reserved.
+http://www.veritrans.co.jp/
+#}
+{% extends  'default_frame.twig' %}
+
+{% set mypageno = 'vt4g_subsc_payment' %}
+
+{% set body_class = 'mypage' %}
+
+{% block main %}
+    <div class="ec-layoutRole__main">
+      <div class="ec-mypageRole">
+          <div class="ec-pageHeader">
+              <h1>{{ 'マイページ'|trans }}/{{ '継続課金決済履歴詳細'|trans }}</h1>
+          </div>
+            {{ include('Mypage/navi.twig') }}
+      </div>
+      <div class="ec-mypageRole">
+
+          {% if pagination.totalItemCount == 0 %}
+              <p class="ec-para-normal">{{ 'vt4g_plugin.maypage.subsc_payment_history.not.exist'|trans }}</p>
+          {% endif %}
+
+      </div>
+      <div class="ec-mypageRole">
+          <div class="ec-off1Grid">
+              <div class="ec-off1Grid__cell">
+                  {% if pagination.totalItemCount > 0 %}
+                      <div class="vt4g_card_list">
+                          {% for history in pagination %}
+
+                              <div class="vt4g_card_list__item">
+                                  <div class="vt4g_card_list__card">
+                                      <div>お支払日 {{ history.reflect_date|date("Y/m/d") }}</div>
+                                      <div>お支払金額 {{ (history.order_total
+                                                        + history.delivery_fee_total
+                                                        + history.settlement_fee)|price }}</div>
+                                  </div>
+                              </div>
+                          {% endfor %}
+                          <div class="ec-pagerRole">
+                              {% include "pager.twig" with {'pages': pagination.paginationData} %}
+                          </div>
+                      </div>
+                  {% endif %}
+              </div>
+          </div>
+      </div>
+    </div>
+    <div class="ec-role">
+      <a href="{{ url('mypage_vt4g_subsc_payment') }}" class="ec-inlineBtn">{{ '戻る'|trans }}</a>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+{{ include('VeriTrans4G/Resource/template/default/css/vt4g_css.twig') }}
+{% endblock %}

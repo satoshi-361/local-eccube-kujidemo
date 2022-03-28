@@ -1,0 +1,1 @@
+{"name":"ec-cube\/paygentpayment","version":"1.4.1","description":"EC-CUBE PaygentPayment Plugin","type":"eccube-plugin","extra":{"code":"PaygentPayment","id":1989},"require":{"ec-cube\/plugin-installer":"~0.0.6 || ^2.0"},"const":[]}

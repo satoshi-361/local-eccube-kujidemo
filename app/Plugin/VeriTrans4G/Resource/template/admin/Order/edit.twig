@@ -1,0 +1,355 @@
+{#
+Copyright (c) 2018 VeriTrans Inc., a Digital Garage company. All rights reserved.
+http://www.veritrans.co.jp/
+#}
+<script>
+$(function() {
+    {% if vt4g.hasVt4gOrderPayment %}
+        // フロント画面と同様のオーバーレイを表示
+        var loadingOverlay = function(action) {
+            if (action == 'hide') {
+                $('.bg-load-overlay').remove();
+            } else {
+                $overlay = $('<div class="bg-load-overlay" style="background:rgba(255,255,255,.4);box-sizing:border-box;position:fixed;top:0;left:0;width:100%;height:100%;opacity:1;-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-flow:column nowrap;-ms-flex-flow:column nowrap;flex-flow:column nowrap;-webkit-align-items:center;-ms-flex-align:center;align-items:center;-webkit-justify-content:space-around;-ms-flex-pack:distribute;justify-content:space-around;z-index:2147483647;"></div>');
+                $('body').append($overlay);
+            }
+        }
+
+        {# ↓EC-CUBE本体側 function.js(L176-)を参考に実装↓ #}
+        var createForm = function(action, data) {
+            var $form = $('<form action="'+action+'" method="post"></form>');
+            for (input in data) {
+                if (data.hasOwnProperty(input)) {
+                    $form.append('<input name="'+input+'" value="'+data[input]+'">');
+                }
+            }
+
+            return $form;
+        }
+        var conveniList = [];
+        {% if vt4g.conveniList is not empty %}
+            {% for conveni in vt4g.conveniList %}
+                conveniList.push('{{ conveni }}');
+            {% endfor %}
+        {% endif %}
+
+        var operationIdPrefix = 'vt4g_btn_payment_';
+        var initPaymentOperationLink = function() {
+            $('a[id^="'+operationIdPrefix+'"][token-for-anchor]').click(function(e) {
+                e.preventDefault();
+                var $this = $(this);
+                var selectedCvs = null;
+                var data = $this.data();
+                var operation = $(this).attr('id').replace(operationIdPrefix, '');
+                var selectedAccountCards = null;
+                var selectedReTradeCards = null;
+                var selectedPaymentType = null;
+                var selectedWithCapture = null;
+
+                var alertMessage = '';
+                {% if vt4g.form.conveni is defined %}
+                    selectedCvs = $('#order_edit_cvs_conveni').val();
+                    if ((operation === 'newly') && !(selectedCvs && conveniList.indexOf(selectedCvs) !== -1)) {
+                        alertMessage += '支払いを行うコンビニを選択してください。\n'
+                    }
+                {% endif %}
+                {% if vt4g.form.accountCards is defined and vt4g.form.reTradeCards is defined %}
+                    selectedAccountCards = $('#order_edit_credit_accountCards').val();
+                    selectedReTradeCards = $('#order_edit_credit_reTradeCards').val();
+                    if (!selectedAccountCards && !selectedReTradeCards) {
+                        alertMessage += 'ベリトランス会員ID決済かかんたん決済(再取引)のどちらかを選択してください。\n'
+                    }
+                {% endif %}
+                {% if vt4g.form.paymentType is defined %}
+                    selectedPaymentType = $('#order_edit_credit_paymentType').val();
+                    if (!selectedPaymentType) {
+                        alertMessage += 'お支払い方法を選択してください。\n'
+                    }
+                {% endif %}
+                {% if vt4g.form.withCapture is defined %}
+                    selectedWithCapture = $('#order_edit_credit_withCapture').val();
+                    if (!selectedWithCapture) {
+                        alertMessage += '売上フラグを選択してください。\n'
+                    }
+                {% endif %}
+
+                if(alertMessage) {
+                    alert(alertMessage);
+                    return false;
+                }
+
+                // 確認ダイアログ表示
+                if (!confirm(data.message)) {
+                    return false;
+                }
+
+                // 削除時はオーバーレイ処理を入れる
+                loadingOverlay();
+
+                var $form = createForm($this.attr('href'), {
+                    _token: $this.attr('token-for-anchor'),
+                    _method: data.method,
+                    conveni: selectedCvs,
+                    accountCardId: selectedAccountCards,
+                    reTradeOrderId: selectedReTradeCards,
+                    jpo: selectedPaymentType,
+                    withCapture: selectedWithCapture
+                }).hide();
+
+                $('body').append($form); // Firefox requires form to be on the page to allow submission
+                $form.submit();
+            });
+            {% if vt4g.form.accountCards is defined and vt4g.form.reTradeCards is defined %}
+                var $accountSelect = $("#order_edit_credit_accountCards");
+                var $reTradeSelect = $("#order_edit_credit_reTradeCards");
+                $accountSelect.change(function(){
+                    var val = $(this).val();
+                    if(val) {
+                        $reTradeSelect.val("");
+                    }
+                });
+                $reTradeSelect.change(function(){
+                    var val = $(this).val();
+                    if(val) {
+                        $accountSelect.val("");
+                    }
+                });
+            {% endif %}
+        };
+        {# ↓EC-CUBE本体側 function.js(L176-)を参考に実装↓ #}
+
+        // 要素の追加先
+        var INFO_INSERT_AFTER_TARGET = '#order-product';
+        var ALERT_MESSAGE = '決済操作を行います。\n受注データを編集していない場合は先に保存してください。\nよろしいですか？';
+        var PRODUCT_NOTICE_MESSAGE = '※金額の変更は決済情報には反映されません';
+
+        var contents =
+            '<div class="card rounded border-0 mb-4" id="vt4g_payment_info_card">'+
+            '    <div class="card-header">'+
+            '        <div class="row">'+
+            '            <div class="col-8">'+
+            '                <div class="d-inline-block">'+
+            '                    <span class="card-title">{{ vt4g.const.VT4G_SERVICE_NAME }}決済情報</span>'+
+            '                </div>'+
+            '            </div>'+
+            '            <div class="col-4 text-right">'+
+            '                <a href="#vt4g_payment_info_accordion" data-toggle="collapse" aria-expanded="false" aria-controls="vt4g_payment_info_card">'+
+            '                    <i class="fa fa-angle-up fa-lg"></i>'+
+            '                </a>'+
+            '            </div>'+
+            '        </div>'+
+            '    </div>'+
+            '    <div class="collapse show ec-cardCollapse" id="vt4g_payment_info_accordion">'+
+            '        <div class="card-body">'+
+                        {% if vt4g.payName is defined %}
+            '               <div class="row form-group">'+
+            '                   <div class="col-3">決済種別</div>'+
+            '                   <div class="col"><p>{{ vt4g.payName }}</p></div>'+
+            '               </div>'+
+                        {% endif %}
+
+                        {% if vt4g.operationList is not empty %}
+                            {% if vt4g.operationList[vt4g.const.VT4G_OPERATION_NEWLY] is defined %}
+                                {% if vt4g.form.conveni is defined %}
+            '                       <div class="row form-group form-inline">'+
+            '                           <div class="col-3" style="-webkit-align-self:flex-start;-ms-flex-item-align:start;align-self:flex-start;">コンビニ選択</div>'+
+            '                           <div class="col"><p>{{ form_widget(vt4g.form.conveni) }}</p></div>'+
+            '                       </div>'+
+                                {% endif %}
+                                {% if vt4g.form.accountCards is defined %}
+            '                       <div class="row form-group form-inline">'+
+            '                           <div class="col-3" style="-webkit-align-self:flex-start;-ms-flex-item-align:start;align-self:flex-start;">ベリトランス会員ID決済利用</div>'+
+            '                           <div class="col"><p>{{ form_widget(vt4g.form.accountCards) }}</p></div>'+
+            '                       </div>'+
+                                {% endif %}
+                                {% if vt4g.form.reTradeCards is defined %}
+            '                       <div class="row form-group form-inline">'+
+            '                           <div class="col-3" style="-webkit-align-self:flex-start;-ms-flex-item-align:start;align-self:flex-start;">かんたん決済(再取引)利用</div>'+
+            '                           <div class="col"><p>{{ form_widget(vt4g.form.reTradeCards) }}</p></div>'+
+            '                       </div>'+
+                                {% endif %}
+                                {% if vt4g.form.paymentType is defined %}
+            '                       <div class="row form-group form-inline">'+
+            '                           <div class="col-3" style="-webkit-align-self:flex-start;-ms-flex-item-align:start;align-self:flex-start;">お支払い方法</div>'+
+            '                           <div class="col"><p>{{ form_widget(vt4g.form.paymentType) }}</p></div>'+
+            '                       </div>'+
+                                {% endif %}
+                                {% if vt4g.form.withCapture is defined %}
+            '                       <div class="row form-group form-inline">'+
+            '                           <div class="col-3" style="-webkit-align-self:flex-start;-ms-flex-item-align:start;align-self:flex-start;">売上フラグ</div>'+
+            '                           <div class="col"><p>{{ form_widget(vt4g.form.withCapture) }}</p></div>'+
+            '                       </div>'+
+                                {% endif %}
+                            {% endif %}
+            ''+
+            '               <div class="row form-group">'+
+            '                   <div class="col-3">決済操作</div>'+
+            '                   <div class="col">'+
+                                    {% if vt4g.operationList[vt4g.const.VT4G_OPERATION_CAPTURE] is defined %}
+                                        {% if not vt4g.subscFewCreditExists %}
+            '                             <a href="{{ url('vt4g_admin_order_edit_capture', {orderId: vt4g.orderId}) }}" id="vt4g_btn_payment_capture" class="btn btn-success mr-1" data-method="post" data-message="'+ALERT_MESSAGE+'" '+"{{ csrf_token_for_anchor() }}"+'>'+
+                                            {% if vt4g.paymentStatus == vt4g.const.VT4G_PAY_STATUS.CAPTURE.VALUE %}
+            '                                   [売上済]再売上(実売上)実行'+
+                                            {% else %}
+            '                                   売上確定(実売上)実行'+
+                                            {% endif %}
+            '                             </a>'+
+                                        {% endif %}
+                                    {% endif %}
+
+                                    {% if vt4g.operationList[vt4g.const.VT4G_OPERATION_CANCEL] is defined %}
+            '                           <a href="{{ url('vt4g_admin_order_edit_cancel', {orderId: vt4g.orderId}) }}" id="vt4g_btn_payment_cancel" class="btn btn-danger mr-1" data-method="post" data-message="'+ALERT_MESSAGE+'" '+"{{ csrf_token_for_anchor() }}"+'>'+
+            '                               取消(返品)実行'+
+            '                           </a>'+
+                                    {% endif %}
+
+                                    {% if vt4g.operationList[vt4g.const.VT4G_OPERATION_AUTH] is defined %}
+                                        {% if not vt4g.subscFewCreditExists %}
+            '                             <a href="{{ url('vt4g_admin_order_edit_auth', {orderId: vt4g.orderId}) }}" id="vt4g_btn_payment_auth" class="btn btn-info mr-1" data-method="post" data-message="'+ALERT_MESSAGE+'" '+"{{ csrf_token_for_anchor() }}"+'>'+
+            '                                 再オーソリ実行'+
+            '                             </a>'+
+                                        {% endif %}
+                                    {% endif %}
+
+                                    {% if vt4g.operationList[vt4g.const.VT4G_OPERATION_REFUND] is defined %}
+            '                           <a href="{{ url('vt4g_admin_order_edit_refund', {orderId: vt4g.orderId}) }}" id="vt4g_btn_payment_refund" class="btn btn-success mr-1" data-method="post" data-message="'+ALERT_MESSAGE+'" '+"{{ csrf_token_for_anchor() }}"+'>'+
+            '                               再売上(減額用)'+
+            '                           </a>'+
+                                    {% endif %}
+
+                                    {% if vt4g.operationList[vt4g.const.VT4G_OPERATION_REFUND_ALL] is defined %}
+            '                           <a href="{{ url('vt4g_admin_order_edit_refund_all', {orderId: vt4g.orderId}) }}" id="vt4g_btn_payment_refund" class="btn btn-danger mr-1" data-method="post" data-message="'+ALERT_MESSAGE+'" '+"{{ csrf_token_for_anchor() }}"+'>'+
+            '                               全額返金'+
+            '                           </a>'+
+                                    {% endif %}
+
+                                    {% if vt4g.operationList[vt4g.const.VT4G_OPERATION_NEWLY] is defined %}
+            '                           <a href="{{ url('vt4g_admin_order_edit_newly', {orderId: vt4g.orderId}) }}" id="vt4g_btn_payment_newly" class="btn btn-success" data-method="post" data-message="'+ALERT_MESSAGE+'" '+"{{ csrf_token_for_anchor() }}"+'>'+
+            '                               決済実行'+
+            '                           </a>'+
+                                    {% endif %}
+
+            '                   </div>'+
+            '               </div>'+
+                        {% endif %}
+
+                        {% if vt4g.paymentStatusText is defined and vt4g.paymentStatusText is not empty %}
+            '               <div class="row form-group">'+
+            '                   <div class="col-3">決済状況</div>'+
+            '                   <div class="col"><p>{{ vt4g.paymentStatusText }}</p></div>'+
+            '               </div>'+
+                        {% endif %}
+                        {% if vt4g.paymentLogList is defined and vt4g.paymentLogList is not empty %}
+            '               <div class="row form-group">'+
+            '                   <div class="col-3">決済ログ</div>'+
+            '                   <div class="col">'+
+            '                       <p>'+
+            '                           <a class="d-block collapsed" href="#vt4g_payment_log" data-toggle="collapse" aria-expanded="false" aria-controls="vt4g_payment_log" style="color:inherit;">'+
+            '                               <i class="fas fa-plus mr-1"></i>'+
+            '                               決済ログ情報 表示・非表示'+
+            '                           </a>'+
+            '                       </p>'+
+            '                       <div id="vt4g_payment_log" class="collapse">'+
+            '                           <table class="table table-bordered">'+
+            '                               <thead>'+
+            '                                   <tr>'+
+            '                                       <th>時間</th>'+
+            '                                       <th>内容</th>'+
+            '                                   </tr>'+
+            '                               </thead>'+
+            '                               <tbody>'+
+                                                {% for log in vt4g.paymentLogList %}
+                                                    {% for time, info in log %}
+            '                                          <tr>'+
+            '                                               <td style="word-wrap:break-word;">{{ time }}</td>'+
+            '                                               <td style="word-wrap:break-word;">'+
+                                                                {% for item in info %}
+                                                                    {% if item.title is not empty %}
+            '                                                           {{ item.title|nl2br }}'+
+                                                                    {% endif %}
+            '                                                       {{ item.content|nl2br }}{% if loop.last == false %},<br />{% endif %}'+
+                                                                {% endfor %}
+            '                                               </td>'+
+            '                                           </tr>'+
+                                                    {% endfor %}
+                                                {% endfor %}
+            '                               </tbody>'+
+            '                           </table>'+
+            '                       </div>'+
+            '                   </div>'+
+            '               </div>'+
+                        {% endif %}
+                        {% if vt4g.paymentInfo is defined and vt4g.paymentInfo is not empty %}
+            '               <div class="row form-group">'+
+            '                   <div class="col-3">決済情報</div>'+
+            '                   <div class="col">'+
+            '                       <p>'+
+            '                           <a class="d-block collapsed" href="#vt4g_payment_info" data-toggle="collapse" aria-expanded="false" aria-controls="vt4g_payment_info" style="color:inherit;">'+
+            '                               <i class="fas fa-plus mr-1"></i>'+
+            '                               {% if vt4g.paymentInfo.title is defined %}{{ vt4g.paymentInfo.title }}{% endif %}情報 表示・非表示'+
+            '                           </a>'+
+            '                       </p>'+
+            '                       <div id="vt4g_payment_info" class="collapse">'+
+            '                           <table class="table table-bordered">'+
+            '                               <thead>'+
+            '                                   <tr>'+
+            '                                       <th>項目</th>'+
+            '                                       <th>内容</th>'+
+            '                                   </tr>'+
+            '                               </thead>'+
+            '                               <tbody>'+
+                                                {% if vt4g.paymentInfo.message is defined and   vt4g.paymentInfo.message is not empty %}
+                                                    {% for item in vt4g.paymentInfo.message %}
+            '                                           <tr>'+
+                                                            {% if item.title is defined and item.title is not empty %}
+            '                                                   <td>{{ item.title }}</td>'+
+                                                            {% endif %}
+                                                            {% if item.content is defined and item.content is not empty %}
+            '                                                   <td {% if item.title is empty %}colspan="2"{% endif %}>'+
+            '                                                       {{ item.content }}'.replace(/\r\n|\r|\n/g, '<br />')+
+            '                                                   </td>'+
+                                                            {% endif %}
+            '                                           </tr>'+
+                                                    {% endfor %}
+                                                {% endif %}
+            '                               </tbody>'+
+            '                           </table>'+
+            '                       </div>'+
+            '                   </div>'+
+            '               </div>'+
+                        {% endif %}
+            '        </div>'+
+            '    </div>'+
+            '</div>';
+
+        // 決済情報の追加
+        $(INFO_INSERT_AFTER_TARGET).after(contents);
+
+        // 商品情報変更時の注意メッセージの追加
+        $('#calculate').parents('.row').after('<p class="text-danger">'+PRODUCT_NOTICE_MESSAGE+'</p>');
+
+        var $card = $('#vt4g_payment_info_card');
+        // 表示領域 縮小/拡大アイコン 切り替え
+        $card.find('[data-toggle="collapse"]').on('click', function(e) {
+            var $elm = $(e.currentTarget);
+            var isCollapsed = $elm.hasClass('collapsed');
+            var $icon = $elm.find('i');
+
+            if ($icon.length) {
+                $icon.toggleClass('fa-times', isCollapsed).toggleClass('fa-plus', !isCollapsed);
+            }
+        });
+
+        // 決済操作リンク 初期化
+        initPaymentOperationLink();
+    {% endif %}
+
+    var $paymentMethodSelect = $('#order_Payment');
+    // 削除対象の支払方法を削除
+    {% if vt4g.removePaymentMethodIdList is not empty %}
+        {% for id in vt4g.removePaymentMethodIdList %}
+            $paymentMethodSelect.find('option[value="{{ id }}"]').remove();
+        {% endfor %}
+    {% endif %}
+});
+</script>

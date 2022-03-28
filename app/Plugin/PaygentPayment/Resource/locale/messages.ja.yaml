@@ -1,0 +1,209 @@
+# nav
+paygent_payment.admin.nav.payment_list: ペイジェント決済管理
+paygent_payment.admin.nav.paygent_file: ペイジェントファイル管理
+
+# twig
+paygent_payment.admin.payment_status.title: ペイジェント決済管理
+paygent_payment.admin.payment_status.sub_title: 受注管理
+paygent_payment.admin.payment_status.search: 検索
+paygent_payment.admin.payment_status.search_result_count: '検索結果：%count%件が該当しました'
+
+# 検索条件ラベル
+paygent_payment.admin.order.multi_search_label: 注文番号・お名前・会社名・メールアドレス・電話番号
+paygent_payment.admin.order.order_status: 対応状況
+paygent_payment.admin.order.search_detail: 詳細検索
+
+# 詳細検索条件ラベル
+paygent_payment.admin.order.orderer_name: 注文者名
+paygent_payment.admin.order.orderer_kana: 注文者名(カナ)
+paygent_payment.admin.order.orderer_company_name: 注文者会社名
+paygent_payment.admin.order.mail_address: メールアドレス
+paygent_payment.admin.order.phone_number: 電話番号
+paygent_payment.admin.order.order_no: 注文番号
+paygent_payment.admin.order.tracking_number: お問い合わせ番号
+paygent_payment.admin.order.payment_method: 支払方法
+paygent_payment.admin.order.order_date: 注文日
+paygent_payment.admin.order.order_date__start: 注文日(開始)
+paygent_payment.admin.order.order_date__end: 注文日(終了)
+paygent_payment.admin.order.payment_date: 入金日
+paygent_payment.admin.order.payment_date__start: 入金日(開始)
+paygent_payment.admin.order.payment_date__end: 入金日(終了)
+paygent_payment.admin.order.update_date: 更新日
+paygent_payment.admin.order.update_date__start: 更新日(開始)
+paygent_payment.admin.order.update_date__end: 更新日(終了)
+paygent_payment.admin.order.delivery_date: お届け日
+paygent_payment.admin.order.delivery_date__start: お届け日(開始)
+paygent_payment.admin.order.delivery_date__end: お届け日(終了)
+paygent_payment.admin.order.purchase_price: 購入金額
+paygent_payment.admin.order.purchase_price__start: 購入金額(開始)
+paygent_payment.admin.order.purchase_price__end: 購入金額(終了)
+paygent_payment.admin.order.purchase_product: 購入商品名
+paygent_payment.admin.order.shipping_mail: 出荷メール
+paygent_payment.admin.order.shipping_mail__sent: 送信済
+paygent_payment.admin.order.shipping_mail__unsent: 未送信
+paygent_payment.admin.order.separator__range: 〜
+
+paygent_payment.admin.payment_status.display_count: '%count%件'
+
+# 受注一覧ラベル
+paygent_payment.admin.payment_status.col_order_date: 受注日時
+paygent_payment.admin.payment_status.col_order_no: 注文番号
+paygent_payment.admin.payment_status.col_order_name: お名前
+paygent_payment.admin.payment_status.col_order_payment: 支払方法
+paygent_payment.admin.payment_status.col_order_price: 購入金額
+paygent_payment.admin.payment_status.col_order_staus: 対応状況
+paygent_payment.admin.payment_status.col_paygent_order_change: オーソリ・売上変更
+paygent_payment.admin.payment_status.col_paygent_order_commit: 一括売上
+paygent_payment.admin.payment_status.col_paygent_order_cancel: 一括取消
+paygent_payment.admin.payment_status.col_paygent_order_status: ペイジェント <br> 状況
+paygent_payment.admin.payment_status.execute: 決済処理中の注文の取消
+
+# 検索項目メッセージ
+paygent_payment.tooltip.order.multi_search_label: 情報を入力して一覧の絞り込み検索ができます。より詳細な条件を指定するには［詳細検索］を開いてください。
+paygent_payment.tooltip.order.order_search_status: 受注の対応状況による絞り込み検索ができます。カッコ内は対応すべき受注の件数が表示されています。
+
+paygent_payment.form_error.graph_and_hyphen_only: 半角英数字かハイフンのみを入力してください。
+paygent_payment.form_error.kana_only: カタカナで入力してください。
+
+paygent_payment.admin.payment_status.invalid_condition: 検索条件に誤りがあります
+paygent_payment.admin.payment_status.no_result: 検索条件に合致するデータが見つかりませんでした
+paygent_payment.admin.payment_status.change_condition: 検索条件を変えて、再度検索をお試しください。
+
+paygent_payment.admin.payment_status.success_count: '%successCount%件が成功しました'
+paygent_payment.admin.payment_status.error_count: '%errorCount%件が失敗しました'
+paygent_payment.admin.payment_status.execute_count: '以下の %execute_count%件の注文を取り消しました。'
+paygent_payment.admin.payment_status.execute_zero_count.message: 取消対象の注文はありません。
+paygent_payment.admin.payment_status.rollback_error.message: ※ 決済処理中の注文の取消期間を設定してください。
+
+# プラグイン設定画面
+# タイトル
+paygent_payment.admin.config.title: ペイジェント決済プラグイン
+paygent_payment.admin.config.sub_title: プラグイン一覧
+paygent_payment.admin.config.header: 共通設定
+paygent_payment.admin.config.credit_header: クレジット決済設定
+paygent_payment.admin.config.back: プラグイン一覧
+paygent_payment.admin.config.save: 登録
+paygent_payment.admin.config.required: 必須
+paygent_payment.admin.config.module_credit_header: クレジット決済設定
+paygent_payment.admin.config.conveni_header: コンビニ(番号方式)決済設定
+paygent_payment.admin.config.atm_header: ATM決済設定
+paygent_payment.admin.config.asp_header: 銀行ネット決済設定
+paygent_payment.admin.config.career_header: 携帯キャリア決済設定
+paygent_payment.admin.config.paidy_header: Paidy決済設定
+
+# 項目名
+paygent_payment.admin.config.merchant_id: マーチャントID
+paygent_payment.admin.config.connect_id: 接続ID
+paygent_payment.admin.config.connect_password: 接続パスワード
+paygent_payment.admin.config.link_url: リンクタイプリクエスト先URL
+paygent_payment.admin.config.hash_key: リンクタイプハッシュ値生成キー
+paygent_payment.admin.config.notice_hash_key: 差分通知ハッシュ値生成キー
+paygent_payment.admin.config.paygent_payment_method: 利用決済
+paygent_payment.admin.config.card_class: カード支払区分
+paygent_payment.admin.config.card_conf: カード確認番号
+paygent_payment.admin.config.stock_card: カード情報お預かり機能
+paygent_payment.admin.config.link_payment_term: 支払期限日
+paygent_payment.admin.config.merchant_name: 店舗名(全角)
+paygent_payment.admin.config.link_copy_right: コピーライト(半角英数)
+paygent_payment.admin.config.link_free_memo: 自由メモ欄(全角)
+paygent_payment.admin.config.rollback_target_term: 決済処理中の注文の取消期間
+paygent_payment.admin.config.return_url: 決済完了後戻りURL
+paygent_payment.admin.config.settlement_division: システム種別
+paygent_payment.admin.config.payment_division: 支払い回数
+paygent_payment.admin.config.security_code: セキュリティコード
+paygent_payment.admin.config.credit_3d: 3Dセキュア
+paygent_payment.admin.config.credit_3d_hash_key: 3Dセキュア結果受付ハッシュ鍵
+paygent_payment.admin.config.module_stock_card: カード情報お預かり機能
+paygent_payment.admin.config.token_env: トークン接続先
+paygent_payment.admin.config.token_key: トークン生成鍵
+paygent_payment.admin.config.conveni_limit_date_num: 支払期限日
+paygent_payment.admin.config.atm_limit_date: 支払期限日
+paygent_payment.admin.config.payment_detail: 店舗名(カナ)
+paygent_payment.admin.config.asp_payment_term: 支払期限日
+paygent_payment.admin.config.claim_kanji: 店舗名(全角)
+paygent_payment.admin.config.claim_kana: 店舗名(カナ)
+paygent_payment.admin.config.copy_right: コピーライト(半角英数)
+paygent_payment.admin.config.free_memo: 自由メモ欄(全角)
+paygent_payment.admin.config.career_division: 利用決済
+paygent_payment.admin.config.api_key: パブリックキー
+paygent_payment.admin.config.logo_url: ロゴURL
+paygent_payment.admin.config.paidy_store_name: 店舗名(全角)
+paygent_payment.admin.config.credit_3d_merchant_name: 加盟店名(半角英数字記号)
+paygent_payment.admin.config.card_valid_check: カード有効性チェック
+
+# 説明関連文章
+paygent_payment.admin.config.paygent_payment.description: ペイジェント決済プラグインをご利用頂く為には、 ユーザ様ご自身で株式会社ペイジェントとご契約頂く必要があります。 お申し込みにつきましては、下記のページよりお問い合せ下さい。
+paygent_payment.admin.config.paygent_payment_service: ＞＞ ペイジェント決済代行サービスについて
+paygent_payment.admin.config.return_url.description: ※ 未設定の場合は注文完了画面に遷移します。
+paygent_payment.admin.config.merchant_name.description: ※ 決済画面に表示される店舗名「○○○オンラインショップ」等
+paygent_payment.admin.config.link_copy_right.description: ※ 決済画面に表示されるコピーライト「Copyright (c) ・・・」等
+paygent_payment.admin.config.link_free_memo.description: ※ 決済画面に表示されるメッセージ「ありがとうございます」等
+paygent_payment.admin.config.link_payment_term.description: 購入日より
+paygent_payment.admin.config.link_payment_term.day_unit: 日
+paygent_payment.admin.config.rollback_term.description: 購入日より
+paygent_payment.admin.config.rollback_term.day_unit: 日経過した「決済処理中」の注文を取り消す
+paygent_payment.admin.config.conveni_limit_date_num.description: 購入日より
+paygent_payment.admin.config.conveni_limit_date_num.day_unit: 日
+paygent_payment.admin.config.atm_limit_date.description: 購入日より
+paygent_payment.admin.config.atm_limit_date.day_unit: 日
+paygent_payment.admin.config.asp_payment_term.description: 購入日より
+paygent_payment.admin.config.asp_payment_term.day_unit: 日
+
+paygent_payment.admin.config.payment_detail.description: ※ 決済画面に表示される店舗名「○○○オンラインショップ」等
+paygent_payment.admin.config.claim_kanji.description: ※ 決済画面に表示される店舗名「○○○オンラインショップ」等
+paygent_payment.admin.config.claim_kana.description: ※ 決済画面に表示される店舗名「○○○オンラインショップ」等
+paygent_payment.admin.config.copy_right.description: ※ 決済画面に表示されるコピーライト「Copyright (c) ・・・」等
+paygent_payment.admin.config.free_memo.description: ※ 決済画面に表示されるメッセージ「ありがとうございます」等
+paygent_payment.admin.config.api_key.description: ※ 本番用は「pk_live～」、試験用は「pk_test～」となります。入れ間違いにご注意ください。
+paygent_payment.admin.config.logo_url.description_1: "※ Checkout画面に表示するロゴの参照先URLです。"
+paygent_payment.admin.config.logo_url.description_2: "※ 未設定の場合は、Paidyのロゴが表示されます。"
+paygent_payment.admin.config.paidy_store_name.description: ※ 決済画面に表示される店舗名「○○○オンラインショップ」等
+paygent_payment.admin.config.credit_3d_merchant_name.description: ※ 3Dセキュア2.0で使用される加盟店名「○○○OnlineShop」等
+
+paygent_payment.admin.config.save.message: 登録しました。
+paygent_payment.admin.config.save_error.message: '※ 接続試験に失敗しました。%responseCode% %responseDetail%'
+
+# ペイジェントファイル管理画面
+# twig
+paygent_payment.admin.paygent_file.title: ペイジェントファイル管理
+paygent_payment.admin.paygent_file.sub_title: システム設定
+
+#ラベル
+paygent_payment.admin.paygent_file.add_file_title: ファイルを追加
+paygent_payment.admin.paygent_file.add_file: ファイルを追加
+paygent_payment.admin.paygent_file.upload: アップロード
+paygent_payment.admin.paygent_file.file_list_title: フォルダ内のファイル
+paygent_payment.admin.paygent_file.updated: 更新
+paygent_payment.admin.paygent_file.delete: 削除
+paygent_payment.admin.paygent_file.cancel: キャンセル
+
+# 説明関連文章
+paygent_payment.admin.paygent_file.delete_modal__title: 削除します
+paygent_payment.admin.paygent_file.delete_modal__message: 'この操作はあとから取り消すことができません。「%name%」を削除してよろしいですか？'
+paygent_payment.admin.paygent_file.upload_complete: '%success%件のファイルをアップロードしました。(%success%/%count%)'
+paygent_payment.admin.paygent_file.upload_error: '%file_name% のアップロードに失敗しました。(%error%)'
+paygent_payment.admin.paygent_file.delete_complete: 削除しました
+paygent_payment.admin.paygent_file.file_select_empty: 選択されていません
+
+paygent_payment.tooltip.paygent_file.upload_file: ファイルの追加は複数ファイルを選択してアップロードできます。
+
+# モジュール型 クレジット決済画面
+paygent_payment.admin.credit.payment_class: 支払い回数
+paygent_payment.admin.credit.stock_card: 登録カード
+paygent_payment.admin.credit.stock_card.table_header_1: 選択
+paygent_payment.admin.credit.stock_card.table_header_2: カード番号
+paygent_payment.admin.credit.stock_card.table_header_3: 有効期限
+paygent_payment.admin.credit.stock_card.table_header_4: カード名義
+paygent_payment.admin.credit.card_no: カード番号
+paygent_payment.admin.credit.card_no.description: ご本人名義のカードをご使用ください。
+paygent_payment.admin.credit.card_no.example: 半角入力(例：1234-5678-9012-3456)
+paygent_payment.admin.credit.security_code: セキュリティコード
+paygent_payment.admin.credit.valid_term: 有効期限
+paygent_payment.admin.credit.name: カード名義
+paygent_payment.admin.credit.name.description: (ローマ字)
+paygent_payment.admin.credit.name.example: "(例: TARO YAMADA)"
+paygent_payment.admin.credit.stock_new: カード登録
+paygent_payment.admin.credit.stock_new.description_1: カード情報を登録しておくと、次回以降の購入時にカード情報入力が省略でき、大変便利です。
+paygent_payment.admin.credit.stock_new.description_2: '最大%card_stock_max%件まで登録できます。'
+paygent_payment.admin.credit.description_1: 以上の内容で間違いなければ、下記「次へ」ボタンをクリックしてください。
+paygent_payment.admin.credit.description_2: ※画面が切り替るまで少々時間がかかる場合がございますが、そのままお待ちください。

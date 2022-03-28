@@ -1,0 +1,43 @@
+{#
+Copyright (c) 2018 VeriTrans Inc., a Digital Garage company. All rights reserved.
+http://www.veritrans.co.jp/
+#}
+{% extends '@admin/default_frame.twig' %}
+{% set menus = ['setting', 'system', 'vt4g_log_download'] %}
+{% block title %}ベリトランス4G ログダウンロード{% endblock %}
+{% block sub_title %}システム設定{% endblock %}
+{#% form_theme form '@admin/Form/bootstrap_4_horizontal_layout.html.twig' %#}
+{% block stylesheet %}{% endblock stylesheet %}
+{% block javascript %}
+    {{ include('VeriTrans4G/Resource/template/default/css/vt4g_css.twig') }}
+    <script src="{{ asset('assets/js/vendor/spin.min.js', 'admin') }}"></script>
+{% endblock javascript %}
+
+{% block main %}
+    <div class="c-contentsArea__cols">
+        <div class="c-contentsArea__primaryCol">
+            <div class="c-primaryCol">
+                <div class="card rounded border-0 mb-4">
+                    <div class="card-header">
+                        <div class="d-inline-block">
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="{{ url('vt4g_admin_log_download') }}">
+                            {{ form_widget(form._token) }}
+                            <div class="row">
+                                <div class="col">
+                                    {{ form_widget(form.log, {'class': 'form-control'}) }}
+                                    {{ form_errors(form.log) }}
+                                </div>
+                                <div class="col">
+                                    <button class="btn btn-ec-conversion" type="submit">{{ 'admin.common.download'|trans }}</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

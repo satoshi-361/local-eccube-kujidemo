@@ -1,0 +1,16 @@
+; ログ出力設定（テキストファイル、ログレベルはDEBUG）
+log4php.rootLogger=DEBUG, R1
+
+; サイズベースのテキストログローテート
+log4php.appender.R1=LoggerAppenderRollingFile
+log4php.appender.R1.File=
+log4php.appender.R1.Append=true
+log4php.appender.R1.MaxBackupIndex=3
+log4php.appender.R1.MaxFileSize=8000000
+log4php.appender.R1.layout=LoggerLayoutPattern
+log4php.appender.R1.layout.ConversionPattern="%d{Y-m-d H:i:s,u} %5p [%x] - %m%n"
+
+; 標準出力（PHP ECHOを使用する）
+log4php.appender.R2=LoggerAppenderEcho
+log4php.appender.R2.layout=LoggerLayoutPattern
+log4php.appender.R2.layout.ConversionPattern="%d %5p [%x] - %m%n"

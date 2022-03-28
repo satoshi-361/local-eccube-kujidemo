@@ -1,0 +1,67 @@
+{#
+Copyright (c) 2018 VeriTrans Inc., a Digital Garage company. All rights reserved.
+http://www.veritrans.co.jp/
+#}
+{% extends '@admin/default_frame.twig' %}
+{% set menus = ['order', 'vt4g_order_csv_registration'] %}
+{% block title %}受注管理{% endblock %}
+{% block sub_title %}CSV決済依頼登録{% endblock %}
+
+{% block stylesheet %}{% endblock stylesheet %}
+{% block javascript %}
+    {{ include('VeriTrans4G/Resource/template/default/css/vt4g_css.twig') }}
+    <script src="{{ asset('assets/js/vendor/spin.min.js', 'admin') }}"></script>
+    <script>
+        let form = document.getElementById('search_form');
+        form.addEventListener('submit', (evt) => {
+        var saleType = document.getElementById('saleTypeId');
+        saleType.disabled = false;
+        }, false);
+    </script>
+{% endblock javascript %}
+
+{% block main %}
+
+<div class="c-outsideBlock">
+    <form name="search_form" id="search_form" method="POST" action="{{ url('vt4g_admin_order_csv_registration') }}">
+        <div class="c-outsideBlock__contents">
+            <div class="row form-group">
+                <div class="col-12">
+                    {{ form_widget(form._token) }}
+                    <div>
+                        <label class="col-form-label">販売種別名</label>
+                        {% if not saleTypeReadOnly %}
+                            {{ form_widget(form.sale_type_id, { 'id' : 'saleTypeId' }) }}
+                            {{ form_errors(form.sale_type_id) }}
+                        {% else %}
+                            {{ form_widget(form.sale_type_id, { 'id' : 'saleTypeId', 'attr' : {'disabled' : true} }) }}
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label class="col-form-label">イベント名<span class="badge badge-primary ml-1">必須</span></label>
+                        {{ form_widget(form.event_name) }}
+                        {{ form_errors(form.event_name) }}
+                    </div>
+                    {% if resettlementEventId %}
+                        <input type="hidden" name="resettlementEventId" value="{{ resettlementEventId }}">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="c-outsideBlock__contents">
+            <div class="row">
+                <div class="mb-4">
+                    <div class="col-12">
+                        <button class="btn btn-ec-conversion px-5" type="submit" id="event_submit">登録</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="c-outsideBlock__contents">
+            <p>継続課金情報が解約済みになっている場合は、決済依頼情報に含まれません。<br>
+                過去データがある場合は、最後に登録した決済依頼情報の中から決済が成功した情報を引き継いでデータを作成します。</p>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

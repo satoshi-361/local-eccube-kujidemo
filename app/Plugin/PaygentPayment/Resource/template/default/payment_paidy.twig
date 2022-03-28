@@ -1,0 +1,72 @@
+{#
+This file is part of EC-CUBE
+
+Copyright (c) 2006 PAYGENT Co.,Ltd. All rights reserved.
+
+https://www.paygent.co.jp/
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#}
+{% extends 'default_frame.twig' %}
+{% form_theme form 'Form/form_div_layout.twig' %}
+{% block main %}
+    <div id="main_middle">
+        <div class="ec-role">
+            <div class="ec-rectHeading">
+                <h2>ペイジェント Paidy翌月払い（コンビニ/銀行）</h2>
+            </div>
+            {% if error is not empty %}
+            <div>
+                <p style="color:red">{{ error | raw | nl2br }}</p>
+            </div>
+            {% endif %}
+            {{ form_start(form) }}
+            {{ form_widget(form._token) }}
+            <div style="margin-top:10px">
+                まだ注文は完了していません。
+            </div>
+            <img style="margin-top:10px;width:240px" src="{{ asset('PaygentPayment/assets/banner_paidy_checkout_all.png', 'plugin') }}" alt="Paidy翌月払い（コンビニ/銀行）" />
+            <div style="margin-top:10px">
+                <b>メールアドレスと携帯電話番号だけ</b>でご利用いただける決済方法です。事前登録・クレジットカードは必要ありません。<br/>
+                月に何回お買い物をしても、<b>お支払いは翌月にまとめて１回</b>。1ヶ月分のご利用金額は、翌月1日に確定し、メールとSMSでお知らせします。<br/>
+                <br/>
+                下記のお支払い方法がご利用いただけます。
+                <ul>
+                    <li><b>口座振替</b>(支払手数料：無料)</li>
+                    <li><b>コンビニ</b>(支払手数料：350円税込)</li>
+                    <li><b>銀行振込</b>(支払手数料：金融機関により異なります)</li>
+                </ul>
+
+                <div style="margin-top:20px">
+                    「次へ」ボタンをクリックしてください。<br>
+                </div>
+                <hr style="background:#D3D3D3; border:0; height:1px">
+            </div>
+            <div class="row no-padding" style="margin-bottom:50px">
+                <div class="col-sm-offset-2 col-sm-4">
+                    <a href="{{ url('paygent_payment/payment_paidy_back') }}" class="ec-blockBtn--cancel" id="paygentPaymentBack">
+                        戻る
+                    </a>
+                </div>
+                <div class="col-sm-4">
+                    <button type="submit" class="ec-blockBtn--action">
+                        次へ
+                    </button>
+                </div>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

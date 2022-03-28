@@ -1,0 +1,14 @@
+{#
+Copyright (c) 2018 VeriTrans Inc., a Digital Garage company. All rights reserved.
+http://www.veritrans.co.jp/
+#}
+
+<script>
+$(function() {
+$('ul.ec-navlistRole__navlist').append(
+'<li class="ec-navlistRole__item {% if mypageno|default('') == 'vt4g_account_id' %}active{% endif %}">' +
+'<a href="{{ url('mypage_vt4g_account_id') }}" style="font-size:0.8em;">{{ 'ベリトランス会員ID'|trans }}</a>' +
+'</li>'
+);
+});
+</script>

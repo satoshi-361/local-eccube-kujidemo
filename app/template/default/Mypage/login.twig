@@ -1,0 +1,101 @@
+{#
+This file is part of EC-CUBE
+
+Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+
+http://www.ec-cube.co.jp/
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+#}
+{% extends 'default_frame.twig' %}
+
+{% set body_class = 'mypage' %}
+
+{% block stylesheet %}
+  <style>
+    .note {
+      font-size: 12px;
+      color: #ff8c00;
+    }
+    .btn {
+      margin: 10px auto !important;
+    }
+    .btn-ec-regular {
+      border: 1px solid #d3d3d3 !important; 
+    }
+    .ec-login .ec-login__input {
+      margin-bottom: 0px;
+    }
+  </style>
+{% endblock stylesheet %}
+
+{% block main %}
+    <div class="ec-role">
+        <div class="ec-pageHeader">
+            <h1>{{ 'ログイン'|trans }}</h1>
+        </div>
+        <div class="ec-off2Grid">
+            <div class="ec-off2Grid__cell">
+                <form name="login_mypage" id="login_mypage" method="post" action="{{ url('mypage_login') }}">
+                    {% if app.session.flashBag.has('eccube.login.target.path') %}
+                        {% for targetPath in app.session.flashBag.peek('eccube.login.target.path') %}
+                            <input type="hidden" name="_target_path" value="{{ targetPath }}" />
+                        {% endfor %}
+                    {% endif %}
+                    <div class="ec-login">
+                        <div class="ec-login__icon">
+                            <div class="ec-icon"><img src="{{ asset('assets/icon/user.svg') }}" alt=""></div>
+                        </div>
+                        <div class="ec-login__input">
+                            <div class="ec-input">
+                                {{ form_widget(form.login_email, {'attr': {'style' : 'ime-mode: disabled;', 'placeholder' : 'メールアドレス', 'autofocus': true}}) }}
+                                {{ form_widget(form.login_pass,  {'attr': {'placeholder' : 'パスワード' }}) }}
+                            </div>
+                            {% if BaseInfo.option_remember_me %}
+                            <div class="ec-checkbox">
+                                <label>
+                                    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                                        <input type="hidden" name="login_memory" value="1">
+                                    {% else %}
+                                        {{ form_widget(form.login_memory, { 'label': '次回から自動的にログインする'|trans }) }}
+                                    {% endif %}
+                                </label>
+                            </div>
+                            {% endif %}
+                            {% for reset_complete in app.session.flashbag.get('password_reset_complete') %}
+                                <p>{{ reset_complete|trans }}</p>
+                            {% endfor %}
+                            {% if error %}
+                                <p class="ec-errorMessage">{{ error.messageKey|trans(error.messageData, 'validators')|nl2br }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="ec-grid2">
+                          <div class="ec-grid2__cell">
+                              <div class="ec-login__actions">
+                                  <button type="submit" class="btn btn-ec-regular" name="mode" value="login">&nbsp;&nbsp;{{ 'ログイン'|trans }}&nbsp;&nbsp;</button>
+                              </div>
+                          </div>
+                          <div class="ec-grid2__cell">
+                              <!-- <a href="https://oauth.nicovideo.jp/oauth2/authorize?client_id=2W28ATt7K2QwWmcW&amp;response_type=code%20id_token&amp;redirect_uri=https://dev0002.xsrv.jp/sample_eccube_kuji_1/&amp;nonce=f8235236219e14f3584378fba8c326c04e62c5bc&amp;scope=email%20offline_access%20openid%20profile%20user%20user.premium%20user.authorities.lives.ticket.get&amp;prompt=login consent" class="btn" rel="nofollow">ニコニコアカウントでログイン</a> -->
+                              <a href="{{ nico_url }}" class="btn btn-ec-regular" rel="nofollow">ニコニコアカウントでログイン</a>
+                          </div>
+                        </div>
+                        <div class="ec-grid2">
+                          <div class="ec-grid2__cell">
+                            <a class="ec-link btn btn-ec-regular" href="{{ url('entry') }}">{{ '新規会員登録'|trans }}</a>
+                          </div>
+                          <div class="ec-grid2__cell">
+                            <a class="ec-link btn btn-ec-regular" href="{{ url('forgot') }}">{{ '継続してアカウントをご利用される方はこちら'|trans }}</a>
+                            <p class="note">サイトリニューアルに伴い、パスワードの再発行が必要となります。</p>
+                          </div>
+                        </div>
+                        <div class="ec-grid mt-5">
+                        </div>
+                    </div>
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

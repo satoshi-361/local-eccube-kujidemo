@@ -1,0 +1,734 @@
+{#
+This file is part of EC-CUBE
+
+Copyright (c) 2006 PAYGENT Co.,Ltd. All rights reserved.
+
+https://www.paygent.co.jp/
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#}
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['store', 'plugin', 'plugin_list'] %}
+
+{% block title %}{{ 'paygent_payment.admin.config.title'|trans }}{% endblock %}
+{% block sub_title %}{{ 'paygent_payment.admin.config.sub_title'|trans }}{% endblock %}
+
+{% form_theme form '@admin/Form/bootstrap_4_horizontal_layout.html.twig' %}
+
+{% block stylesheet %}
+<style>
+.radio-inline{
+    display: inline-block;
+    margin-left: 20px;
+}
+</style>
+{% endblock stylesheet %}
+
+{% block javascript %}
+<script type="text/javascript">
+const arrPaymentClass = {{ arrPaymentClass|json_encode|raw }};
+const arrSettlementDivisionClass = {{ arrSettlementDivisionClass|json_encode|raw }};
+
+function getSettlementDivisionId(checked) {
+    var id = null;
+    $('#config_settlement_division input').each( function() {
+        if ($(this).prop('checked') == checked) {
+            id = $(this).val();
+        }
+    })
+    return id;
+}
+
+function getIsCredit3dVersion() {
+    value = $('#config_module_credit_config_credit_3d input:checked').val();
+    if (value == 0 || !isModuleCredit()) {
+        return 0;
+    }
+    return value;
+}
+
+function changeInput(elements, disabled) {
+    $(elements).find('input').each( function() {
+        $(this).prop('disabled', disabled);
+    })
+}
+
+function changeDisp(elements, disabled) {
+    if (disabled) {
+        var disp = 'none';
+    } else {
+        var disp = '';
+    }
+    $(elements).each( function() {
+        $(this).css("display", disp);
+    })
+}
+
+function changeInputDisp(elements, disabled) {
+    changeInput(elements, disabled);
+    changeDisp(elements, disabled);
+}
+
+function modifySettlementDivisionItems() {
+    var checked_id = getSettlementDivisionId(checked = true);
+    //どちらかチェックされている場合有効化
+    if (checked_id) {
+        var elements = $("." + arrSettlementDivisionClass[checked_id]);
+        changeInputDisp(elements, disabled = false);
+
+        //無効化
+        var not_checked_id = getSettlementDivisionId(checked = false);
+        var elements = $("." + arrSettlementDivisionClass[not_checked_id]);
+        changeInputDisp(elements, disabled = true);
+    // どちらもチェックされていない場合無効化
+    } else {
+        var elements = $("." + arrSettlementDivisionClass[1]);
+        changeInputDisp(elements, disabled = true);
+        var elements = $("." + arrSettlementDivisionClass[2]);
+        changeInputDisp(elements, disabled = true);
+    }
+}
+
+function modifyAllPayments() {
+    $("#config_paygent_payment_method input").each( function() {
+        var id = $(this).val();
+        var checked = $(this).prop("checked");
+        changeByPaymentId(id, checked);
+    })
+}
+
+function changeBySettlement() {
+    // チェックされていないシステム種別の項目の無効化
+    modifySettlementDivisionItems();
+    // チェック済利用決済項目の表示と有効化、その他の非表示と無効化
+    modifyAllPayments();
+}
+
+function changeByPaymentId(payment_id, checked) {
+    var settlement_division_id = getSettlementDivisionId(true);
+    var target = $("." + arrSettlementDivisionClass[settlement_division_id] + "." + arrPaymentClass[payment_id]);
+
+    if (checked) {
+        var disabled = false;
+    } else {
+        var disabled = true;
+    }
+    changeInput(target, disabled);
+}
+
+function changeByCredit3d() {
+    var target = $(".credit_3d");
+
+    if (getIsCredit3dVersion() == 2) {
+        changeInput($(".credit_3d, .credit_3d2"), false);
+    } else if (getIsCredit3dVersion() == 1) {
+        changeInput($(".credit_3d"), false);
+        // 3Dセキュア1.0の場合3Dセキュア2.0の項目は非活性にする
+        changeInput($(".credit_3d2"), true);
+    } else {
+        changeInput($(".credit_3d, .credit_3d2"), true);
+    }
+}
+
+function changeByModuleStockCard() {
+    if (getIsStockCard()) {
+        var disabled = false;
+    } else {
+        var disabled = true;
+    }
+    changeInput($("#config_module_credit_config_card_valid_check"), disabled);
+}
+
+function getIsStockCard() {
+    value = $('#config_module_credit_config_module_stock_card input:checked').val();
+    if (value == 0 || !isModuleCredit()) {
+        return 0;
+    }
+    return value;
+}
+
+function isModuleCredit() {
+    isCredit = $("#config_paygent_payment_method").find("input[value=1]").prop('checked');
+    isModule = getSettlementDivisionId(checked = true) == 1;
+
+    if (!isCredit || !isModule) {
+        return 0;
+    }
+    return 1;
+}
+
+$(function () {
+    $(".form-check").each(function(){
+        $(this).addClass("radio-inline");
+    });
+
+    //リンク型の場合はPaidy決済の選択肢を消すための処理を追加
+    $("#config_paygent_payment_method").find("input[value=11]").parent().addClass("module-type");
+
+    $("#config_settlement_division input").change(function() {
+        changeBySettlement();
+        changeByCredit3d();
+        changeByModuleStockCard();
+    });
+
+    $("#config_module_credit_config_credit_3d input").change(function() {
+        changeByCredit3d();
+    });
+
+    $("#config_module_credit_config_module_stock_card input").change(function() {
+        changeByModuleStockCard();
+    });
+
+    $("#config_paygent_payment_method input").change(function() {
+        var id = $(this).val();
+        var checked = $(this).prop("checked");
+        changeByPaymentId(id, checked);
+        if (id == 1) {
+            changeByCredit3d();
+            changeByModuleStockCard();
+        }
+    });
+
+    changeBySettlement();
+    changeByCredit3d();
+    changeByModuleStockCard();
+});
+</script>
+{% endblock javascript %}
+
+{% block main %}
+    <form role="form" method="post">
+
+        {{ form_widget(form._token) }}
+
+        <div class="c-contentsArea__cols">
+            <div class="c-contentsArea__primaryCol">
+                <div class="c-primaryCol">
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header">
+                            <span>
+                                {{ 'paygent_payment.admin.config.paygent_payment.description'|trans }}
+                            </span>
+                            <br>
+                            <a href="http://www.paygent.co.jp/service/" target="_blank">
+                                {{ 'paygent_payment.admin.config.paygent_payment_service'|trans }}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header"><span>{{ 'paygent_payment.admin.config.header'|trans }}</span></div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3"><span>{{ 'paygent_payment.admin.config.settlement_division'|trans }}</span><span
+                                            class="badge badge-primary ml-1">{{ 'paygent_payment.admin.config.required'|trans }}</span></div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.settlement_division) }}
+                                    {{ form_errors(form.settlement_division) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3"><span>{{ 'paygent_payment.admin.config.merchant_id'|trans }}</span><span
+                                            class="badge badge-primary ml-1">{{ 'paygent_payment.admin.config.required'|trans }}</span></div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.merchant_id) }}
+                                    {{ form_errors(form.merchant_id) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3"><span>{{ 'paygent_payment.admin.config.connect_id'|trans }}</span><span
+                                            class="badge badge-primary ml-1">{{ 'paygent_payment.admin.config.required'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.connect_id) }}
+                                    {{ form_errors(form.connect_id) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3"><span>{{ 'paygent_payment.admin.config.connect_password'|trans }}</span><span
+                                            class="badge badge-primary ml-1">{{ 'paygent_payment.admin.config.required'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.connect_password) }}
+                                    {{ form_errors(form.connect_password) }}
+                                </div>
+                            </div>
+                            <div class="row link-type">
+                                <div class="col-3"><span>{{ 'paygent_payment.admin.config.link_url'|trans }}</span><span
+                                            class="badge badge-primary ml-1">{{ 'paygent_payment.admin.config.required'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.link_config.link_url) }}
+                                    {{ form_errors(form.link_config.link_url) }}
+                                </div>
+                            </div>
+                            <div class="row link-type">
+                                <div class="col-3"><span>{{ 'paygent_payment.admin.config.hash_key'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.link_config.hash_key) }}
+                                    {{ form_errors(form.link_config.hash_key) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3"><span>{{ 'paygent_payment.admin.config.notice_hash_key'|trans }}</span><span
+                                            class="badge badge-primary ml-1">{{ 'paygent_payment.admin.config.required'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.notice_hash_key) }}
+                                    {{ form_errors(form.notice_hash_key) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3"><span>{{ 'paygent_payment.admin.config.paygent_payment_method'|trans }}</span><span
+                                            class="badge badge-primary ml-1">{{ 'paygent_payment.admin.config.required'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.paygent_payment_method) }}
+                                    {{ form_errors(form.paygent_payment_method) }}
+                                </div>
+                            </div>
+                            <div class="row link-type">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.link_payment_term'|trans }}</span><span
+                                            class="badge badge-primary ml-1">{{ 'paygent_payment.admin.config.required'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    <span style="float: left;line-height: 30px;">{{ 'paygent_payment.admin.config.link_payment_term.description'|trans }}</span>
+                                    <span style="float: left;">{{ form_widget(form.link_config.link_payment_term) }}</span>
+                                    <span style="float: left;line-height: 30px;">{{ 'paygent_payment.admin.config.link_payment_term.day_unit'|trans }}</span>
+                                    <br/><br/>{{ form_errors(form.link_config.link_payment_term) }}
+                                </div>
+                            </div>
+                            <div class="row module-type">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.rollback_target_term'|trans }}</span><span
+                                            class="badge badge-primary ml-1">{{ 'paygent_payment.admin.config.required'|trans }}</span>
+                                </div>
+                                {% if form.settlement_division.vars.value != 2 %}
+                                <div class="col mb-2">
+                                    <span style="float: left;line-height: 30px;">{{ 'paygent_payment.admin.config.rollback_term.description'|trans }}</span>
+                                    <span style="float: left;">{{ form_widget(form.rollback_target_term) }}</span>
+                                    <span style="float: left;line-height: 30px;">{{ 'paygent_payment.admin.config.rollback_term.day_unit'|trans }}</span>
+                                    <br/><br/>
+                                    {{ form_errors(form.rollback_target_term) }}
+                                </div>
+                                {% else %}
+                                    <span style="float: left;line-height: 30px;">{{ 'paygent_payment.admin.config.rollback_term.description'|trans }}</span>
+                                    <span style="float: left;">
+                                        <input type="text" id="config_rollback_target_term" name="config[rollback_target_term]" style="width:50px" maxlength="2" class="form-control" value="10">
+                                    </span>
+                                    <span style="float: left;line-height: 30px;">{{ 'paygent_payment.admin.config.rollback_term.day_unit'|trans }}</span>
+                                    <br/><br/>
+                                {% endif %}
+                            </div>
+                            <div class="row link-type">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.rollback_target_term'|trans }}</span><span
+                                            class="badge badge-primary ml-1">{{ 'paygent_payment.admin.config.required'|trans }}</span>
+                                </div>
+                                {% if form.settlement_division.vars.value == 2 %}
+                                <div class="col mb-2">
+                                    <span style="float: left;line-height: 30px;">{{ 'paygent_payment.admin.config.rollback_term.description'|trans }}</span>
+                                    <span style="float: left;">{{ form_widget(form.rollback_target_term) }}</span>
+                                    <span style="float: left;line-height: 30px;">{{ 'paygent_payment.admin.config.rollback_term.day_unit'|trans }}</span>
+                                    <br/><br/>
+                                    {{ form_errors(form.rollback_target_term) }}
+                                </div>
+                                {% else %}
+                                    <span style="float: left;line-height: 30px;">{{ 'paygent_payment.admin.config.rollback_term.description'|trans }}</span>
+                                    <span style="float: left;">
+                                        <input type="text" id="config_rollback_target_term" name="config[rollback_target_term]" style="width:50px" maxlength="2" class="form-control" value="7">
+                                    </span>
+                                    <span style="float: left;line-height: 30px;">{{ 'paygent_payment.admin.config.rollback_term.day_unit'|trans }}</span>
+                                    <br/><br/>
+                                {% endif %}
+                            </div>
+                            <div class="row link-type">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.return_url'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.link_config.return_url) }}
+                                    {{ form_errors(form.link_config.return_url) }}
+                                    <span>
+                                        <p class='small'>{{ 'paygent_payment.admin.config.return_url.description'|trans }}</p>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row link-type">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.merchant_name'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.link_config.merchant_name) }}
+                                    {{ form_errors(form.link_config.merchant_name) }}
+                                    <span>
+                                        <p class='small'>{{ 'paygent_payment.admin.config.merchant_name.description'|trans }}</p>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row link-type">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.link_copy_right'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.link_config.link_copy_right) }}
+                                    {{ form_errors(form.link_config.link_copy_right) }}
+                                    <span>
+                                        <p class='small'>{{ 'paygent_payment.admin.config.link_copy_right.description'|trans }}</p>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row link-type">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.link_free_memo'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.link_config.link_free_memo) }}
+                                    {{ form_errors(form.link_config.link_free_memo) }}
+                                    <span>
+                                        <p class='small'>{{ 'paygent_payment.admin.config.link_free_memo.description'|trans }}</p>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card rounded border-0 mb-4 link-type credit">
+                        <div class="card-header"><span>{{ 'paygent_payment.admin.config.credit_header'|trans }}</span></div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.card_class'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.link_credit_config.card_class) }}
+                                    {{ form_errors(form.link_credit_config.card_class) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.card_conf'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.link_credit_config.card_conf) }}
+                                    {{ form_errors(form.link_credit_config.card_conf) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.stock_card'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.link_credit_config.stock_card) }}
+                                    {{ form_errors(form.link_credit_config.stock_card) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card rounded border-0 mb-4 module-type credit">
+                        <div class="card-header"><span>{{ 'paygent_payment.admin.config.module_credit_header'|trans }}</span></div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.payment_division'|trans }}</span><span
+                                            class="badge badge-primary ml-1">{{ 'paygent_payment.admin.config.required'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.module_credit_config.payment_division) }}
+                                    {{ form_errors(form.module_credit_config.payment_division) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.security_code'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.module_credit_config.security_code) }}
+                                    {{ form_errors(form.module_credit_config.security_code) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.credit_3d'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.module_credit_config.credit_3d) }}
+                                    {{ form_errors(form.module_credit_config.credit_3d) }}
+                                </div>
+                            </div>
+                            <div class="row credit_3d2">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.credit_3d_merchant_name'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.module_credit_config.credit_3d_merchant_name) }}
+                                    {{ form_errors(form.module_credit_config.credit_3d_merchant_name) }}
+                                    <span>
+                                        <p class='small'>{{ 'paygent_payment.admin.config.credit_3d_merchant_name.description'|trans }}</p>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="row credit_3d" id="credit_3d_hash_key">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.credit_3d_hash_key'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.module_credit_config.credit_3d_hash_key) }}
+                                    {{ form_errors(form.module_credit_config.credit_3d_hash_key) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.module_stock_card'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.module_credit_config.module_stock_card) }}
+                                    {{ form_errors(form.module_credit_config.module_stock_card) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.card_valid_check'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.module_credit_config.card_valid_check) }}
+                                    {{ form_errors(form.module_credit_config.card_valid_check) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.token_env'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.module_credit_config.token_env) }}
+                                    {{ form_errors(form.module_credit_config.token_env) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.token_key'|trans }}</span><span
+                                            class="badge badge-primary ml-1">{{ 'paygent_payment.admin.config.required'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.module_credit_config.token_key) }}
+                                    {{ form_errors(form.module_credit_config.token_key) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card rounded border-0 mb-4 module-type conveni">
+                        <div class="card-header"><span>{{ 'paygent_payment.admin.config.conveni_header'|trans }}</span></div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.conveni_limit_date_num'|trans }}</span><span
+                                            class="badge badge-primary ml-1">{{ 'paygent_payment.admin.config.required'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    <span style="float: left;line-height: 30px;">{{ 'paygent_payment.admin.config.conveni_limit_date_num.description'|trans }}</span>
+                                    <span style="float: left;">{{ form_widget(form.module_conveni_config.conveni_limit_date_num) }}</span>
+                                    <span style="float: left;line-height: 30px;">{{ 'paygent_payment.admin.config.conveni_limit_date_num.day_unit'|trans }}</span>
+                                    {{ form_errors(form.module_conveni_config.conveni_limit_date_num) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card rounded border-0 mb-4 module-type atm">
+                        <div class="card-header"><span>{{ 'paygent_payment.admin.config.atm_header'|trans }}</span></div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.atm_limit_date'|trans }}</span><span
+                                            class="badge badge-primary ml-1">{{ 'paygent_payment.admin.config.required'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    <span style="float: left;line-height: 30px;">{{ 'paygent_payment.admin.config.atm_limit_date.description'|trans }}</span>
+                                    <span style="float: left;">{{ form_widget(form.module_atm_config.atm_limit_date) }}</span>
+                                    <span style="float: left;line-height: 30px;">{{ 'paygent_payment.admin.config.atm_limit_date.day_unit'|trans }}</span>
+                                    {{ form_errors(form.module_atm_config.atm_limit_date) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.payment_detail'|trans }}</span><span
+                                            class="badge badge-primary ml-1">{{ 'paygent_payment.admin.config.required'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.module_atm_config.payment_detail) }}
+                                    {{ form_errors(form.module_atm_config.payment_detail) }}
+                                    <span>
+                                        <p class='small'>{{ 'paygent_payment.admin.config.payment_detail.description'|trans }}</p>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card rounded border-0 mb-4 module-type bank">
+                        <div class="card-header"><span>{{ 'paygent_payment.admin.config.asp_header'|trans }}</span></div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.asp_payment_term'|trans }}</span><span
+                                            class="badge badge-primary ml-1">{{ 'paygent_payment.admin.config.required'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    <span style="float: left;line-height: 30px;">{{ 'paygent_payment.admin.config.asp_payment_term.description'|trans }}</span>
+                                    <span style="float: left;">{{ form_widget(form.module_bank_config.asp_payment_term) }}</span>
+                                    <span style="float: left;line-height: 30px;">{{ 'paygent_payment.admin.config.asp_payment_term.day_unit'|trans }}</span>
+                                    {{ form_errors(form.module_bank_config.asp_payment_term) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.claim_kanji'|trans }}</span><span
+                                            class="badge badge-primary ml-1">{{ 'paygent_payment.admin.config.required'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.module_bank_config.claim_kanji) }}
+                                    {{ form_errors(form.module_bank_config.claim_kanji) }}
+                                    <span>
+                                        <p class='small'>{{ 'paygent_payment.admin.config.claim_kanji.description'|trans }}</p>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.claim_kana'|trans }}</span><span
+                                            class="badge badge-primary ml-1">{{ 'paygent_payment.admin.config.required'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.module_bank_config.claim_kana) }}
+                                    {{ form_errors(form.module_bank_config.claim_kana) }}
+                                    <span>
+                                        <p class='small'>{{ 'paygent_payment.admin.config.claim_kana.description'|trans }}</p>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.copy_right'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.module_bank_config.copy_right) }}
+                                    {{ form_errors(form.module_bank_config.copy_right) }}
+                                    <span>
+                                        <p class='small'>{{ 'paygent_payment.admin.config.copy_right.description'|trans }}</p>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.free_memo'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.module_bank_config.free_memo) }}
+                                    {{ form_errors(form.module_bank_config.free_memo) }}
+                                    <span>
+                                        <p class='small'>{{ 'paygent_payment.admin.config.free_memo.description'|trans }}</p>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card rounded border-0 mb-4 module-type career">
+                        <div class="card-header"><span>{{ 'paygent_payment.admin.config.career_header'|trans }}</span></div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.career_division'|trans }}</span><span
+                                            class="badge badge-primary ml-1">{{ 'paygent_payment.admin.config.required'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.module_career_config.career_division) }}
+                                    {{ form_errors(form.module_career_config.career_division) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card rounded border-0 mb-4 module-type paidy">
+                        <div class="card-header"><span>{{ 'paygent_payment.admin.config.paidy_header'|trans }}</span></div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.api_key'|trans }}</span><span
+                                            class="badge badge-primary ml-1">{{ 'paygent_payment.admin.config.required'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.module_paidy_config.api_key) }}
+                                    {{ form_errors(form.module_paidy_config.api_key) }}
+                                    <span>
+                                        <p class='small'>{{ 'paygent_payment.admin.config.api_key.description'|trans }}</p>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.logo_url'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.module_paidy_config.logo_url) }}
+                                    {{ form_errors(form.module_paidy_config.logo_url) }}
+                                    <span>
+                                        <p class='small'>
+                                            {{ 'paygent_payment.admin.config.logo_url.description_1'|trans }}</br>
+                                            {{ 'paygent_payment.admin.config.logo_url.description_2'|trans }}
+                                        </p>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3">
+                                    <span>{{ 'paygent_payment.admin.config.paidy_store_name'|trans }}</span>
+                                </div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.module_paidy_config.paidy_store_name) }}
+                                    {{ form_errors(form.module_paidy_config.paidy_store_name) }}
+                                    <span>
+                                        <p class='small'>{{ 'paygent_payment.admin.config.paidy_store_name.description'|trans }}</p>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="c-conversionArea">
+            <div class="c-conversionArea__container">
+                <div class="row justify-content-between align-items-center">
+                    <div class="col-6">
+                        <div class="c-conversionArea__leftBlockItem">
+                            <a class="c-baseLink"
+                               href="{{ url('admin_store_plugin') }}">
+                                <i class="fa fa-backward" aria-hidden="true"></i>
+                                <span>{{ 'paygent_payment.admin.config.back'|trans }}</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row align-items-center justify-content-end">
+                            <div class="col-auto">
+                                <button class="btn btn-ec-conversion px-5"
+                                        type="submit">{{ 'paygent_payment.admin.config.save'|trans }}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}

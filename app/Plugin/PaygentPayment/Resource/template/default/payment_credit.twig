@@ -1,0 +1,553 @@
+{#
+This file is part of EC-CUBE
+Copyright (c) 2006 PAYGENT Co.,Ltd. All rights reserved.
+https://www.paygent.co.jp/
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#}
+{% extends 'default_frame.twig' %}
+{% form_theme form 'Form/form_div_layout.twig' %}
+{% block javascript %}
+<script type="text/javascript" src="{{ javascriptUrl }}" charset="UTF-8"></script>
+<script>
+var send = false;
+
+var merchant_id = {{ merchant_id }};
+var token_key = "{{ token_key }}";
+var isSecurityCode = {{ isSecurityCode }};
+var paygent_token_connect_url = "{{ paygent_token_connect_url }}";
+
+function isset(data) {
+    if(data === "" || data === null || data === undefined){
+        return false;
+    }else{
+        return true;
+    }
+}
+
+function clearFormData() {
+    $("#clear_target").find('input,select').each( function() {
+            $(this).val('');
+    })
+}
+
+function getInputData() {
+    var form = $("form,#credit_payment");
+
+    var card_seq = form.find("input[name=customer_card_id]:checked").val();
+    var card_no01 = form.find("#credit_payment_card_no01").val();
+    var card_no02 = form.find("#credit_payment_card_no02").val();
+    var card_no03 = form.find("#credit_payment_card_no03").val();
+    var card_no04 = form.find("#credit_payment_card_no04").val();
+    var security_code = form.find("#credit_payment_security_code").val();
+    var card_year = form.find("#credit_payment_card_year").val();
+    var card_month = form.find("#credit_payment_card_month").val();
+    var card_name01 = form.find("#credit_payment_card_name01").val();
+    var card_name02 = form.find("#credit_payment_card_name02").val();
+
+    return {card_seq: card_seq,
+            card_no01: card_no01,
+            card_no02: card_no02,
+            card_no03: card_no03,
+            card_no04: card_no04,
+            security_code: security_code,
+            card_year: card_year,
+            card_month: card_month,
+            card_name01: card_name01,
+            card_name02: card_name02};
+}
+
+
+function callCreateTokenCvc(){
+    //入力データの取得
+    var inputData = getInputData();
+
+    //セキュリティーコードの必須チェック
+    if (isset(inputData.security_code) == false) {
+        send = false;
+        alert("セキュリティーコードが入力されていません。");
+        return;
+    }
+
+    //登録カード選択の必須チェック
+    if (isset(inputData.card_seq) == false) {
+        alert("登録カードが選択されていません。");
+        send = false;
+        return;
+    }
+
+    var paygentToken = new PaygentToken();
+
+    if (isset(paygent_token_connect_url)) {
+        paygentToken.URL = paygent_token_connect_url;
+    }
+
+    paygentToken.createCvcToken(
+        merchant_id,
+        token_key,{
+            cvc:inputData.security_code
+        },execSubmitCvc
+    );
+}
+
+function execSubmitCvc(response) {
+
+    if (response.result == '0000') {
+        //入力値をクリアする(これをしないとカード情報が加盟店に渡ってしまってトークン決済の意味を成さない)
+        clearFormData()
+
+        var form = $("form[name='credit_payment']");
+
+        //取得したトークンをhiddenのinput要素にセット
+        form.find("#credit_payment_card_token").val(response.tokenizedCardObject.token);
+
+        form.submit();
+
+    } else {
+        showErrorMessageCvc(response.result);
+        send = false;
+    }
+}
+
+function showErrorMessageCvc(result_code) {
+
+    var error_message = "";
+
+    switch (result_code){
+      case "1600":
+        error_message = 'セキュリティコードの書式が不正です。';
+        break;
+      case "7000":
+        error_message = '非対応のブラウザです。';
+        break;
+      case "8000":
+        error_message = 'システムメンテナンス中です。';
+        break;
+      default:
+        error_message = 'システムエラー (' + result_code + ')';
+        break;
+    }
+
+    alert(error_message);
+}
+
+function callCreateToken() {
+	$("#credit_payment_delete_card").val("0");
+    //二重注文制御
+    if(send) {
+
+        alert("只今、処理中です。しばらくお待ち下さい。");
+        return false;
+
+    } else {
+
+        send = true;
+
+        //入力データの取得
+        var inputData = getInputData();
+        var form = $("form[name='credit_payment']");
+
+        //登録カード使用の場合
+        var stock = form.find("#credit_payment_stock");
+        if (isset(stock.val()) && stock.prop("checked")) {
+            // 登録カード使用 かつ セキュリティコード不要 の場合はそのまま送信をする
+            if (isSecurityCode == 0) {
+                form.submit();
+                return;
+            }
+
+            console.log("cvc");
+            callCreateTokenCvc();
+            return;
+        }
+
+        //セキュリティーコードの必須チェック
+        if (isset(inputData.security_code) == false && isSecurityCode == 1) {
+            send = false;
+            alert("セキュリティーコードが入力されていません。");
+            return;
+        }
+        //カード名義の必須チェック
+        if (isset(inputData.card_name01) == false || isset(inputData.card_name01) == false) {
+            alert("カード名義が入力されていません。");
+            send = false;
+            return;
+        }
+
+        var paygentToken = new PaygentToken();
+
+        if (isset(paygent_token_connect_url)) {
+            paygentToken.URL = paygent_token_connect_url;
+        }
+
+        //カード登録有無により第四引数のコールバックメソッドを切り替える
+        var stock_new = form.find("#credit_payment_stock_new");
+        if (isset(stock_new.val()) && stock_new.prop("checked")) {
+            paygentToken.createToken(
+                merchant_id,
+                token_key,
+                {
+                    card_number:inputData.card_no01 + inputData.card_no02 + inputData.card_no03 + inputData.card_no04,
+                    expire_year:inputData.card_year,
+                    expire_month:inputData.card_month,
+                    cvc:(inputData.security_code != null) ? inputData.security_code : '',
+                    name:inputData.card_name01 + ' ' + inputData.card_name02
+                },callCreateTokenStock
+            );
+        } else {
+            paygentToken.createToken(
+                merchant_id,
+                token_key,
+                {
+                    card_number:inputData.card_no01 + inputData.card_no02 + inputData.card_no03 + inputData.card_no04,
+                    expire_year:inputData.card_year,
+                    expire_month:inputData.card_month,
+                    cvc:(inputData.security_code != null) ? inputData.security_code : '',
+                    name:inputData.card_name01 + ' ' + inputData.card_name02
+                },execSubmit
+            );
+        }
+    }
+}
+
+function callCreateTokenStock(response) {
+
+    if (response.result == '0000') {
+        //入力データの取得
+        var inputData = getInputData();
+
+        var form = $("form[name='credit_payment']");
+
+        //取得したトークンをhiddenのinput要素にセット
+        form.find("#credit_payment_card_token_stock").val(response.tokenizedCardObject.token);
+
+        var paygentToken = new PaygentToken();
+
+        if (isset(paygent_token_connect_url)) {
+            paygentToken.URL = paygent_token_connect_url;
+        }
+
+        paygentToken.createToken(
+            merchant_id,
+            token_key,
+            {
+                card_number:inputData.card_no01 + inputData.card_no02 + inputData.card_no03 + inputData.card_no04,
+                expire_year:inputData.card_year,
+                expire_month:inputData.card_month,
+                cvc:(inputData.security_code != null) ? inputData.security_code : '',
+                name:inputData.card_name01 + ' ' + inputData.card_name02
+            },execSubmit
+        );
+    } else {
+        showErrorMessage(response.result);
+        send = false;
+    }
+}
+
+function execSubmit(response) {
+
+    if (response.result == '0000') {
+        //入力値をクリアする(これをしないとカード情報が加盟店に渡ってしまってトークン決済の意味を成さない)
+        clearFormData()
+
+        var form = $("form[name='credit_payment']");
+
+        //取得したトークンをhiddenのinput要素にセット
+        form.find("#credit_payment_card_token").val(response.tokenizedCardObject.token);
+
+        form.submit();
+
+    } else {
+        showErrorMessage(response.result);
+        send = false;
+    }
+}
+
+function showErrorMessage(result_code) {
+
+    var error_message = "";
+
+    switch (result_code){
+      case "1300":
+        error_message = 'カード番号が入力されていません。';
+        break;
+      case "1301":
+        error_message = 'カード番号の書式が不正です。';
+        break;
+      case "1400":
+        error_message = '有効期限(年)が入力されていません。';
+        break;
+      case "1401":
+        error_message = '有効期限(年)の書式が不正です。';
+        break;
+      case "1500":
+        error_message = '有効期限(月)が入力されていません。';
+        break;
+      case "1501":
+        error_message = '有効期限(月)の書式が不正です。';
+        break;
+      case "1502":
+        error_message = '有効期限(年月)が不正です。';
+        break;
+      case "1600":
+        error_message = 'セキュリティコードの書式が不正です。';
+        break;
+      case "1700":
+        error_message = 'カード名義の書式が不正です。';
+        break;
+      case "7000":
+        error_message = '非対応のブラウザです。';
+        break;
+      case "8000":
+        error_message = 'システムメンテナンス中です。';
+        break;
+      default:
+        error_message = 'システムエラー (' + result_code + ')';
+        break;
+    }
+
+    alert(error_message);
+}
+
+$(function () {
+    $("form").submit(function() {
+        $(".btn").prop("disabled",true);
+    });
+
+    //「登録カードを使う」がチェックされた状態の場合
+    if ($("#credit_payment_stock").prop("checked")) {
+        $("#clear_target").find("dl").each(function() {
+            if ($(this).prop("id") != "security_code") {
+                $(this).hide();
+            }
+        });
+        $("#stock_new").hide();
+    }
+    //「登録カードを使う」に変更時
+    $("#credit_payment_stock").change(function() {
+        if ($(this).prop("checked")) {
+            $("#clear_target").find("dl").each(function() {
+                if ($(this).prop("id") != "security_code") {
+                    $(this).hide();
+                }
+            });
+            $("#stock_new").hide();
+        } else {
+            $("#clear_target").find("dl").each(function() {
+                $(this).show();
+            });
+            $("#stock_new").show();
+        }
+    });
+    //カードの削除時
+    $("#btnRemove").click(function() {
+        clearFormData();
+        $("#credit_payment_delete_card").val("1");
+        $("form[name='credit_payment']").submit();
+    });
+    $(document).on("mouseover", ".bg-load-overlay", function () {
+        $(this).remove();
+    });
+})
+</script>
+{% endblock %}
+{% block main %}
+    <div id="main_middle">
+        <div class="ec-role">
+            <div class="ec-rectHeading">
+                <h2>ペイジェント クレジット</h2>
+                {% if error %}
+                    <div>
+                        <p style="color:red">{{ error | raw | nl2br }}</p>
+                    </div>
+            	{% endif %}
+            </div>
+            {{ form_start(form) }}
+                {{ form_widget(form._token) }}
+                <div class="ec-borderedDefs" style="margin-top:10px">
+                    <dl>
+                        <dt>
+                            <label class="ec-label">{{ 'paygent_payment.admin.credit.payment_class'|trans }}</label>
+                        </dt>
+                        <dd class="ec-select">
+                            {{ form_widget(form.payment_class) }}
+                            <span style="color:red"> {{ form_errors(form.payment_class) }} </span>
+                        </dd>
+                    </dl>
+                    {% if list_data and isStockCard %}
+                    <dl id="stock_card">
+                        <dt>
+                            <label class="ec-label">{{ 'paygent_payment.admin.credit.stock_card'|trans }}</label>
+                        </dt>
+                        <dd>
+                        {% if error_card %}
+                            <span style="color:red"> {{ error_card }} </span>
+                        {% endif %}
+                            <div>
+                                {{ form_widget(form.stock) }}
+                            </div>
+                            <div style="margin-top:10px">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>{{ 'paygent_payment.admin.credit.stock_card.table_header_1'|trans }}</th>
+                                            <th>{{ 'paygent_payment.admin.credit.stock_card.table_header_2'|trans }}</th>
+                                            <th>{{ 'paygent_payment.admin.credit.stock_card.table_header_3'|trans }}</th>
+                                            <th>{{ 'paygent_payment.admin.credit.stock_card.table_header_4'|trans }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for data in list_data %}
+                                        <tr id='tblRow{{data.customer_card_id }}'>
+                                            <td>
+                                                <input type="radio" name="customer_card_id" value="{{ data.customer_card_id }}" />
+                                            </td>
+                                            <td>{{data.card_number}}</td>
+                                            <td>{{data.card_valid_term}}</td>
+                                            <td>{{data.cardholder_name}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="margin-bottom:10px">
+                                <button type="button" id="btnRemove" class="btn btn-lg">選択カードの削除</button>
+                            </div>
+                        </dd>
+                    </dl>
+                    {% elseif isStockCard %}
+                    <dl style="display: none">
+                        {{ form_widget(form.stock) }}
+                    </dl>
+                    {% endif %}
+                    <div id="clear_target">
+                        <dl id="card_no">
+                            <dt>
+                                <label class="ec-label">{{ 'paygent_payment.admin.credit.card_no'|trans }}</label>
+                            </dt>
+                            <dd>
+                                <span style="color:red">
+                                    {{ form_errors(form.card_no01) }}
+                                    {{ form_errors(form.card_no02) }}
+                                    {{ form_errors(form.card_no03) }}
+                                    {{ form_errors(form.card_no04) }}
+                                </span>
+                                <div class="form-inline">
+                                    <div class="form-group">
+                                        {{ form_widget(form.card_no01, { 'attr': { 'class': 'form-control' }}) }}  &nbsp; - &nbsp;
+                                    </div>
+                                    <div class="form-group">
+                                        {{ form_widget(form.card_no02, { 'attr': { 'class': 'form-control' }}) }}  &nbsp; - &nbsp;
+                                    </div>
+                                    <div class="form-group">
+                                        {{ form_widget(form.card_no03, { 'attr': { 'class': 'form-control' }}) }}  &nbsp; - &nbsp;
+                                    </div>
+                                    <div class="form-group">
+                                        {{ form_widget(form.card_no04, { 'attr': { 'class': 'form-control' }}) }}
+                                    </div>
+                                </div>
+                                <p>
+                                    <span style="color:red; margin-top: 10px;">
+                                        {{ 'paygent_payment.admin.credit.card_no.description'|trans }}<br>
+                                    </span>
+                                    {{ 'paygent_payment.admin.credit.card_no.example'|trans }}
+                                </p>
+                            </dd>
+                        </dl>
+                        {% if isSecurityCode %}
+                        <dl id="security_code">
+                            <dt>
+                                <label class="ec-label">{{ 'paygent_payment.admin.credit.security_code'|trans }}</label>
+                            </dt>
+                            <dd class='ec-input' style='max-width: 70px'>
+                                {{ form_widget(form.security_code, { 'attr': { 'class': 'form-control' }}) }}
+                            </dd>
+                        </dl>
+                        {% endif %}
+                        <dl id="valid_term">
+                            <dt>
+                                <label class="ec-label">{{ 'paygent_payment.admin.credit.valid_term'|trans }}</label>
+                            </dt>
+                            <dd>
+                                <div class="form-inline">
+                                    <div class="form-group ec-select">
+                                        {{ form_widget(form.card_month) }}月  &nbsp; / &nbsp;
+                                    </div>
+                                    <div class="form-group ec-select">
+                                        {{ form_widget(form.card_year) }}年
+                                    </div>
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl id="credit_name">
+                            <dt>
+                                <label class="ec-label">
+                                    {{ 'paygent_payment.admin.credit.name'|trans }}<br>
+                                    {{ 'paygent_payment.admin.credit.name.description'|trans }}
+                                </label>
+                            </dt>
+                            <dd>
+                                <span style="color:red">
+                                    {{ form_errors(form.card_name01) }}
+                                    {{ form_errors(form.card_name02) }}
+                                </span>
+                                <div class="ec-halfInput">
+                                    {{ form_widget(form.card_name01, { 'attr': { 'placeholder': '名' }}) }}
+                                    {{ form_widget(form.card_name02, { 'attr': { 'placeholder': '姓' }}) }}
+                                </div>
+                                <span>
+                                    {{ 'paygent_payment.admin.credit.name.example'|trans }}
+                                </span>
+                            </dd>
+                        </dl>
+                    </div>
+                    {% if isStockCard and isCustomer and card_stock_count < card_stock_max %}
+                    <dl id="stock_new">
+                        <dt>
+                            <label class="ec-label">{{ 'paygent_payment.admin.credit.stock_new'|trans }}</label>
+                        </dt>
+                        <dd>
+                            {{ form_widget(form.stock_new) }}
+                            <span style="color:red">
+                                {{ form_errors(form.stock_new) }}
+                            </span>
+                            <p style="margin-bottom:10px">
+                                {{ 'paygent_payment.admin.credit.stock_new.description_1'|trans }}<br>
+                                {{ 'paygent_payment.admin.credit.stock_new.description_2'|trans({ '%card_stock_max%': card_stock_max }) }}
+                            </p>
+                        </dd>
+                    </dl>
+                    {% elseif isStockCard %}
+                    <dl style="display: none">
+                        {{ form_widget(form.stock_new) }}
+                    </dl>
+                    {% endif %}
+                </div>
+                <div style="margin-top:10px">
+                    {{ 'paygent_payment.admin.credit.description_1'|trans }}<br>
+                    <span style="color:red">
+                        {{ 'paygent_payment.admin.credit.description_2'|trans }}
+                    </span>
+                    <hr style="background:#D3D3D3; border:0; height:1px">
+                </div>
+                <div class="row no-padding" style="margin-bottom:50px">
+                    <div class="col-sm-offset-2 col-sm-4">
+                        <p><a href="{{ url('paygent_payment/payment_credit_back') }}" class="ec-blockBtn--cancel" id="paygentPaymentBack">戻る</a></p>
+                    </div>
+                    <div class="col-sm-4">
+                        <p><button onclick="callCreateToken();return false" type="submit" class="ec-blockBtn--action">次へ</button></p>
+                    </div>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

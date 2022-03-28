@@ -1,0 +1,8 @@
+{#
+Copyright (c) 2018 VeriTrans Inc., a Digital Garage company. All rights reserved.
+http://www.veritrans.co.jp/
+#}
+{% block main %}
+    {# 決済方法に応じたテンプレート読込 #}
+    {% include ["VeriTrans4G/Resource/template/default/Shopping/vt4g_payment_#{paymentType|lower}.twig", 'error.twig'] ignore missing with {'error_title': '決済エラー', 'error_message': 'システムエラーが発生しました。'} %}
+{% endblock %}

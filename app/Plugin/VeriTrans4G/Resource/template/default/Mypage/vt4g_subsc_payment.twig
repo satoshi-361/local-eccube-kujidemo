@@ -1,0 +1,93 @@
+{#
+Copyright (c) 2018 VeriTrans Inc., a Digital Garage company. All rights reserved.
+http://www.veritrans.co.jp/
+#}
+{% extends  'default_frame.twig' %}
+
+{% set mypageno = 'vt4g_subsc_payment' %}
+
+{% set body_class = 'mypage' %}
+
+{% block main %}
+    <div class="ec-layoutRole__main">
+        <div class="ec-mypageRole">
+            <div class="ec-pageHeader">
+                <h1>マイページ/継続課金決済履歴</h1>
+            </div>
+            {{ include('Mypage/navi.twig') }}
+        </div>
+        <div class="ec-mypageRole">
+            {% set oldOrderId = "" %}
+            {% for subscOrder in pagination %}
+                <div class="ec-historyRole">
+                    {% if oldOrderId != subscOrder.first_order_id %}
+                    <div class="ec-historyRole__contents">
+
+                        <div class="ec-historyRole__header">
+                            <div class="ec-historyListHeader">
+                                <dl class="ec-definitions">
+                                    <dt>{{ '初回決済　ご注文番号'|trans }}</dt>
+                                    <dd>{{ subscOrder.first_order_no }}</dd>
+                                </dl>
+                                <p class="ec-historyListHeader__action"><a class="ec-inlineBtn"
+                                                                           href="{{ url('mypage_vt4g_subsc_payment_history', {'order_id': subscOrder.first_order_id}) }}">{{ '決済履歴'|trans }}</a>
+                                </p>
+                            </div>
+                        </div>
+                    {% else %}
+                    <div style="flex-direction: row; display: flex;">
+                        <div class="ec-historyRole__header">
+                        </div>
+                    {% endif %}
+
+                        <div class="ec-historyRole__detail">
+                            <div class="ec-imageGrid">
+                                <div class="ec-imageGrid__img">
+                                    <img src="{{ asset(subscOrder.file_name|no_image_product, 'save_image') }}">
+                                </div>
+                                <div class="ec-imageGrid__content">
+                                    <dl class="ec-definitions">
+                                        <dt>{{ '継続課金　ご契約状況'|trans }}</dt>
+                                        {% if subscOrder.subsc_status == 1 %}
+                                            <dd>{{ '継続'|trans }}</dd>
+                                        {% else %}
+                                            <dd>{{ '解約'|trans }}</dd>
+                                        {% endif %}
+                                    </dl>
+                                    <p class="ec-historyRole__detailTitle">{{ subscOrder.product_name }}</p>
+                                    {% if subscOrder.class_category_name1 is not empty %}
+                                        {{ subscOrder.class_category_name1 }}
+                                    {% endif %}
+                                    {% if subscOrder.class_category_name2 is not empty %}
+                                        / {{ subscOrder.class_category_name2 }}
+                                    {% endif %}
+                                    <p class="ec-historyRole__detailPrice">{{ subscOrder.price_inc_tax|price }}
+                                        × {{ subscOrder.quantity }}</p>
+                                    <div style="display: inline-block;">
+                                        <p class="ec-historyRole__detailTitle" style="display: inline-block;">{{ 'お届け先'|trans }}</p>
+                                        <p style="display: inline-block;">{{ subscOrder.shipping_name }}</p>
+                                        <p style="display: inline-block;">{{ subscOrder.shipping_addr }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            {% set oldOrderId = subscOrder.first_order_id %}
+            {% endfor %}
+            <div class="ec-pagerRole">
+                {% include "pager.twig" with {'pages': pagination.paginationData} %}
+            </div>
+        </div>
+        <div class="ec-mypageRole">
+            <div class="ec-historyRole__contents">
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+{{ include('VeriTrans4G/Resource/template/default/css/vt4g_css.twig') }}
+{% endblock %}

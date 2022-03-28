@@ -1,0 +1,2035 @@
+    {#
+    This file is part of EC-CUBE
+    Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+    http://www.ec-cube.co.jp/
+    For the full copyright and license information, please view the LICENSE
+    file that was distributed with this source code.
+    #}
+    {% import _self as formMacros %}
+    {% macro printBulkSetting(bulkSetting) %}
+    <div>
+        <hr>
+        <div class="row mt-2 mx-4 float-right"><a class="btn btn-block btn-ec-regular mt-1 remove-bulk">削除</a></div>
+        <div class="row mb-4 mt-4 ml-4">
+            <h5>設定</h5>
+        </div>
+        <hr>
+        <div class="row mb-3 ml-4">
+            <div class="col-3 mt-2">
+                <span>設定する商品 : </span>
+            </div>
+            <div class="col mr-3">
+                {{ form_widget(bulkSetting.setOption) }}
+                {{ form_errors(bulkSetting.setOption) }}
+            </div>
+        </div>
+        <div class="row mb-3 ml-4">
+            <div class="col-3 mt-2">
+                <span>等数 : </span>
+            </div>
+            <div class="col mr-3">
+                {{ form_widget(bulkSetting.grade) }}
+                {{ form_errors(bulkSetting.grade) }}                                            
+            </div>
+        </div>
+        <div class="row mb-3 ml-4">
+            <div class="col-4 mt-2">
+                <span>景品ランク呼び名 : </span>
+            </div>
+            <div class="col mr-3">
+                {{ form_widget(bulkSetting.className) }}
+                {{ form_errors(bulkSetting.className) }}                                            
+            </div>
+        </div>
+        <div class="row mb-3 ml-4">
+            <div class="col-3 mt-2">
+                <span>説明文 : </span>
+            </div>
+            <div class="col mr-3">
+                {{ form_widget(bulkSetting.descriptionText) }}
+                {{ form_errors(bulkSetting.descriptionText) }}                                            
+            </div>
+        </div>
+        <div class="row mb-3 ml-4">
+            <div class="col-3 mt-2">
+                <span>商品の横に表示するテキスト（通常くじの確率の部分）</span>
+            </div>
+            <div class="col mr-4">
+                {{ form_widget(bulkSetting.showText) }}
+                {{ form_errors(bulkSetting.showText) }}                                            
+            </div>
+        </div>
+        <div class="row mb-3 ml-4">
+            <div class="col-3 mt-2">
+                <span>設定する個数 : </span>
+            </div>
+            <div class="col mr-3">
+                {{ form_widget(bulkSetting.setCount) }}
+                {{ form_errors(bulkSetting.setCount) }}                                            
+            </div>
+        </div>
+    </div>
+    {% endmacro %}
+    
+    {% macro printConfirmed(item) %}
+    <div>
+        <hr>
+        <div class="row mt-2 mx-4 float-right"><a class="btn btn-block btn-ec-regular mt-1 remove-confirmed">削除</a></div>
+        <div class="row my-4 ml-4">
+            <h5>設定</h5>    
+        </div>
+        <hr>
+        <div class="row mb-3 ml-4">
+            <div class="col-3 mt-2">
+                <span>等数 : </span>
+            </div>
+            <div class="col mr-3">
+                {{ form_widget(item.grade) }}
+                {{ form_errors(item.grade) }}                                            
+            </div>
+        </div>
+        <div class="row mb-3 ml-4">
+            <div class="col-4 mt-2">
+                <span>景品ランク呼び名 : </span>
+            </div>
+            <div class="col mr-3">
+                {{ form_widget(item.className) }}
+                {{ form_errors(item.className) }}                                            
+            </div>
+        </div>
+        <div class="row mb-3 ml-4">
+            <div class="col-3 mt-2">
+                <span>説明文</span>
+            </div>
+            <div class="col mr-3">
+                {{ form_widget(item.descriptionText) }}
+                {{ form_errors(item.descriptionText) }}                                            
+            </div>
+        </div>
+        <div class="row mb-3 ml-4">
+            <div class="col-4">
+                <span>くじの色 : </span>
+            </div>
+            <div class="col mr-3">
+                {{ form_widget(item.colorName) }}
+                {{ form_errors(item.colorName) }}                                            
+            </div>
+        </div>
+        <div class="row mb-3 ml-4">
+            <div class="col-3 mt-2">
+                <span>設定する商品 : </span>
+            </div>
+            <div class="col mr-3">
+                {{ form_widget(item.setOption) }}
+                {{ form_errors(item.setOption) }}                                            
+            </div>
+        </div>
+        <div class="row mb-3 ml-4">
+            <div class="col-3 mt-2">
+                <span class=" mb-3">設定する個数 : </span>
+            </div>
+            <div class="col mr-3">
+                {{ form_widget(item.setCount) }}
+                {{ form_errors(item.setCount) }}                                            
+            </div>
+        </div>
+    </div>
+    {% endmacro %}
+    
+    {% macro printLotteryProb(item) %}
+        <div>        
+            <hr>
+            <div class="row mt-2 mx-4 float-right"><a class="btn btn-block btn-ec-regular mt-1 remove-lotteryProb">削除</a></div>
+            <div class="row my-4 ml-4 mr-2">   
+                <h5>設定</h5>
+            </div>
+            <hr>
+            <div class="row mb-3 ml-4">
+                <div class="col-3 mt-2 mb-3">
+                    <span>等数 : </span>
+                </div>
+                <div class="col mr-3">
+                    {{ form_widget(item.grade) }}
+                    {{ form_errors(item.grade) }}                                            
+                </div>
+            </div>
+            <div class="row mb-3 ml-4">
+                <div class="col-4 mb-3">
+                    <span>景品ランク呼び名 : </span>
+                </div>
+                <div class="mr-3 col">
+                    {{ form_widget(item.className) }}
+                    {{ form_errors(item.className) }}                                            
+                </div>
+            </div>
+            <div class="row mb-3 ml-4">
+                <div class="col-3 mt-2">
+                    <span class=" mb-3">説明文</span>
+                </div>
+                <div class="col mr-3">
+                    {{ form_widget(item.descriptionText) }}
+                    {{ form_errors(item.descriptionText) }}                                            
+                </div>
+            </div>
+            <div class="row mb-3 ml-4">
+                <div class="col-3 mt-2">
+                    <span>当選確率 : </span>
+                </div>
+                <div class="col mr-3">
+                    {{ form_widget(item.setCount) }}
+                    {{ form_errors(item.setCount) }}                                            
+                </div>
+            </div>
+            <div class="row mb-3 ml-4">
+                <div class="col-4">
+                    <span>当選確率の表示 : </span>
+                </div>
+                <div class="col mr-3">
+                    {{ form_widget(item.showText) }}
+                    {{ form_errors(item.showText) }}                                            
+                </div>
+            </div>
+            <div class="row mb-3 ml-4">
+                <div class="col-4">
+                    <span>設定する商品 : </span>
+                </div>    
+                <div class="col mr-3">
+                    {{ form_widget(item.setOption) }}
+                    {{ form_errors(item.setOption) }}                                            
+                </div>
+            </div>
+            <div class="row mb-3 ml-4">
+                <div class="col-4">
+                    <span>くじの色 : </span>
+                </div>
+                <div class="col mr-3">
+                    {{ form_widget(item.colorName) }}
+                    {{ form_errors(item.colorName) }}                                            
+                </div>
+            </div>
+        </div>
+
+    {% endmacro %}
+    
+    {% extends '@admin/default_frame.twig' %}
+    
+    {% set menus = ['product', 'product_edit'] %}
+    
+    {% block title %}{{ 'admin.product.product_registration'|trans }}{% endblock %}
+    {% block sub_title %}{{ 'admin.product.product_management'|trans }}{% endblock %}
+    
+    {% form_theme form '@admin/Form/bootstrap_4_horizontal_layout.html.twig' %}
+    
+    {% block stylesheet %}
+        <link rel="stylesheet" href="{{ asset('assets/css/fileupload/jquery.fileupload.css', 'admin') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/fileupload/jquery.fileupload-ui.css', 'admin') }}">
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+        <link rel="stylesheet" href="{{ asset('assets/css/tagsinput.css', 'admin') }}">
+        <style>
+            #thumb div {
+                float: left;
+                margin: 4px
+            }
+            .ui-state-highlight {
+                height: 70px;
+                width: 70px;
+                border: dashed 1px #ccc;
+                background: #fff;
+            }
+            #animate_image {
+                width: 200px;
+                height: auto;
+            }
+            #anim_delete {
+                position: absolute;
+                z-index: 1;
+                right: 2px;
+                top: 2px;
+
+                font-family: FontAwesome;
+                font-size: 18px;
+                line-height: 1;
+                color: #54687A;
+                padding: 5px;
+                background: #fff;
+                border-radius: 3px;
+                display: none;
+            }
+            .twitter_tags {
+                width: 100%;
+                height: 30px;
+                border: 1px solid darkgray;
+            }
+            #twitter_config_show a.btn {
+                margin: 5px 5px;
+            }
+            .bootstrap-tagsinput .badge {
+                font-size: 100%;
+            }
+            .divider {
+                background-color: #ddd;
+                height: 1px;
+            }
+            .dropdown-menu {
+                min-width: 15rem;
+            }
+            .dropdown-menu li:not(.divider) {
+                padding-top: 3px;
+                padding-bottom: 3px;
+            }
+            .dropdown-menu li a {
+                margin-left: 1rem;
+                text-align: center;
+                color: black;
+            }
+            .dropdown-menu li a i {
+                margin-right: 1rem;
+                color: #437ec4;
+            }
+        </style>
+    {% endblock stylesheet %}
+    
+    {% block javascript %}
+        <script src="{{ asset('assets/js/vendor/fileupload/vendor/jquery.ui.widget.js', 'admin') }}"></script>
+        <!-- The Load Image plugin is included for the preview images and image resizing functionality -->
+        <script src="{{ asset('assets/js/vendor/fileupload/load-image.all.min.js', 'admin') }}"></script>
+        <!-- The Canvas to Blob plugin is included for image resizing functionality -->
+        <script src="{{ asset('assets/js/vendor/fileupload/javascript-canvas.blob.min.js', 'admin') }}"></script>
+        <script src="{{ asset('assets/js/vendor/fileupload/jquery.iframe-transport.js', 'admin') }}"></script>
+        <script src="{{ asset('assets/js/vendor/fileupload/jquery.fileupload.js', 'admin') }}"></script>
+        <script src="{{ asset('assets/js/vendor/fileupload/jquery.fileupload-process.js', 'admin') }}"></script>
+        <script src="{{ asset('assets/js/vendor/fileupload/jquery.fileupload-validate.js', 'admin') }}"></script>
+        <script src="{{ asset('assets/js/vendor/fileupload/jquery.fileupload-image.js', 'admin') }}"></script>
+        <script>var bootstrapTooltip = $.fn.tooltip.noConflict();</script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+        <script src="{{ asset('assets/js/vendor/tagsinput.js', 'admin') }}"></script>
+        <script>
+            $.fn.tooltip = bootstrapTooltip;
+            $(function() {
+                // Todo: fix drag&drop style
+                $("#thumb").sortable({
+                    cursor: 'move',
+                    opacity: 0.7,
+                    placeholder: 'ui-state-highlight',
+                    update: function(event, ui) {
+                        updateSortNo();
+                    }
+                });
+                {% if has_class == false %}
+                if ($("#{{ form.class.stock_unlimited.vars.id }}").prop("checked")) {
+                    $("#{{ form.class.stock.vars.id }}").attr("disabled", "disabled").val('');
+                } else {
+                    $("#{{ form.class.stock.vars.id }}").removeAttr("disabled");
+                }
+                $("#{{ form.class.stock_unlimited.vars.id }}").on("click change", function() {
+                    if ($(this).prop("checked")) {
+                        $("#{{ form.class.stock.vars.id }}").attr("disabled", "disabled").val('');
+                    } else {
+                        $("#{{ form.class.stock.vars.id }}").removeAttr("disabled");
+                    }
+                });
+                {% endif %}
+                var proto_img = '<div class="c-form__fileUploadThumbnail" style="background-image:url(\'__path__\');">' +
+                    '<a class="delete-image"><i class="fa fa-times" aria-hidden="true"></i></a>' +
+                    '</div>';
+                var proto_add = '{{ form_widget(form.add_images.vars.prototype) }}';
+                var proto_del = '{{ form_widget(form.delete_images.vars.prototype) }}';
+
+                // {{ form_widget(form.product_image, { attr : { accept : 'image/*', style : 'display:none;' } }) }}
+                {% if form.images|length > 1 %}
+                {% if form.images[4] is defined %}
+                var $img = $(proto_img.replace(/__path__/g, '{{ asset(form.images[4].vars.value, 'save_image') }}'));
+                {% else %}
+                var $img = $(proto_img.replace(/__path__/g, '{{ asset(form.images[0].vars.value, 'save_image') }}'));
+                {% endif %}
+                var $widget = $('{{ form_widget(form.images[0]) }}');    
+                $widget.val('{{ form.images[0].vars.value }}');
+                $("#thumb").append($img.append($widget));
+                {% endif %}
+
+                // {% for image in form.images %}
+                //     var $img = $(proto_img.replace(/__path__/g, '{{ asset(image.vars.value, 'save_image') }}'));
+                //     var $widget = $('{{ form_widget(image) }}');
+                //     $widget.val('{{ image.vars.value }}');
+                //     $("#thumb").append($img.append($widget));
+                // {% endfor %}
+
+                {% for add_image in form.add_images %}
+                var $img = $(proto_img.replace(/__path__/g, '{{ asset(form.add_images.vars.value, 'temp_image') }}'));
+                var $widget = $('{{ form_widget(add_image) }}');
+                $widget.val('{{ add_image.vars.value }}');
+                $("#thumb").append($img.append($widget));
+                {% endfor %}
+                {% for delete_image in form.delete_images %}
+                $("#thumb").append('{{ form_widget(delete_image) }}');
+                {% endfor %}
+                var hideThumbnail = function() {
+                    if ($("#thumb div").length > 0) {
+                        $("#icon_no_image").css("display", "none");
+                        $('#message').html("{{ 'admin.common.drag_and_drop_description'|trans }}");
+                    } else {
+                        $("#icon_no_image").css("display", "");
+                        $('#message').empty();
+                    }
+                };
+                // Todo: fix update sort by drag&drop
+                var updateSortNo = function() {
+                    $("#thumb div").each(function(index) {
+                        $(this).find(".sort_no_images").remove();
+                        filename = $(this).find("input[type='hidden']").val();
+                        $sortNo = $('<input type="hidden" class="sort_no_images" name="sort_no_images[]" />');
+                        $sortNo.val(filename + '//' + parseInt(index + 1));
+                        $(this).append($sortNo);
+                    });
+                };
+                hideThumbnail();
+                updateSortNo();
+                // Delete of images
+                var count_del = 0;
+                $("#thumb").on("click", '.delete-image', function() {
+                    $.each($("#thumb").find('.delete-image'), function(index, delete_image){
+                        var $new_delete_image = $(proto_del.replace(/__name__/g, index));
+                        var thumbnail = $(this).parents('div.c-form__fileUploadThumbnail');
+                        var src = $(thumbnail).find('input').val();
+                        $new_delete_image.val(src);
+                        $("#thumb").append($new_delete_image);
+                        $(thumbnail).remove();
+                        hideThumbnail();
+                        updateSortNo();        
+                    });
+                });
+                var count_add = {{ form.add_images|length|default(0) }};
+                $('#{{ form.product_image.vars.id }}').fileupload({
+                    url: "{{ url('admin_product_image_add') }}",
+                    type: "post",
+                    sequentialUploads: true,
+                    dataType: 'json',
+                    dropZone: $('#upload-zone'),
+                    disableImageResize: false,
+                    processQueue: [
+                        {
+                            action: 'loadImage',
+                            fileTypes: /^image\/(gif|jpeg|png)$/,
+                            maxFileSize: 20000000 // 20MB
+                        },
+                        {
+                            action: 'resizeImage',
+                            maxWidth: 1200,
+                            maxHeight: 900
+                        },
+                        {action: 'saveImage'},
+                        {action: 'duplicateImage'},
+                        {
+                            action: 'resizeImage',
+                            maxWidth: 800,
+                            maxHeight: 600
+                        },
+                        {action: 'saveImage'},
+                        {action: 'duplicateImage'},
+                        {
+                            action: 'resizeImage',
+                            maxWidth: 500,
+                            maxHeight: 500
+                        },
+                        {action: 'saveImage'},
+                        {action: 'duplicateImage'},
+                        {
+                            action: 'resizeImage',
+                            maxWidth: 280,
+                            maxHeight: 280
+                        },
+                        {action: 'saveImage'},
+                        {action: 'duplicateImage'},
+                        {
+                            action: 'resizeImage',
+                            maxWidth: 75,
+                            maxHeight: 50
+                        },
+                        {action: 'saveImage'}
+                    ],
+                    done: function(e, data) {
+                        var iterater = 0;
+                        $('.progress').hide();
+                        $.each(data.result.files, function(index, file) {
+                            var path = '{{ asset('', 'temp_image') }}' + file;
+                            var $img = $(proto_img.replace(/__path__/g, path));
+                            var $new_img = $(proto_add.replace(/__name__/g, count_add));
+                            $new_img.val(file);
+                            $child = $img.append($new_img);
+                            if (4 != iterater) {
+                                $child.css('display', 'none');
+                            }
+                            $('#thumb').append($child);
+                            count_add++;
+                            iterater++;
+                        });
+                        hideThumbnail();
+                        updateSortNo();
+                    },
+                    fail: function(e, data) {
+                        alert("{{ 'admin.common.upload_error'|trans }}");
+                    },
+                    always: function(e, data) {
+                        $('.progress').hide();
+                        $('.progress .progress-bar').width('0%');
+                    },
+                    start: function(e, data) {
+                        $('.progress').show();
+                    },
+                    acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+                    maxNumberOfFiles: 10,
+                    progressall: function(e, data) {
+                        var progress = parseInt(data.loaded / data.total * 100, 10);
+                        $('.progress .progress-bar').css(
+                            'width',
+                            progress + '%'
+                        );
+                    },
+                    processalways: function(e, data) {
+                        if (data.files.error) {
+                            alert("{{ 'admin.common.upload_error'|trans }}");
+                        }
+                    },
+                });
+                // 画像アップロード
+                $('#file_upload').on('click', function() {
+                    $('#{{ form.product_image.vars.id }}').click();
+                });
+                var mainTags = $('#allTags');
+                var adminProductTag = $('#admin_product_Tag');
+                $('input', adminProductTag).each(function() {
+                    if ($(this).is(':checked')) {
+                        $('button[data-tag-id="' + $(this).val() + '"]').removeClass('btn-outline-secondary').addClass('btn-outline-primary');
+                    }
+                });
+                mainTags.on('click', 'button.btn', function() {
+                    var btnTag = $(this);
+                    var tagId = btnTag.data('tag-id');
+                    if (btnTag.hasClass('btn-outline-primary')) {
+                        btnTag.removeClass('btn-outline-primary').addClass('btn-outline-secondary');
+                        $('input[value="' + tagId + '"]', mainTags).prop('checked', false);
+                    } else {
+                        btnTag.removeClass('btn-outline-secondary').addClass('btn-outline-primary');
+                        $('input[value="' + tagId + '"]', mainTags).prop('checked', true);
+                    }
+                });
+                var confirmFormChange = function(form, target, modal) {
+                    var returnLink = form.find('input[type="hidden"][name*="return_link"]'),
+                        saveBtn = modal.find('a[data-action="save"]'),
+                        cancelBtn = modal.find('a[data-action="cancel"]');
+                    modal.on('hidden.bs.modal', function() {
+                        returnLink.val('');
+                    });
+                    saveBtn.on('click', function() {
+                        returnLink.val($(this).data('return-link'));
+                        $(this).addClass('disabled');
+                        form.submit();
+                    });
+                    target.on('click', function() {
+                        modal.find('.modal-body .screen-name').text($(this).attr('title'));
+                        modal.modal('show');
+                        saveBtn.data('return-link', $(this).attr('href'));
+                        cancelBtn.attr('href', $(this).attr('href'));
+                        return false;
+                    });
+                };
+                confirmFormChange($('#form1'), $('a[data-action="confirm"]'), $('#confirmFormChangeModal'))
+            });
+            // searchWordの実行
+            $('#search-category').on('input', function () {
+                searchWord($(this).val(), $('.category-li'));
+            });
+            //じの確率設定
+            $('#exclusive input[type="checkbox"]').on('change', function(){
+                if ($(this).attr('id') == 'premium') {
+                    if ($(this).is(':checked')) premium = '1';
+                    else premium = '0';
+                    
+                    $("#admin_product_premium").val(premium);
+                } else if ($(this).attr('id') == 'niconico') {
+                    if ($(this).is(':checked')) {
+                        niconico = '1';
+                        if ($('#niconico_id').val() != '') niconico = $('#niconico_id').val();
+                    } else niconico = '0';
+
+                    $("#admin_product_niconico").val(niconico);
+                } else if ($(this).attr('id') == 'specific') {
+                    if ($(this).is(':checked')) {
+                        specific = '1';
+                        if ($('#specific_id').val() != '') specific = $('#specific_id').val();
+                    } else specific = '0';
+
+                    $("#admin_product_specifics").val(specific); 
+                }
+            });
+
+            $(document).ready(function(){
+                {% if Product.premium == "1" %} 
+                    $("#premium").prop('checked', true);
+                {% else %}
+                    $("#premium").prop('checked', false);
+                {% endif %}
+                {% if Product.niconico > "1" %} 
+                    $("#niconico").prop('checked', true);
+                    $("#niconico_id").val('{{ Product.niconico }}');
+                {% elseif Product.niconico == "1" %}
+                    $("#niconico").prop('checked', true);
+                {% else %}
+                    $("#niconico").prop('checked', false);
+                {% endif %}
+                {% if Product.specifics > "1" %} 
+                    $("#specific").prop('checked', true);
+                    $("#specific_id").val('{{ Product.specifics }}');
+                {% elseif Product.specifics == "1" %}
+                    $("#specific").prop('checked', true);
+                {% else %}
+                    $("#specific").prop('checked', false);
+                {% endif %}         
+                  
+                {% if Product.limit_count == "制限なし" %}
+                    $("#radio1").prop('checked', true);
+                {% elseif Product.limit_count == "1日に1回" %}
+                    $("#radio2").prop('checked', true);
+                {% elseif Product.limit_count == "1アカウントに1回" %}
+                    $("#radio3").prop('checked', true);
+                {% endif %}
+                $("#lottery_prob").hide();
+                $("#confirmed").hide();
+                $("#bulk").hide();
+                $("#ship_count").hide();
+                $("#animate").hide();
+                $("#text_config").hide();
+                
+                {% set categoryRepository = repository('Eccube\\Entity\\Category') %}
+                {% for item in ChoicedCategoryIds %}
+                    {% if categoryRepository.find(item).name == 'まとめ買いくじ' %}
+                        $("#bulk").show();
+                        $("#ship_count").show();
+                        $("#bulk_config_lottery").hide();
+                    {% elseif categoryRepository.find(item).name == '大人買いくじ' %}
+                        $("#lottery_prob").show();
+                        $("#animate").show();
+                    {% elseif categoryRepository.find(item).name == '確定くじ' %}
+                        $("#lottery_prob").show(); 
+                        $("#animate").show();
+                        $("#confirmed").show();
+                        $("#only_confirmed").show();
+                        $("#ship_count").show();
+                    {% elseif categoryRepository.find(item).name == '通常くじ' %}
+                        $("#bulk").show();
+                        $("#bulk_conf").hide();
+                        $("#product_link_lottery").hide();
+                        $("#lottery_prob").show();
+                        $("#only_confirmed").hide();
+                        $("#animate").show();
+                    {% elseif categoryRepository.find(item).name == '商品' %}
+                        $("#text_config").show();			
+                    {% endif %}
+                {% endfor %}
+                
+                $("#div_anim").hover(function(){
+                    $(this).css("background-color", "grey");
+                    $("#animate_image").css("opacity", 0.4);
+                    $("#anim_delete").css("display", "block");
+                }, function(){
+                    $(this).css("background-color", "white");
+                    $("#animate_image").css("opacity", 1);
+                    $("#anim_delete").css("display", "none");
+                });
+
+                $("#anim_delete").click(function(){
+                    $("#div_anim").css('display', 'none');
+                    $("#admin_product_animate_image").val('');
+                });
+           });
+        </script>
+    
+        <script>
+        $('#anim_upload_image').fileupload({
+            url: "{{ url('admin_product_image_add') }}",
+            type: "post",
+            dataType: 'json',
+            disableImageResize: false,
+            imageMaxWidth: 273,
+            imageMaxHeight: 273,
+            done: function(e, data) {
+                var path = '';
+                $.each(data.result.files, function(index, file) {
+                    path = '{{ asset('', 'temp_image') }}' + file;
+                    console.log(path);
+                });
+                $("#div_anim").css("display", "inline-block");
+                $("#animate_image").attr("src", path);
+                $("#admin_product_animate_image").val(path);
+            },
+            fail: function(e, data) {
+                alert("{{ 'admin.common.upload_error'|trans }}");
+            },
+            always: function(e, data) {
+                $('.progress').hide();
+                $('.progress .progress-bar').width('0%');
+            },
+            start: function(e, data) {
+                $('.progress').show();
+            },
+            dragover: function(e, data) {
+                e.preventDefault();
+            },
+            drop: function(e, data) {
+                e.preventDefault();
+            },
+            acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+            progressall: function(e, data) {
+            },
+            processalways: function(e, data) {
+                if (data.files.error) {
+                    alert("{{ 'admin.common.upload_error'|trans }}");
+                }
+            }
+        });
+        </script>
+    
+        <script>
+            const addFormToCollection = (e) => {
+                const collectionHolder = document.querySelector('.lotteryDiv');
+                const item = document.createElement('div');
+                item.innerHTML = collectionHolder
+                    .dataset
+                    .prototype
+                    .replace(
+                    /__name__/g,
+                    collectionHolder.dataset.index
+                    );
+                collectionHolder.appendChild(item);
+                collectionHolder.dataset.index++;
+            };
+            document.querySelectorAll('.add_item_link')
+                .forEach(btn => btn.addEventListener("click", addFormToCollection));
+        </script>
+    
+        <script>
+            {% if Product.animate_image is defined %}
+                $("#div_anim").css('display', 'inline-block');
+                $("#animate_image").attr('src', '{{ Product.animate_image }}');
+            {% else %}
+                $("#div_anim").css('display', 'none');
+            {% endif %}
+            $(document).ready(function() {
+                // admin_product_category_7 = $("input[label='まとめ買いくじ']")
+                // admin_product_category_8 = $("input[label='大人買いくじ']")
+                // admin_product_category_10 = $("input[label='確定くじ']")
+                // admin_product_category_11 = $("input[label='通常くじ']")
+                // admin_product_category_12 = $("input[label='商品']")
+                if($("input[label='大人買いくじ']").prop('checked') || $("input[label='確定くじ']").prop('checked') || $("input[label='通常くじ']").prop('checked'))
+                {    $("#lottery_prob").show(); 
+                }
+                else $("#lottery_prob").hide();
+                if($("input[label='確定くじ']").prop('checked'))
+                {
+                    $("#confirmed").show();
+                    $("#only_confirmed").show();
+                }
+                else {
+                    $("#confirmed").hide();
+                    $("#only_confirmed").hide();
+                }
+                if($("input[label='通常くじ']").prop('checked') || $("input[label='まとめ買いくじ']").prop('checked'))
+                    $("#bulk").show();
+                else $("#bulk").hide();            
+                if($("input[label='まとめ買いくじ']").prop('checked')) {
+                    $("#bulk_conf").show();
+                    $("#product_link_lottery").show();
+                }
+                else{
+                    $("#bulk_conf").hide();
+                    $("#product_link_lottery").hide();
+                }      
+                
+                if($("input[label='通常くじ']").prop('checked'))
+                    $("#bulk_config_lottery").show();
+                else $("#bulk_config_lottery").hide();
+                if($("input[label='確定くじ']").prop('checked') || $("input[label='通常くじ']").prop('checked') || $("input[label='まとめ買いくじ']").prop('checked'))
+                    $("#ship_count").show();
+                else $("#ship_count").hide();
+                if($("input[label='大人買いくじ']").prop('checked') || $("input[label='確定くじ']").prop('checked') || $("input[label='通常くじ']").prop('checked'))
+                    $("#animate").show();
+                else $("#animate").hide();
+                if($("input[label='商品']").prop('checked'))
+                    $("#text_config").show();
+                else $("#text_config").hide();
+
+            });
+            $("[name='admin_product[Category][]']").change(function() {
+                if($("input[label='大人買いくじ']").prop('checked') || $("input[label='確定くじ']").prop('checked') || $("input[label='通常くじ']").prop('checked'))
+                {    $("#lottery_prob").show(); 
+                }
+                else $("#lottery_prob").hide();
+                if($("input[label='確定くじ']").prop('checked'))
+                {
+                    $("#confirmed").show();
+                    $("#only_confirmed").show();
+                }
+                else {
+                    $("#confirmed").hide();
+                    $("#only_confirmed").hide();
+                }
+
+                if($("input[label='通常くじ']").prop('checked') || $("input[label='まとめ買いくじ']").prop('checked'))
+                    $("#bulk").show();
+                else $("#bulk").hide();            
+                if($("input[label='まとめ買いくじ']").prop('checked')) {
+                    $("#bulk_conf").show();
+                    $("#product_link_lottery").show();
+                }
+                else{
+                    $("#bulk_conf").hide();
+                    $("#product_link_lottery").hide();
+                }      
+                
+                if($("input[label='通常くじ']").prop('checked'))
+                    $("#bulk_config_lottery").show();
+                else $("#bulk_config_lottery").hide();
+                if($("input[label='確定くじ']").prop('checked') || $("input[label='通常くじ']").prop('checked') || $("input[label='まとめ買いくじ']").prop('checked'))
+                    $("#ship_count").show();
+                else $("#ship_count").hide();
+                if($("input[label='大人買いくじ']").prop('checked') || $("input[label='確定くじ']").prop('checked') || $("input[label='通常くじ']").prop('checked'))
+                    $("#animate").show();
+                else $("#animate").hide();
+                if($("input[label='商品']").prop('checked'))
+                    $("#text_config").show();
+                else $("#text_config").hide();
+            });
+        </script>
+        <script>
+            const addBulkLink = (e) => {
+                const collectionHolder = document.querySelector('.bulk_setting_proto');
+                const item = document.createElement('div');
+                // item.innerHTML = '<div class="mt-2 mx-4 float-right pt-4"><a class="btn btn-block btn-ec-regular mt-1 remove-bulk">削除</a></div>'
+                item.innerHTML += collectionHolder
+                .dataset
+                .prototype
+                .replace(
+                /__name__/g,
+                collectionHolder.dataset.index);
+                // item.className = "ml-4 my-2 mr-2";
+                // item.style = "border: 1px solid rgba(0, 0, 0, 0.125);";
+                collectionHolder.appendChild(item);
+                collectionHolder.dataset.index++;
+                $('.remove-bulk').click(function(e) {
+                    e.preventDefault();
+                    
+                    $(this).parent().parent().remove();
+                    
+                    return false;
+                });
+            };
+            
+            document
+                .querySelectorAll('.add_bulk_link')
+                .forEach(btn => btn.addEventListener("click", addBulkLink));
+        </script>
+        <script>
+        const addConfirmedLink = (e) => {
+               const collectionHolder = document.querySelector('.confirmed_setting_proto');
+               const item = document.createElement('div');
+            // item.innerHTML = '<div class="row mt-2 mx-4 float-right pt-4"><a class="btn btn-block btn-ec-regular mt-1 remove-confirmed">削除</a></div>'
+               item.innerHTML += collectionHolder
+               .dataset
+               .prototype
+               .replace(
+               /__name__/g,
+               collectionHolder.dataset.index);
+            //    item.className = "ml-4 my-2 mr-2";
+            //    item.style = "border: 1px solid rgba(0, 0, 0, 0.125);";
+               collectionHolder.appendChild(item);
+               collectionHolder.dataset.index++;
+               $('.remove-confirmed').click(function(e) {
+                   e.preventDefault();
+                   
+                   $(this).parent().parent().remove();
+                   
+                   return false;
+               });
+           };
+           
+           document
+               .querySelectorAll('.add_confirmed_link')
+               .forEach(btn => btn.addEventListener("click", addConfirmedLink));
+        </script>
+        <script>
+        const addLotteryProbLink = (e) => {
+               const collectionHolder = document.querySelector('.lotteryProb_setting_proto');
+               const item = document.createElement('div');
+            // item.innerHTML = '<div class="row mt-2 mx-4 float-right pt-4"><a class="btn btn-block btn-ec-regular mt-1 remove-lotteryProb">削除</a></div>'
+               item.innerHTML += collectionHolder
+               .dataset
+               .prototype
+               .replace(
+               /__name__/g,
+               collectionHolder.dataset.index);
+            //    item.className = "ml-4 my-2 mr-2";
+            //    item.style = "border: 1px solid rgba(0, 0, 0, 0.125);";
+               collectionHolder.appendChild(item);
+               collectionHolder.dataset.index++;
+
+               $('.remove-lotteryProb').click(function(e) {
+                   e.preventDefault();
+                   
+                   $(this).parent().parent().parent().remove();
+                   
+                   return false;
+               });
+           };
+           
+           document
+               .querySelectorAll('.add_lotteryProb_link')
+               .forEach(btn => btn.addEventListener("click", addLotteryProbLink));
+        </script>
+        <script>
+            $(document).ready(function(){
+                $('.remove-bulk').click(function(e) {
+                   e.preventDefault();
+
+                   $(this).parent().parent().remove();
+                   
+                   return false;
+                });
+                $('.remove-confirmed').click(function(e) {
+                   e.preventDefault();
+
+                   $(this).parent().parent().remove();
+                   
+                   return false;
+                });
+                $('.remove-lotteryProb').click(function(e) {
+                   e.preventDefault();
+
+                   $(this).parent().parent().remove();
+                   
+                   return false;
+                });
+
+            });
+        </script>
+    {% endblock javascript %}
+    
+    {% block main %}
+        <!-- 移動確認モーダル-->
+        <div class="modal fade" id="confirmFormChangeModal" tabindex="-1" role="dialog"
+             aria-labelledby="confirmFormChangeModal" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ 'admin.common.move_to_confirm_title'|trans }}</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="screen-name"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-ec-conversion" data-action="save" href="javascript:void(0)">
+                            {{ 'admin.common.move_to_confirm_save_and_move'|trans }}
+                        </a>
+                        <a class="btn btn-ec-sub" data-action="cancel" href="javascript:void(0)">
+                            {{ 'admin.common.move_to_confirm_move_only'|trans }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <form role="form" name="form1" id="form1" method="post" action="" novalidate enctype="multipart/form-data">
+            {{ form_widget(form._token) }}
+            {{ form_widget(form.return_link) }}
+            <div class="c-contentsArea__cols">
+                <div class="c-contentsArea__primaryCol">
+                    <div class="c-primaryCol">
+                        <div class="card rounded border-0 mb-4">
+                            <div class="card-header">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="d-inline-block">
+                                        <span class="card-title">
+                                            {{ 'admin.product.product__card_title'|trans }}
+                                        </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <a data-toggle="collapse" href="#basicConfig" aria-expanded="false"
+                                           aria-controls="basicConfig">
+                                            <i class="fa fa-angle-up fa-lg"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="collapse show ec-cardCollapse" id="basicConfig">
+                                {{ form_widget(form.premium) }}
+                                {{ form_errors(form.premium) }}
+                                {{ form_widget(form.niconico) }}
+                                {{ form_errors(form.niconico) }}
+                                {{ form_widget(form.specifics) }}
+                                {{ form_errors(form.specifics) }}
+                                <div class="card-body">
+                                    {% if Product.id %}
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <div class="d-inline-block" data-tooltip="true" data-placement="top" title="{{ 'tooltip.product.product_id'|trans }}">
+                                                    <span>{{ 'admin.product.product_id'|trans }}</span>
+                                                    <i class="fa fa-question-circle fa-lg ml-1"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <p>{{ Product.id }}</p>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <div class="d-inline-block">
+                                                <span>{{ 'admin.product.name'|trans }}</span>
+                                                <span class="badge badge-primary ml-1">
+                                                    {{ 'admin.common.required'|trans }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col mb-2">
+                                            {{ form_widget(form.name) }}
+                                            {{ form_errors(form.name) }}
+                                        </div>
+                                    </div>
+                                    {% if has_class == false %}
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <div class="d-inline-block" data-tooltip="true" data-placement="top" title="{{ 'tooltip.product.sale_type'|trans }}">
+                                                    <span>{{ 'admin.product.sale_type'|trans }}</span>
+                                                    <i class="fa fa-question-circle fa-lg ml-1"></i>
+                                                    <span class="badge badge-primary ml-1">
+                                                        {{ 'admin.common.required'|trans }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="col mb-2">
+                                                {{ form_widget(form.class.sale_type) }}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <div class="d-inline-block" data-tooltip="true" data-placement="top" title="{{ 'tooltip.product.image'|trans }}">
+                                                <span>{{ 'admin.product.image'|trans }}</span>
+                                                <i class="fa fa-question-circle fa-lg ml-1"></i>
+                                                <br>{{ 'admin.product.image_size'|trans }}
+                                            </div>
+                                        </div>
+                                        <div class="col mb-2">
+                                            <div class="progress" style="display: none;">
+                                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                            <div id="thumb" class="c-form__fileUploadThumbnails clearfix"></div>
+                                            <p id="message"></p>
+                                            <div id="upload-zone" class="media py-5 border-ec-dashed mb-2 rounded">
+                                                <div class="media-body">
+                                                    <i class="fa fa-cloud-upload fa-3x text-ec-lightGray mx-3 align-middle" aria-hidden="true"></i>
+                                                    {{ 'admin.common.drag_and_drop_image_description'|trans }}
+                                                    {{ form_widget(form.product_image, { attr : { accept : 'image/*', style : 'display:none;' } }) }}
+                                                    {{ form_errors(form.product_image) }}
+                                                    <a class="btn btn-ec-regular mr-2" onclick="$('#admin_product_product_image').click()">
+                                                        {{ 'admin.common.file_select'|trans }}
+                                                    </a>
+                                                </div><!-- /.media-body -->
+                                            </div><!-- /.media -->
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <div class="d-inline-block" data-tooltip="true" data-placement="top"
+                                                 title="{{ 'tooltip.product.description_detail'|trans }}">
+                                                <span>{{ 'admin.product.description_detail'|trans }}</span>
+                                                <i class="fa fa-question-circle fa-lg ml-1"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            {{ form_widget(form.description_detail, { attr : { rows : "8"} }) }}
+                                            {{ form_errors(form.description_detail) }}
+                                            <div class="d-inline-block mb-2" data-toggle="collapse" href="#addComment"
+                                                 role="button" aria-expanded="false" aria-controls="addComment">
+                                                <a>
+                                                    <i class="fa fa-plus-square-o font-weight-bold mr-1"></i>
+                                                    <span class="font-weight-bold text-ec-black">
+                                                        {{ 'admin.product.description_list__add'|trans }}
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="collapse ec-collapse" id="addComment">
+                                        <div class="row bg-ec-formGray pt-3 mb-2">
+                                            <div class="col-3">
+                                                <div class="d-inline-block" data-tooltip="true" data-placement="top"
+                                                     title="{{ 'tooltip.product.description_list'|trans }}">
+                                                    <span>{{ 'admin.product.description_list'|trans }}</span>
+                                                    <i class="fa fa-question-circle fa-lg ml-1"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col mb-4">
+                                                <div>
+                                                    {{ form_widget(form.description_list, { attr : { rows : "4"} }) }}
+                                                    {{ form_errors(form.description_list) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% if has_class == false %}
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <div class="d-inline-block">
+                                                    <span>{{ 'admin.product.sale_price'|trans }}</span>
+                                                    <span class="badge badge-primary ml-1">
+                                                        {{ 'admin.common.required'|trans }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="col mb-2">
+                                                <div>
+                                                    {{ form_widget(form.class.price02) }}
+                                                    {{ form_errors(form.class.price02) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <div class="d-inline-block" data-tooltip="true" data-placement="top"
+                                                     title="{{ 'tooltip.product.normal_price'|trans }}">
+                                                    <span>{{ 'admin.product.normal_price'|trans }}</span>
+                                                    <i class="fa fa-question-circle fa-lg ml-1"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col mb-2">
+                                                <div>
+                                                    {{ form_widget(form.class.price01) }}
+                                                    {{ form_errors(form.class.price01) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <div class="d-inline-block">
+                                                    <span>{{ 'admin.product.stock'|trans }}</span>
+                                                    <span class="badge badge-primary ml-1">
+                                                        {{ 'admin.common.required'|trans }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div>
+                                                    {{ form_widget(form.class.stock) }}
+                                                    {{ form_errors(form.class.stock) }}
+                                                    {# TODO: form_layoutの調整 #}
+                                                    {#<div class="form-check mb-2">#}
+                                                    {#<input class="form-check-input"#}
+                                                    {#id="{{ form.class.stock_unlimited.vars.id }}"#}
+                                                    {#name="{{ form.class.stock_unlimited.vars.full_name }}"#}
+                                                    {#type="checkbox"#}
+                                                    {#value="{{ form.class.stock_unlimited.vars.value }}">#}
+                                                    {#<label class="form-check-label"#}
+                                                    {#for="{{ form.class.stock_unlimited.vars.id }}">#}
+                                                    {#{{ 'admin.product.product.stock_unlimited'|trans }}#}
+                                                    {#</label>#}
+                                                    {#</div>#}
+                                                    {{ form_widget(form.class.stock_unlimited) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <div class="d-inline-block" data-placement="top">
+                                                <span>在庫状態</span>
+                                                <i class="fa fa-question-circle fa-lg ml-1"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col mb-2">
+                                            <div>
+                                                {{ form_widget(form.class.remainStatus) }}
+                                                {{ form_errors(form.class.remainStatus) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <div class="d-inline-block" data-tooltip="true" data-placement="top"
+                                                 title="{{ 'tooltip.product.search_word'|trans }}">
+                                                <span>{{ 'admin.product.search_word'|trans }}</span>
+                                                <i class="fa fa-question-circle fa-lg ml-1"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col mb-2">
+                                            <div>
+                                                {{ form_widget(form.search_word) }}
+                                                {{ form_errors(form.search_word) }}
+                                            </div>
+                                        </div>
+                                    </div>
+    
+                                    {% if has_class == false %}
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <div class="d-inline-block" data-tooltip="true" data-placement="top"
+                                                     title="{{ 'tooltip.product.product_code'|trans }}">
+                                                    <span>{{ 'admin.product.product_code'|trans }}</span>
+                                                    <i class="fa fa-question-circle fa-lg ml-1"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col mb-2">
+                                                <div>
+                                                    {{ form_widget(form.class.code) }}
+                                                    {{ form_errors(form.class.code) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <div class="d-inline-block" data-tooltip="true" data-placement="top"
+                                                     title="{{ 'tooltip.product.sale_limit'|trans }}">
+                                                    <span>{{ 'admin.product.sale_limit'|trans }}</span>
+                                                    <i class="fa fa-question-circle fa-lg ml-1"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col mb-2">
+                                                <div>
+                                                    {{ form_widget(form.class.sale_limit) }}
+                                                    {{ form_errors(form.class.sale_limit) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <div class="d-inline-block" data-tooltip="true" data-placement="top"
+                                                     title="{{ 'tooltip.product.delivery_duration'|trans }}">
+                                                    <span>{{ 'admin.product.delivery_duration'|trans }}</span>
+                                                    <i class="fa fa-question-circle fa-lg ml-1"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col mb-2">
+                                                <div>
+                                                    {{ form_widget(form.class.delivery_duration) }}
+                                                    {{ form_errors(form.class.delivery_duration) }}
+                                                </div>
+                                            </div>
+                                        </div>
+    
+                                        {% if BaseInfo.option_product_delivery_fee %}
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <div class="d-inline-block">
+                                                        <span>{{ 'admin.product.delivery_fee'|trans }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col mb-2">
+                                                    <div>
+                                                        {{ form_widget(form.class.delivery_fee) }}
+                                                        {{ form_errors(form.class.delivery_fee) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                        {% if BaseInfo.option_product_tax_rule %}
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <div class="d-inline-block">
+                                                        <span>{{ 'admin.product.tax_rate'|trans }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col mb-2">
+                                                    <div>
+                                                        {{ form_widget(form.class.tax_rate) }}
+                                                        {{ form_errors(form.class.tax_rate) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+    
+                                    {# エンティティ拡張の自動出力 #}
+                                    {% for f in form if f.vars.eccube_form_options.auto_render %}
+                                        {% if f.vars.eccube_form_options.form_theme %}
+                                            {% form_theme f f.vars.eccube_form_options.form_theme %}
+                                            {{ form_row(f) }}
+                                        {% else %}
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <span>{{ f.vars.label|trans }}</span>
+                                                </div>
+                                                <div class="col mb-2">
+                                                    <div>
+                                                        {{ form_widget(f) }}
+                                                        {{ form_errors(f) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+    
+                                    {% if has_class == false %}
+                                        {% for f in form.class if f.vars.eccube_form_options.auto_render %}
+                                            {% if f.vars.eccube_form_options.form_theme %}
+                                                {% form_theme f f.vars.eccube_form_options.form_theme %}
+                                                {{ form_row(f) }}
+                                            {% else %}
+                                                <div class="row">
+                                                    <div class="col-3">
+                                                        <span>{{ f.vars.label|trans }}</span>
+                                                    </div>
+                                                    <div class="col mb-2">
+                                                        <div>
+                                                            {{ form_widget(f) }}
+                                                            {{ form_errors(f) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+    
+                                </div>
+                            </div>
+                        </div>
+                        {% if id is not null %}
+                            <div class="card rounded border-0 mb-4">
+                                <div class="card-header">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <div class="d-inline-block" data-tooltip="true" data-placement="top"
+                                                 title="{{ 'tooltip.product.product_class'|trans }}">
+                                            <span class="card-title">
+                                                {{ 'admin.product.product_class__card_title'|trans }}
+                                                <i class="fa fa-question-circle fa-lg ml-1"></i>
+                                            </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-4 text-right">
+                                            <a data-toggle="collapse" href="#standardConfig" aria-expanded="false"
+                                               aria-controls="standardConfig">
+                                                <i class="fa fa-angle-up fa-lg"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="collapse show ec-cardCollapse" id="standardConfig">
+                                    <div class="card-body">
+                                        {% if has_class == true %}
+                                            <table class="table table-striped">
+                                                <thead class="table-active">
+                                                <th class="pl-3 pt-2 pb-2">{{ 'admin.product.class_category1__short'|trans }}</th>
+                                                <th class="pt-2 pb-2">{{ 'admin.product.class_category2__short'|trans }}</th>
+                                                <th class="pt-2 pb-2">{{ 'admin.product.product_code__short'|trans }}</th>
+                                                <th class="pt-2 pb-2">{{ 'admin.product.stock'|trans }}</th>
+                                                <th class="pr-3 pt-2 pb-2">{{ 'admin.product.price'|trans }}</th>
+                                                </thead>
+                                                <tbody>
+                                                {% for Class in Product.ProductClasses %}
+                                                    {% if Class.visible == 1 %}
+                                                        <tr>
+                                                            <td class="pl-3">{% if Class.hasClassCategory1 %}{{ Class.ClassCategory1.name }}{% endif %}</td>
+                                                            <td>{% if Class.hasClassCategory2 %}{{ Class.ClassCategory2.name }}{% endif %}</td>
+                                                            <td>{{ Class.code }}</td>
+                                                            <td>{% if Class.stock_unlimited %}{{ 'admin.product.stock_unlimited__short'|trans }}{% else %}{{ Class.stock }}{% endif %}</td>
+                                                            <td class="pr-3">{{ Class.price02|price }}</td>
+                                                        </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        {% endif %}
+    
+                                        <div class="d-block text-center text-center">
+                                            <a href="{{ path('admin_product_product_class', { 'id' : id }) }}" class="btn btn-ec-regular" data-action="confirm"
+                                               title="{{ 'admin.common.move_to_confirm_message'|trans({
+                                                   '%name%' : 'admin.product.product_class_registration'|trans
+                                               }) }}">{{ 'admin.product.product_class__confirm_of_product'|trans }}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="card rounded border-0 mb-4">
+                            <div class="card-header">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="d-inline-block" data-tooltip="true" data-placement="top"
+                                             title="{{ 'tooltip.product.free_area'|trans }}">
+                                            <span class="card-title">{{ 'admin.product.free_area__card_title'|trans }}</span>
+                                            <i class="fa fa-question-circle fa-lg ml-1"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <a data-toggle="collapse" href="#freeArea" aria-expanded="false"
+                                           aria-controls="freeArea">
+                                            <i class="fa fa-angle-up fa-lg"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="collapse show ec-cardCollapse" id="freeArea">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <span>{{ 'admin.product.free_area'|trans }}</span>
+                                        </div>
+                                        <div class="col-9">
+                                            <div>
+                                                {{ form_widget(form.free_area, {id: 'wysiwyg-area', attr : { rows : "8"} }) }}
+                                                {{ form_errors(form.free_area) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+    
+                        </div>
+                    </div>
+                </div>
+                <div class="c-contentsArea__secondaryCol">
+                    <div class="c-secondaryCol">
+                        {% if id is not null %}
+                            <div class="card rounded border-0 mb-4">
+                                <div class="collapse show ec-cardCollapse" id="preview">
+                                    <div class="card-body">
+                                        <div class="d-block text-center">
+                                            <a class="btn btn-block btn-ec-regular"
+                                               target="_blank"
+                                               href="{{ url('product_detail', {id:id}) }}"
+                                               title="{{ 'admin.product.preview'|trans }}">{{ 'admin.product.preview'|trans }}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="card rounded border-0 mb-4">
+                            <div class="card-header">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="d-inline-block">
+                                            <span class="card-title">{{ 'admin.product.category__product_card_title'|trans }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <a data-toggle="collapse" href="#category" aria-expanded="false"
+                                           aria-controls="category">
+                                            <i class="fa fa-angle-up fa-lg"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="collapse show ec-cardCollapse" id="category">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <div class="form-row">
+                                            <div class="col">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text" id="basic-addon1">
+                                                                <i class="fa fa-search"></i>
+                                                        </span>
+                                                    </div>
+                                                    <input id="search-category" class="form-control" type="search"
+                                                           placeholder="{{ 'admin.product.search_category'|trans }}"
+                                                           aria-label="Search">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+    
+                                    {% macro tree(ChoicedIds, Category, form) %}
+                                        {% import _self as selfMacro %}
+                                        <li class="c-directoryTree--registerItem category-li">
+                                            <input type="checkbox" id="admin_product_category_{{ Category.id }}" name="admin_product[Category][]" value="{{ Category.id }}" label="{{ Category.name }}" {% if Category.id in ChoicedIds %}checked{% endif %}>
+                                            <label for="admin_product_category_{{ Category.id }}">{{ Category.name }}</label>
+                                            <ul class="list-unstyled">
+                                                {% for child,ChildCategory in Category.children %}
+                                                    {{ selfMacro.tree(ChoicedIds, ChildCategory, form) }}
+                                                {% endfor %}
+                                            </ul>
+                                        </li>
+                                    {% endmacro %}
+    
+                                    <div class="c-directoryTree--register rounded border mb-3 p-3">
+                                        {% import _self as renderMacro %}
+                                        {% for TopCategory in TopCategories %}
+                                            <ul class="list-unstyled">
+                                                {{ renderMacro.tree(ChoicedCategoryIds, TopCategory, form.Category) }}
+                                            </ul>
+                                        {% endfor %}
+                                        {{ form_errors(form.Category) }}
+                                    </div>
+                                    <div class="d-block text-center">
+                                        <a class="btn btn-block btn-ec-regular"
+                                           data-action="confirm"
+                                           href="{{ path('admin_product_category') }}"
+                                           title="{{ 'admin.common.move_to_confirm_message'|trans({'%name%' : 'admin.product.category_management'|trans}) }}">{{ 'admin.product.move_to_category'|trans }}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card rounded border-0 mb-4">
+                            <div class="card-header">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="d-inline-block">
+                                            <span class="card-title">
+                                                {{ 'admin.product.tag__product_card_title'|trans }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <a data-toggle="collapse" href="#tag" aria-expanded="false" aria-controls="tag">
+                                            <i class="fa fa-angle-up fa-lg"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <div class="collapse show ec-cardCollapse" id="tag">
+                                <div class="card-body">
+                                    {% if(Tags|length > 0) %}
+                                        {% for Tag in Tags %}
+                                            <div class="d-inline-block mb-2 mr-2">
+                                                <button class="btn btn-outline-primary" type="button">{{ Tag.name }}</button>
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+    
+                                    <div class="d-block mb-3" data-toggle="collapse" href="#allTags" role="button"
+                                         aria-expanded="false" aria-controls="allTags">
+                                        <a>
+                                            <i class="fa fa-plus-square-o font-weight-bold mr-1"></i>
+                                            <span class="font-weight-bold">{{ 'admin.product.save_tag'|trans }}</span>
+                                        </a>
+                                    </div>
+                                    <div class="collapse p-3 bg-ec-lightGray mb-3 ec-collapse" id="allTags">
+                                        <div class="d-none">
+                                            {{ form_widget(form.Tag) }}
+                                        </div>
+                                        {% if(TagsList|length > 0) %}
+                                            {% for Tag in TagsList %}
+                                                <div class="d-inline-block mb-2 mr-2">
+                                                    <button class="btn btn-outline-secondary" type="button"
+                                                            data-tag-id="{{ Tag.id }}">{{ Tag.name }}</button>
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
+    
+                                        <div class="d-block mb-3" data-toggle="collapse" href="#allTags" role="button"
+                                             aria-expanded="false" aria-controls="allTags"></div>
+                                    </div>
+    
+                                    <div class="d-block text-center">
+                                        <a href="{{ path('admin_product_tag') }}"
+                                           class="btn btn-block btn-ec-regular"
+                                           data-action="confirm"
+                                           title="{{ 'admin.common.move_to_confirm_message'|trans({
+                                               '%name%' : 'admin.product.tag_management'|trans }) }}">{{ 'admin.product.move_to_tag'|trans }}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card rounded border-0 mb-4">
+                            <div class="card-header">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <span class="card-title">{{ 'admin.product.create_date__card_title'|trans }}</span>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <a data-toggle="collapse" href="#update" aria-expanded="false"
+                                           aria-controls="update">
+                                            <i class="fa fa-angle-up fa-lg"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="collapse show ec-cardCollapse" id="update">
+                                <div class="card-body">
+                                    <div class="row mb-2">
+                                        <div class="col">
+                                            <i class="fa fa-flag mr-1"></i>
+                                            <span>{{ 'admin.common.create_date'|trans }}</span>
+                                        </div>
+                                        <div class="col">
+                                            <span>：{{ Product.create_date|date_min }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col">
+                                            <i class="fa fa-refresh mr-1"></i>
+                                            <span>{{ 'admin.common.update_date'|trans }}</span>
+                                        </div>
+                                        <div class="col">
+                                            <span>：{{ Product.update_date|date_min }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col">
+                                            <i class="fa fa-user mr-1"></i>
+                                            <span>{{ 'admin.common.last_updater'|trans }}</span>
+                                        </div>
+                                        <div class="col">
+                                            <span>：{{ Product.Creator ? Product.Creator.name }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card rounded border-0 mb-4">
+                            <div class="card-header">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="d-inline-block" data-tooltip="true" data-placement="top"
+                                             title="{{ 'tooltip.product.shop_memo'|trans }}">
+                                            <span class="card-title">
+                                                {{ 'admin.common.shop_memo'|trans }}
+                                                <i class="fa fa-question-circle fa-lg ml-1"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <a data-toggle="collapse" href="#shopMemo" aria-expanded="false"
+                                           aria-controls="shopMemo">
+                                            <i class="fa fa-angle-up fa-lg"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="collapse show ec-cardCollapse" id="shopMemo">
+                                <div class="card-body">
+                                    {{ form_widget(form.note, { attr : { rows : "8"} }) }}
+                                    {{ form_errors(form.note) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="c-contentsArea__cols">
+        <div class="c-contentsArea__primaryCol">
+            <div class="c-primaryCol">
+                <div class="card rounded border-1 mb-4" id="bulk">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="d-inline-block">
+                                    <span class="card-title">まとめ買いくじ設定</span>
+                                </div>
+                            </div>
+                            <div class="col-4 text-right">
+                                <a data-toggle="collapse" href="#bulk_show" aria-expanded="false" aria-controls="bulk_show">
+                                    <i class="fa fa-angle-up fa-lg"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="collapse show ec-cardCollapse ml-3" id="bulk_show">
+                        <div class="card-body">   
+                            <div class="row ml-2 mb-3" id="bulk_config_lottery">
+                                <div class="col-5 mb-1" >
+                                    <span>まとめ買いを設定したくじ</span>
+                                </div>
+                                <div class="col-3">
+                                    {{ form_widget(form.product_assist.bulk_config_lottery) }}
+                                    {{ form_errors(form.product_assist.bulk_config_lottery) }}
+                                </div>
+                            </div>
+                            <div class="row ml-2 mb-3" id="product_link_lottery">
+                                <div class="mb-1 col-5" style="width: 100%;">
+                                    <span>このまとめ買い商品へのリンクを設定したいくじを選択して下さい。</span>
+                                </div>
+                                <div class="mr-3 col-3">
+                                    {{ form_widget(form.product_assist.product_link_lottery) }}
+                                    {{ form_errors(form.product_assist.product_link_lottery) }}
+                                    <div class="mb-1  mb-5 mt-5" style="width: 100%;">
+                                        <span>こちらで設定したくじのURLがこのまとめ買い商品を購入された場合、購入履歴やTwitterシェアからリンクされます。</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row ml-2 mb-3">
+                                <div class="mb-1 col-5">
+                                    <span>カートボタンのテキスト</span>
+                                </div>
+                                <div class="mr-5 col-3">
+                                    {{ form_widget(form.product_assist.cart_button_text) }}
+                                    {{ form_errors(form.product_assist.cart_button_text) }}
+                                </div>
+                            </div>
+                            <div id="bulk_conf">
+                                <div class="my-4 ml-2 mr-4 bulk_setting_proto" style="border: 1px solid rgba(0, 0, 0, 0.125);" data-index="{{ form.product_assist.bulk_setting|length > 0 ? form.product_assist.bulk_setting|last.vars.name + 1 : 0 }}" data-prototype="{{ formMacros.printBulkSetting(form.product_assist.bulk_setting.vars.prototype)|e('html_attr') }}">
+                                    {% for item in form.product_assist.bulk_setting %} 
+                                        {{ formMacros.printBulkSetting(item) }}
+                                    {% endfor %}
+                                </div>
+                                <div class="ml-4 mb-4 mt-3">
+                                    <button type="button" class="add_bulk_link btn btn-ec-regular mr-1" data-collection-holder-class="bulk_setting_proto">設定を追加する</button>                       
+                                </div>    
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card rounded border-1 mb-4" id="confirmed">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="d-inline-block">
+                                    <span class="card-title">確定くじ設定</span>
+                                </div>
+                            </div>
+                            <div class="col-4 text-right">
+                                <a data-toggle="collapse" href="#confirmed_show" aria-expanded="false" aria-controls="confirmed_show">
+                                    <i class="fa fa-angle-up fa-lg"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="collapse show ec-cardCollapse ml-3" id="confirmed_show" printConfirmed>
+                        
+                        <div class="my-4 ml-2 mr-4 confirmed_setting_proto" style="border: 1px solid rgba(0, 0, 0, 0.125);" data-index="{{ form.product_assist.confirmed_lottery|length > 0 ? form.product_assist.confirmed_lottery|last.vars.name + 1 : 0 }}" data-prototype="{{ formMacros.printConfirmed(form.product_assist.confirmed_lottery.vars.prototype)|e('html_attr') }}">
+                            {% for item in form.product_assist.confirmed_lottery %}
+                                {{ formMacros.printConfirmed(item) }}
+                            {% endfor %}
+                        </div>
+                        <div class="ml-4 mb-4 mt-3">
+                            <button type="button" class="add_confirmed_link btn btn-ec-regular mr-1" data-collection-holder-class="confirmed_setting_proto">設定を追加する</button> 
+                        </div> 
+                        
+                    </div>
+                </div>
+                <div class="card rounded border-1 mb-4" id="ship_count">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="d-inline-block">
+                                    <span class="card-title">送料個数設定</span>
+                                </div>
+                            </div>
+                            <div class="col-4 text-right">
+                                <a data-toggle="collapse" href="#ship_count_show" aria-expanded="false" aria-controls="ship_count_show">
+                                    <i class="fa fa-angle-up fa-lg"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="collapse show ec-cardCollapse ml-3" id="ship_count_show">
+                        <div class="card-body">
+                            <div class="row mb-4 ml-4">
+                                <div class="col-3 mt-2">
+                                    <span>個数基準値 : </span>
+                                </div>
+                                <div class="col mr-3">
+                                    {{ form_widget(form.ship_count) }}
+                                    {{ form_errors(form.ship_count) }}
+                                </div>
+                            </div>
+                            <div class="row mb-4 ml-4 mr-3">
+                                <span>
+                                    必ず1以上で設定してください。
+                                    一定個数ごとに送料を加算します。
+                                    ～個ごとに加算するか数値を入力ください。<br>
+                                    例えば10で設定した場合は、数量：1～10までは配送料金で設定した料金、11～20までは配送料金で設定した料金×２の送料になります。
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card rounded border-1 mb-4" id="animate">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="d-inline-block">
+                                    <span class="card-title">くじのアニメーション設定</span>
+                                </div>
+                            </div>
+                            <div class="col-4 text-right">
+                                <a data-toggle="collapse" href="#animate_show" aria-expanded="false" aria-controls="animate_show">
+                                    <i class="fa fa-angle-up fa-lg"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="collapse show ec-cardCollapse ml-3" id="animate_show">
+                        <div class="card-body">
+                            <div class="row mb-4 ml-4">
+                                <span>アニメーションを適用するか</span>
+                            </div>
+                            <div class="row mb-4 ml-4">
+                                {{ form_widget(form.product_assist.is_animate) }}
+                                {{ form_errors(form.product_assist.is_animate) }}
+                            </div>
+                            <div class="row mb-4 ml-4">
+                                <span>アニメーションのスポンサーロゴ</span>
+                            </div>
+                            <div>
+                                <input type="file" id="anim_upload_image" name="" multiple="multiple" accept="image/*" style="display:none;" class="form-control-file">
+                                <a class="btn btn-ec-regular mr-2" onclick="$('#anim_upload_image').click()">
+                                    画像を追加する
+                                </a>
+                                <div style="margin-left: 50px; position: relative;" id="div_anim">
+                                    <a id="anim_delete"><i class="fa fa-times" aria-hidden="true"></i></a>
+                                    <img id="animate_image" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card rounded border-1 mb-4" id="lottery_prob">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="d-inline-block">
+                                    <span class="card-title">くじの確率設定</span>
+                                </div>
+                            </div>
+                            <div class="col-4 text-right">
+                                <a data-toggle="collapse" href="#lottery_prob_show" aria-expanded="false" aria-controls="lottery_prob_show">
+                                    <i class="fa fa-angle-up fa-lg"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="collapse show ec-cardCollapse ml-3" id="lottery_prob_show">
+                        <div class="card-body">
+                            <div id="only_confirmed">
+                                <div class="row mb-4 ml-4">
+                                    <div class="col-4 mt-3 ml-4">
+                                        <span>くじの当選回数設定</span>
+                                    </div>
+                                    <div class="col mr-3">
+                                    {{ form_widget(form.product_assist.winning_count) }}
+                                    {{ form_errors(form.product_assist.winning_count) }}
+                                    </div>
+                                </div>
+                                <div class="row mb-4 ml-4">
+                                    <span>くじ１つあたりにつき引かせる個数を設定してください。（確定賞品は含みません）</span>
+                                </div>
+                            </div>
+                            <div class="my-4 ml-2 mr-4 lotteryProb_setting_proto" style="border: 1px solid rgba(0, 0, 0, 0.125);" data-index="{{ form.product_assist.lottery_probability|length > 0 ? form.product_assist.lottery_probability|last.vars.name + 1 : 0 }}" data-prototype="{{ formMacros.printLotteryProb(form.product_assist.lottery_probability.vars.prototype)|e('html_attr') }}">
+                                {% for item in form.product_assist.lottery_probability %}
+                                    {{ formMacros.printLotteryProb(item) }}
+                                {% endfor %}
+                            </div>
+                            <div class="ml-4 mb-4 mt-3">
+                                <button type="button" class="add_lotteryProb_link btn btn-ec-regular mr-1" data-collection-holder-class="lotteryProb_setting_proto">設定を追加する</button> 
+                            </div>
+                        </div>   
+                    </div>         
+                </div>
+                <div class="card rounded border-1 mb-4" id="twitter">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="d-inline-block">
+                                    <span class="card-title">Twitter ハッシュ</span>
+                                </div>
+                            </div>
+                            <div class="col-4 text-right">
+                                <a data-toggle="collapse" href="#twitter_config_show" aria-expanded="false" aria-controls="twitter_config_show">
+                                    <i class="fa fa-angle-up fa-lg"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="collapse show ec-cardCollapse ml-3" id="twitter_config_show">               
+                        <div class="card-body">
+                            <div class="row mb-4 ml-4">
+                                <div class="col-3">
+                                    <span>Twitter ハッシュタグ設定</span>
+                                </div>
+                                <div class="mr-3 col-5" style="width: 80%">
+                                    {# <p>以下のタグをクリックして、タイトルに変数を挿入します。</p>
+                                    <div class="dropdown dropup" style="margin-bottom: 10px">
+                                        <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">Tutorials
+                                        <span class="caret"></span></button>
+                                        <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+                                            <li role="presentation"><a role="menuitem" tabindex="0"><i class="fa fa-plus"></i>カテゴリー</a></li>
+                                            <li role="presentation" class="divider"></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="1"><i class="fa fa-plus"></i>作者の名</a></li>
+                                            <li role="presentation" class="divider"></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="2"><i class="fa fa-plus"></i>投稿 Excerpt Only</a></li>
+                                            <li role="presentation" class="divider"></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="3"><i class="fa fa-plus"></i>投稿 タイトル</a></li>
+                                            <li role="presentation" class="divider"></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="4"><i class="fa fa-plus"></i>投稿コンテンツ</a></li>
+                                            <li role="presentation" class="divider"></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="5"><i class="fa fa-plus"></i>投稿月</a></li>
+                                            <li role="presentation" class="divider"></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="6"><i class="fa fa-plus"></i>投稿日</a></li>
+                                            <li role="presentation" class="divider"></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="7"><i class="fa fa-plus"></i>投稿抜粋</a></li>
+                                        </ul>
+                                    </div> #}
+                                    
+                                    {{ form_widget(form.twitter_tags, { attr : { 'data-role' : 'tagsinput' } }) }}
+                                    {{ form_errors(form.twitter_tags) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>                
+                <div class="card rounded border-1 mb-4" id="text_config">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="d-inline-block">
+                                    <span class="card-title">テキスト設定</span>
+                                </div>
+                            </div>
+                            <div class="col-4 text-right">
+                                <a data-toggle="collapse" href="#text_config_show" aria-expanded="false" aria-controls="text_config_show">
+                                    <i class="fa fa-angle-up fa-lg"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="collapse show ec-cardCollapse ml-3" id="text_config_show">               
+                        <div class="card-body">
+                            <div class="row mb-4 ml-4">
+                                <div class="col-3">
+                                    <span>販売期間</span>
+                                </div>
+                                <div class="mr-3 col-5" style="width: 80%">
+                                    {{ form_widget(form.sales_start) }}
+                                    {{ form_errors(form.sales_start) }}
+                                    ~
+                                    {{ form_widget(form.sales_end) }}
+                                    {{ form_errors(form.sales_end) }}
+                                    {{ form_widget(form.animate_image, { attr : { style : 'display : none;' } }) }}
+                                </div>
+                            </div>
+                            <div class="row mb-4 ml-4">
+                                <div class="col-3">
+                                    <span>送料テキスト</span><br>
+                                    <span style="font-size: 12px;">(配送手数料の箇所へ表示)</span>
+                                </div>
+                                <div class="mr-3 col-5" style="width: 80%">
+                                    {{ form_widget(form.product_assist.free_text) }}
+                                    {{ form_errors(form.product_assist.free_text) }}
+                                </div>
+                            </div>
+                            <div class="row mb-4 ml-4">
+                                <div class="col-3">
+                                    <span class="mt-3">発送日関連</span><br>
+                                    <span class="mt-3" style="font-size: 12px;">(配送日の前に表示)</span>
+                                </div>
+                                <div class="mr-3 col-5">
+                                    {{ form_widget(form.product_assist.delivery_day_text) }}
+                                    {{ form_errors(form.product_assist.delivery_day_text) }}
+                                </div>
+                            </div>
+                            <div class="row mb-3 mb-4 ml-4">
+                                <div class="col-3">
+                                <span class="mb-3">販売終了テキスト</span>
+                                </div>
+                                <div class="mr-3 col-5" style="width: 80;">
+                                    {{ form_widget(form.product_assist.sale_end_text) }}
+                                    {{ form_errors(form.product_assist.sale_end_text) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>     
+                </div>    
+            </div>
+        </div>
+        <div class="c-contentsArea__secondaryCol">
+            <div class="c-secondaryCol">
+                <div class="card rounded border-1 mb-4" >
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-8">
+                                <span class="card-title">限定</span>
+                            </div>
+                            <div class="col-4 text-right">
+                                <a data-toggle="collapse" href="#exclusive" aria-expanded="false" aria-controls="exclusive">
+                                    <i class="fa fa-angle-up fa-lg"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="collapse show ec-cardCollapse" id="exclusive" >
+                        <div class="card-body">
+                            <div class="row mb-2 ml-2">
+                                <input class="mt-1" type="checkbox" id="premium" name="" value="1">
+                                <label class="ml-2" for="premium">プレミアム会員にのみ販売</label>
+                            </div>
+                            <div class="row mb-2 ml-2">
+                                <input class="mt-1" type="checkbox" id="niconico" name="" value="2">
+                                <label class="ml-2" for="niconico">ニコニコチャンネル会員にのみ販売</label>
+                            </div>
+                            <div class="row mb-2 ml-2">
+                                <span class="mt-1">ID : ch</span>
+                                <input type="text" class="ml-1 form-control" id="niconico_id" name="" value="">
+                            </div>
+                            <div class="row mb-2 ml-2">
+                                <input class="mt-1" type="checkbox" id="specific" name="" value="3">
+                                <label class="ml-2" for="specific">特定のチケット購入者にのみ販売</label>
+                            </div>
+                            <div class="row mb-2 ml-2">
+                                <span class="mt-1">live_id : </span>
+                                <input type="text" class="ml-1 form-control" id="specific_id" name="" value="">
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+                <div class="card rounded border-1 mb-4" >
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-8">
+                                <span class="card-title">制限</span>
+                            </div>
+                            <div class="col-4 text-right">
+                                <a data-toggle="collapse" href="#limit_setting" aria-expanded="false" aria-controls="limit_setting">
+                                    <i class="fa fa-angle-up fa-lg"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="collapse show ec-cardCollapse" id="limit_setting" >
+                        <div class="card-body">
+                            <div class="row mb-2 ml-2">
+                                <span class="font-weight-bold">※「制限なし」以外にチェックする場合、「プレミアム会員」か「チャンネル会員」を選択してください。
+                                    </span>
+                            </div>
+                            <div class="row mb-2 ml-2">
+                                {{ form_widget(form.limit_count) }}
+                                {{ form_errors(form.limit_count) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>                            
+            </div>
+        </div>   
+    </div>
+            <div class="c-conversionArea">
+                <div class="c-conversionArea__container">
+                    <div class="row justify-content-between align-items-center">
+                        <div class="col-6">
+                            <div class="c-conversionArea__leftBlockItem">
+                                <a class="c-baseLink" href="{{ path('admin_product_page', { page_no : app.session.get('eccube.admin.product.search.page_no')|default('1') } ) }}"
+                                   data-action="confirm" title="{{ 'admin.common.move_to_confirm_message'|trans({'%name%' : 'admin.product.product_list'|trans }) }}">
+                                    <i class="fa fa-backward" aria-hidden="true"></i><span>{{ 'admin.product.product_list'|trans }}</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div id="ex-conversion-action" class="row align-items-center justify-content-end">
+                                <div class="col-auto">
+                                    {{ form_widget(form.Status) }}
+                                    {{ form_errors(form.Status) }}
+                                </div>
+                                <div class="col-auto">
+                                    <button class="btn btn-ec-conversion px-5" id="Formsubmit" type="submit">{{ 'admin.common.registration'|trans }}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    
+    {% endblock %}

@@ -1,0 +1,317 @@
+{#
+Copyright (c) 2018 VeriTrans Inc., a Digital Garage company. All rights reserved.
+http://www.veritrans.co.jp/
+#}
+{% extends 'default_frame.twig' %}
+
+{% form_theme form 'Form/form_div_layout.twig' %}
+
+{% block javascript %}
+    {{ include('VeriTrans4G/Resource/template/default/js/vt4g_js.twig') }}
+    {{ include('VeriTrans4G/Resource/template/default/css/vt4g_css.twig') }}
+
+    <script src="{{ asset(tokenJsPath, 'plugin') }}"></script>
+    <script>
+        window.VeriTrans4G = window.VeriTrans4G || {};
+
+        VeriTrans4G.tokenApiUrl = "{{ tokenApiUrl }}";
+        VeriTrans4G.tokenApiKey = "{{ tokenApiKey }}";
+        {% if paymentInfo.security_flg is defined %}
+            VeriTrans4G.securityFlg = !!{{ paymentInfo.security_flg }};
+        {% else %}
+            VeriTrans4G.securityFlg = true;
+        {% endif %}
+
+        {% if error.credit %}
+            {% if mode == 'account' %}
+                formId = "vt4g_form_credit_account";
+            {% endif %}
+            {% if mode == 'token' %}
+                formId = "vt4g_form_credit";
+            {% endif %}
+            {% if mode == 'retrade' %}
+                formId = "vt4g_form_credit_one_click";
+            {% endif %}
+            document.getElementById(formId).scrollIntoView(true);
+        {% endif %}
+
+    </script>
+{% endblock javascript %}
+
+{% block main %}
+    {# ベリトランス会員ID決済 入力フォーム #}
+    {% if error.payment is empty and useAccountPayment and accountCards is not empty %}
+        <form method="post" action="{{ url('vt4g_shopping_payment') }}" id="vt4g_form_credit_account" style="margin-bottom:3em;">
+            {{ form_widget(accountForm._token) }}
+            <input type="hidden" name="mode" value="account">
+            <div class="ec-off1Grid">
+                <div class="ec-off1Grid__cell">
+                    <h2>登録済みクレジットカード決済</h2>
+                    <br>
+                    <p class="ec-para-normal">決済に利用するカードを選択してください。</p>
+                    {% if isCardMaxOver %}
+                    <p class="ec-para-normal ec-color-red">登録できるカード情報が上限に達しているため、新しいカード情報でお支払いはできません。</p>
+                    <p class="ec-para-normal ec-color-red">新しいカード情報でお支払いの場合は、マイページから使用しないカード情報を削除してください。</p>
+                    {% endif %}
+                    <p class="ec-color-red ec-para-normal">{% if mode == 'account' %}{{ error.credit|raw }}{% endif %}</p>
+                    <div class="ec-borderedDefs">
+                        <dl>
+                            <dt><label class="ec-label">登録済みのクレジットカード番号</label><span class="ec-required">必須</span></dt>
+                            <dd>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr class="active">
+                                            <th>カード番号</th>
+                                            <th>有効期限</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for index, card in accountCards %}
+                                            <tr>
+                                                <td class="ec-blockRadio">
+                                                    <label>
+                                                        <input name="card_id" type="radio" value="{{ card.cardId }}" {% if card.isDefault %}checked{% endif %}>
+                                                        <span>{{ card.cardNumber }}</span>
+                                                    </label>
+                                                    <input type = 'hidden' class = 'registered_card_name' value="{{ card.registeredCardName }}">
+                                                </td>
+                                                <td>{{ card.expire }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt><label class="ec-label">お支払い方法</label><span class="ec-required">必須</span></dt>
+                            <dd>
+                                <div class="ec-select {% if accountForm.payment_type.vars.errors is not empty %}error{% endif %}">
+                                    {{ form_widget(accountForm.payment_type) }}
+                                    <p class="ec-errorMessage">{{ form_errors(accountForm.payment_type) }}</p>
+                                </div>
+                            </dd>
+                        </dl>
+                        {% if paymentInfo.mpi_flg is defined and paymentInfo.mpi_flg %}
+                            <dl>
+                                <dt><label for="payment_credit_account_card_name" class="ec-label">カード名義人名</label><span class="ec-required">必須</span></dt>
+                                <dd>
+                                    <div class="ec-input {% if accountForm.card_name.vars.errors is not empty %}error{% endif %}">
+                                        {{ form_widget(accountForm.card_name) }}
+                                        <p class="ec-para-normal">(例: TARO YAMADA)</p>
+                                        {{ form_errors(accountForm.card_name) }}
+                                    </div>
+                                </dd>
+                            </dl>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="ec-orderRole__actions">
+                <div class="ec-off4Grid">
+                    <div class="ec-off4Grid__cell">
+                        <p class="ec-para-normal"><button type="submit" class="ec-blockBtn--action" id="vt4g_btn_account">登録済みクレジットカードでお支払い</button></p>
+                        <a class="ec-blockBtn--cancel" id="vt4g_btn_account_back" href="{{ url('vt4g_shopping_payment_back', { 'no': orderNo }) }}">ご注文手続きに戻る</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    {% endif %}
+
+    {# クレジットカード情報 入力フォーム #}
+    {% if not isCardMaxOver %}
+    <form method="post" action="{{ url('vt4g_shopping_payment') }}" id="vt4g_form_credit" style="margin-bottom:3em;">
+        {{ form_widget(form._token) }}
+        <input type="hidden" name="mode" value="next">
+        <input type="hidden" name="token_id" value="">
+        <input type="hidden" name="token_expire_date" value="">
+        <input type="hidden" name="subsc_order_flg" value="{{ subscOrderFlg }}">
+
+
+        <div class="ec-off1Grid">
+            <div class="ec-off1Grid__cell">
+                <h2>{{ title }}</h2>
+
+                {% if error.payment is not empty %}
+                    <div class="ec-cartRole">
+                        <div class="ec-alert-warning">
+                            <div class="ec-alert-warning__icon" style="line-height:1;"><img src="{{ asset('assets/icon/exclamation-white.svg') }}"></div>
+                            <div class="ec-alert-warning__text" style="text-align:left;">
+                                {{ error.payment|raw }}
+                            </div>
+                        </div>
+                        <div class="ec-off4Grid" style="width:100%">
+                            <div class="ec-off4Grid__cell">
+                                <p><a class="ec-blockBtn--cancel" id="vt4g_btn_back" href="{{ url('vt4g_shopping_payment_back', { 'no': orderNo }) }}">ご注文手続きに戻る</a></p>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <br>
+                    <p class="ec-color-red ec-para-normal" id="vt4g_form_credit_error">{% if mode == 'token' %}{{ error.credit|raw }}{% endif %}</p>
+                    <div class="ec-borderedDefs">
+                        <dl>
+                            <dt><label for="vt4g_card_no" class="ec-label">クレジットカード番号</label><span class="ec-required">必須</span></dt>
+                            <dd>
+                                <div class="ec-input {% if form.card_no.vars.errors is not empty %}error{% endif %}">
+                                    {{ form_widget(form.card_no, {'id': 'vt4g_card_no'}) }}
+                                    {{ form_errors(form.card_no) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt><label for="vt4g_expiry_mon" class="ec-label">カード有効期限</label><span class="ec-required">必須</span></dt>
+                            <dd>
+                                <div class="ec-select {% if form.expiry_month.vars.errors is not empty or form.expiry_year.vars.errors is not empty %}error{% endif %}">
+                                    {{ form_widget(form.expiry_month, {'id': 'vt4g_expiry_mon'}) }}月 / 20{{ form_widget(form.expiry_year) }}年
+                                    {{ form_errors(form.expiry_month) }}
+                                    {{ form_errors(form.expiry_year) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt><label for="payment_credit_card_name" class="ec-label">カード名義人名</label><span class="ec-required">必須</span></dt>
+                            <dd>
+                                <div class="ec-input {% if form.card_name.vars.errors is not empty %}error{% endif %}">
+                                    {{ form_widget(form.card_name) }}
+                                    <p class="ec-para-normal">(例: TARO YAMADA)</p>
+                                    {{ form_errors(form.card_name) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        {% if paymentInfo.security_flg is defined and paymentInfo.security_flg %}
+                            <dl>
+                                <dt><label for="payment_credit_security_code" class="ec-label">セキュリティコード</label><span class="ec-required">必須</span></dt>
+                                <dd>
+                                    <div class="ec-halfInput {% if form.security_code.vars.errors is not empty %}error{% endif %}">
+                                        {{ form_widget(form.security_code) }}
+                                        <p class="ec-para-normal">(例: 123)</p>
+                                        {{ form_errors(form.security_code) }}
+                                    </div>
+                                </dd>
+                            </dl>
+                        {% endif %}
+                        <dl>
+                            <dt><label for="payment_credit_payment_type" class="ec-label">お支払い方法</label><span class="ec-required">必須</span></dt>
+                            <dd>
+                                <div class="ec-select {% if form.payment_type.vars.errors is not empty %}error{% endif %}">
+                                    {{ form_widget(form.payment_type) }}
+                                    {{ form_errors(form.payment_type) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        {% if cardRegistFlg %}
+                        <dl>
+                            <dt><label for="payment_credit_cardinfo_regist" class="ec-label">カード情報登録</label><span class="ec-required">必須</span></dt>
+                            <dd>
+                                <div class="ec-radio {% if form.cardinfo_regist.vars.errors is not empty %}error{% endif %}">
+                                    {{ form_widget(form.cardinfo_regist) }}
+                                    {{ form_errors(form.cardinfo_regist) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        {% endif %}
+                        {% if cardRetradeFlg %}
+                        <dl>
+                            <dt><label for="payment_credit_cardinfo_retrade" class="ec-label">かんたん決済</label><span class="ec-required">必須</span></dt>
+                            <dd>
+                                <div class="ec-radio {% if form.cardinfo_retrade.vars.errors is not empty %}error{% endif %}">
+                                    {{ form_widget(form.cardinfo_retrade) }}
+                                    {{ form_errors(form.cardinfo_retrade) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if error.payment is empty %}
+            <div class="ec-orderRole__actions">
+                <div class="ec-off4Grid">
+                    <div class="ec-off4Grid__cell">
+                        <p class="ec-para-normal"><button class="ec-blockBtn--action" id="vt4g_btn_token">入力したクレジットカード情報でお支払い</button></p>
+                        <a class="ec-blockBtn--cancel" id="vt4g_btn_token_back" href="{{ url('vt4g_shopping_payment_back', { 'no': orderNo }) }}">ご注文手続きに戻る</a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </form>
+    {% endif %}
+
+    {# 再取引 入力フォーム #}
+    {% if error.payment is empty and useReTradePayment and reTradeCards is not empty %}
+        <form method="post" action="{{ url('vt4g_shopping_payment') }}" id="vt4g_form_credit_one_click">
+            {{ form_widget(oneClickForm._token) }}
+            <input type="hidden" name="mode" value="retrade">
+            <div class="ec-off1Grid">
+                <div class="ec-off1Grid__cell">
+                    <h2>かんたん決済 (前回ご利用カードでのお支払い)</h2>
+                    <br>
+                    <p class="ec-para-normal">決済に利用するカードを選択してください。</p>
+                    <p class="ec-color-red ec-para-normal">{% if mode == 'retrade' %}{{ error.credit|raw }}{% endif %}</p>
+                    <div class="ec-borderedDefs">
+                        <dl>
+                            <dt><label class="ec-label">これまでのクレジットカード番号</label><span class="ec-required">必須</span></dt>
+                            <dd>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr class="active">
+                                            <th>カード番号</th>
+                                            <th>ご注文日時</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for index, card in reTradeCards %}
+                                            <tr>
+                                                <td class="ec-blockRadio">
+                                                    <label>
+                                                        <input name="payment_order_id" type="radio" value="{{ card.paymentOrderId }}" {% if index is same as(0) %}checked{% endif %}>
+                                                        <span>{{ card.cardNumber }}</span>
+                                                    </label>
+                                                    <input type = 'hidden' class = 'registered_card_name' value="{{ card.registeredCardName }}">
+                                                </td>
+                                                <td>{{ card.orderDate }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt><label class="ec-label">お支払い方法</label><span class="ec-required">必須</span></dt>
+                            <dd>
+                                <div class="ec-select {% if oneClickForm.payment_type.vars.errors is not empty %}error{% endif %}">
+                                    {{ form_widget(oneClickForm.payment_type) }}
+                                    <p class="ec-errorMessage">{{ form_errors(oneClickForm.payment_type) }}</p>
+                                </div>
+                            </dd>
+                        </dl>
+                        {% if paymentInfo.mpi_flg is defined and paymentInfo.mpi_flg %}
+                            <dl>
+                                <dt><label for="payment_credit_retrade_card_name" class="ec-label">カード名義人名</label><span class="ec-required">必須</span></dt>
+                                <dd>
+                                    <div class="ec-input {% if oneClickForm.card_name.vars.errors is not empty %}error{% endif %}">
+                                        {{ form_widget(oneClickForm.card_name) }}
+                                        <p class="ec-para-normal">(例: TARO YAMADA)</p>
+                                        {{ form_errors(oneClickForm.card_name) }}
+                                    </div>
+                                </dd>
+                            </dl>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="ec-orderRole__actions">
+                <div class="ec-off4Grid">
+                    <div class="ec-off4Grid__cell">
+                        <p class="ec-para-normal"><button type="submit" class="ec-blockBtn--action" id="vt4g_btn_retrade">かんたん決済でお支払い</button></p>
+                        <a class="ec-blockBtn--cancel" id="vt4g_btn_retrade_back" href="{{ url('vt4g_shopping_payment_back', { 'no': orderNo }) }}">ご注文手続きに戻る</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    {% endif %}
+{% endblock %}

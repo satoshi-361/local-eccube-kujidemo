@@ -1,0 +1,84 @@
+<div class="card rounded border-0 mb-4" id="cardListBlock">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-8">
+                <div class="d-inline-block">
+                    <span class="card-title">カード情報</span>
+                </div>
+            </div>
+            <div class="col-4 text-right">
+                <a data-toggle="collapse" href="#vt4gAccountIdInfo" aria-expanded="false"
+                    aria-controls="vt4gAccountIdInfo">
+                    <i class="fa fa-angle-up fa-lg"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="collapse show ec-cardCollapse" id="vt4gAccountIdInfo">
+        <div class="card-body">
+
+            <div class="row mb-2">
+                <div class="col-3">
+                    <div class="d-inline-block">
+                        <span>ベリトランス会員ID</span>
+                    </div>
+                </div>
+                <div class="col">
+                    <p>{{ accountId }}</p>
+                </div>
+            </div>
+
+            {% if accountCards|length > 0 %}
+                <div class="vt4g_card_list">
+                    {% for card in accountCards %}
+                        <div class="vt4g_card_list__item">
+                            <a class="vt4g_card_list__remove" href="{{ url('vt4g_admin_customer_card_delete', { customerId : Customer.id, cardId : card.cardId }) }}" {{ csrf_token_for_anchor() }} data-method="post">
+                                <div class="ec-icon">
+                                    <img src="{{ asset('assets/icon/cross.svg') }}" alt="remove">
+                                </div>
+                            </a>
+                            <div class="vt4g_card_list__card">
+                                <div>カード番号 {{ card.cardNumber }}</div>
+                                <div>有効期限 {{ card.expire }}</div>
+                                {% if card.alertMsg is not empty %}
+                                    <div class="text-danger">{{ card.alertMsg }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+            この会員のカード情報はありません
+            {% endif %}
+        </div>
+    </div>
+</div>
+<style>
+.vt4g_card_list .vt4g_card_list__item {
+    display: table;
+    width: 100%;
+    position: relative;
+    border-bottom: 1px dotted #ccc;
+}
+
+.vt4g_card_list .vt4g_card_list__remove {
+    vertical-align: middle;
+    padding: 16px;
+    text-align: center; }
+
+.vt4g_card_list .vt4g_card_list__remove .ec-icon img {
+    width: 1em;
+    height: 1em; }
+
+.vt4g_card_list .vt4g_card_list__card {
+    display: table-cell;
+    vertical-align: middle;
+    padding: 16px;
+    margin-right: 4em;
+    width: 90%; }
+</style>
+<script>
+var $cardListBlock = $("#cardListBlock");
+var $otherBlocks = $(".c-primaryCol .card");
+$otherBlocks.eq($otherBlocks.length-1).before($cardListBlock);
+</script>

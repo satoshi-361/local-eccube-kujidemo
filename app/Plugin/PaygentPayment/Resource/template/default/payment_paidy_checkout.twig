@@ -1,0 +1,89 @@
+{#
+This file is part of EC-CUBE
+
+Copyright (c) 2006 PAYGENT Co.,Ltd. All rights reserved.
+
+https://www.paygent.co.jp/
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#}
+{% extends 'default_frame.twig' %}
+{% form_theme form 'Form/form_div_layout.twig' %}
+
+{% block javascript %}
+{% if api_key is not empty %}
+<script type="text/javascript" src="https://apps.paidy.com"></script>
+<script type="text/javascript">//<![CDATA[
+// PaidyCheckout設定
+var config = {
+    "api_key": "{{ api_key | e }}",
+    "logo_url": "{{ logo_url | e }}",
+    "closed": function(callbackData) {
+        $("#amount").val(callbackData.amount);
+        $("#currency").val(callbackData.currency);
+        $("#created_at").val(callbackData.created_at);
+        $("#id").val(callbackData.id);
+        $("#status").val(callbackData.status);
+        if (callbackData.status === "rejected" || callbackData.status === "closed") {
+            document.getElementById("mode").value = 'paidy_commit_cancel';
+        } else {
+            document.getElementById("mode").value = 'paidy_commit';
+        }
+        document.paidy_payment.submit();
+    }
+};
+var paidyHandler = Paidy.configure(config);
+function paidyPay() {
+    $("body").append('<iframe style="z-index: 9998; display: block; position: fixed; background: rgba(0,0,0,0.5); -webkit-tap-highlight-color: transparent; visibility: visible; top: 0px; left: 0px; width: 100%; height: 100%; border: 0px none"></iframe>');
+    var payload = {{ json_paidy | raw }};
+    paidyHandler.launch(payload);
+}
+//]]></script>
+{% endif %}
+{% endblock %}
+
+{% block main %}
+    <div id="main_middle">
+        <div class="ec-role">
+            <div class="ec-rectHeading">
+                <h2>ペイジェント Paidy翌月払い（コンビニ/銀行）</h2>
+            </div>
+            {{ form_start(form) }}
+            {# PaidyCheckout起動画面 #}
+            <div class="mdl-payment-inner">
+                <form name="form1" id="form1" method="post" action="">
+                    {{ form_widget(form._token) }}
+                    <input type="hidden" name="mode" id="mode" value="">
+                    <input type="hidden" name="amount" value="" id="amount" />
+                    <input type="hidden" name="currency" value="" id="currency" />
+                    <input type="hidden" name="created_at" value="" id="created_at" />
+                    <input type="hidden" name="id" value="" id="id" />
+                    <input type="hidden" name="status" value="" id="status" />
+                    <input type="hidden" name="order_id" value="{{ order_id }}" id="order_id" />
+                    <div style="margin-top:20px">
+                        「Paidyでお支払い」ボタンをクリックしてください。<br>
+                        <hr style="background:#D3D3D3; border:0; height:1px">
+                    </div>
+                    <div class="row no-padding" style="margin-top:10px">
+                        <div class="col-sm-offset-4 col-sm-4">
+                            <p><button type="button" class="btn btn-primary btn-block" onclick="paidyPay();return false">Paidyでお支払い</button></p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

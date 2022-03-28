@@ -1,0 +1,135 @@
+{#
+Copyright (c) 2018 VeriTrans Inc., a Digital Garage company. All rights reserved.
+http://www.veritrans.co.jp/
+#}
+{% extends '@admin/default_frame.twig' %}
+{% set menus = ['customer', 'vt4g_customer_subsc_history'] %}
+{% block title %}継続課金会員管理{% endblock %}
+{% block sub_title %}会員管理{% endblock %}
+
+{% block stylesheet %}{% endblock stylesheet %}
+{% block javascript %}
+    {{ include('VeriTrans4G/Resource/template/default/css/vt4g_css.twig') }}
+    <script src="{{ asset('assets/js/vendor/spin.min.js', 'admin') }}"></script>
+{% endblock javascript %}
+
+{% block main %}
+
+<div class="c-outsideBlock">
+    <form name="search_form" id="search_form" method="POST" action="{{ url('vt4g_admin_subsc_customer') }}">
+        <div class="c-outsideBlock__contents">
+            <div class="row form-group">
+                <div class="col-12">
+                    {{ form_widget(form._token) }}
+                    <div>
+                        <label class="col-form-label">販売種別名</label>
+                        {{ form_widget(form.sale_type_id) }}
+                        {{ form_errors(form.sale_type_id) }}
+                    </div>
+                    <div>
+                        <label class="col-form-label">会員ID・お名前</label>
+                        {{ form_widget(form.event_name) }}
+                        {{ form_errors(form.event_name) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="c-outsideBlock__contents">
+            <div class="row">
+                <div class="mb-4">
+                    <div class="col-12">
+                        <button class="btn btn-ec-conversion px-5" type="submit" id="event_submit">検索</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% if not first_display %}
+  {% if pagination and pagination.totalItemCount %}
+  <div class="c-contentsArea__cols">
+      <div class="c-contentsArea__primaryCol">
+          <div class="c-primaryCol">
+                <div class="row justify-content-between mb-2">
+                    <div class="col-12 text-right">
+                        {#Dropdown page count#}
+                        <div class="d-inline-block mr-2">
+                            <select class="custom-select" onchange="location = this.value;">
+                                {% for pageMax in pageMaxis %}
+                                    <option {% if pageMax.name == page_count %} selected {% endif %}
+                                            value="{{ path('vt4g_admin_subsc_customer_page', {'page_no': 1, 'page_count': pageMax.name }) }}">
+                                        {{ 'admin.common.count'|trans({ '%count%': pageMax.name }) }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="card rounded border-0 mb-4 d-block">
+                    <div class="card-body p-0">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                  <th class="border-top-0 pt-2 pb-3 pl-3 text-nowrap">販売種別名</th>
+                                  <th class="border-top-0 pt-2 pb-3">会員</th>
+                                  <th class="border-top-0 pt-2 pb-3">商品名</th>
+                                  <th class="border-top-0 pt-2 pb-3">決済依頼回数</th>
+                                  <th class="border-top-0 pt-2 pb-3">初回注文ID</th>
+                                  <th class="border-top-0 pt-2 pb-3">出荷ID</th>
+                                  <th class="border-top-0 pt-2 pb-3">継続課金ステータス</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for subsc in pagination %}
+                            <tr>
+                                <td class="align-middle pl-3">{{ subsc.sale_type_name }}</td>
+                                <td class="align-middle pl-3">
+                                    {% if subsc.pay_total > 0 %}
+                                      <a href="{{ url('vt4g_admin_subsc_customer_edit', { 'customer_id': subsc.customer_id, 'product_id': subsc.product_id, 'product_class_id': subsc.product_class_id, 'shipping_id': subsc.shipping_id , 'order_id': subsc.first_order_id }) }}">{{ subsc.customer_id }}<br>{{ subsc.name01 }}&nbsp;{{ subsc.name02 }}</a>
+                                    {% else %}
+                                      {{ subsc.customer_id }}<br>{{ subsc.name01 }}&nbsp;{{ subsc.name02 }}
+                                    {% endif %}
+                                </td>
+                                <td class="align-middle pl-3">{{ subsc.product_name }}</td>
+                                <td class="align-middle pl-3">{{ subsc.pay_total }}</td>
+                                <td class="align-middle pl-3">{{ subsc.first_order_id }}</td>
+                                <td class="align-middle pl-3">{{ subsc.shipping_id }}</td>
+                                <td class="align-middle pl-3">
+                                    {{ subsc.subsc_status==1 ? '継続' : '解約' }}
+                                    {% set change_status = subsc.subsc_status==1 ? '2' : '1' %}
+                                    <a class="btn btn-ec-actionIcon mr-2 action-visible" href="{{ url('vt4g_admin_subsc_customer_page_edit_status', {'page_no': page_no, 'customer_id': subsc.customer_id, 'product_id': subsc.product_id, 'product_class_id': subsc.product_class_id, 'shipping_id': subsc.shipping_id, 'order_id': subsc.first_order_id, 'status': change_status }) }}"
+                                     data-tooltip="true" data-placement="top" title="{{ subsc.subsc_status==1 ? '解約にする' : '継続にする' }}"
+                                     data-confirm="false" data-method="put" {{ csrf_token_for_anchor() }} >
+                                      <i class="fa fa-toggle-{{ subsc.subsc_status==1 ? 'on' : 'off' }} fa-lg text-secondary" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+          </div>
+      </div>
+  </div>
+  <div class="row justify-content-md-center mb-4">
+      {% if pagination.totalItemCount > 0 %}
+          {% include "@admin/pager.twig" with {'pages': pagination.paginationData, 'routes' : 'vt4g_admin_subsc_customer_page' } %}
+      {% endif %}
+  </div>
+  {% elseif has_errors %}
+      <div class="card rounded border-0">
+          <div class="card-body p-4">
+              <div class="text-center text-muted mb-4 h5">{{ 'admin.common.search_invalid_condition'|trans }}</div>
+              <div class="text-center text-muted">{{ 'admin.common.search_try_change_condition'|trans }}</div>
+          </div>
+      </div>
+  {% else %}
+      <div class="card rounded border-0">
+          <div class="card-body p-4">
+              <div class="text-center text-muted mb-4 h5">{{ 'admin.common.search_no_result'|trans }}</div>
+          </div>
+      </div>
+  {% endif %}
+{% endif %}
+{% endblock %}

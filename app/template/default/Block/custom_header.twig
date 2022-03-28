@@ -1,0 +1,27 @@
+{#
+This file is part of EC-CUBE
+
+Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+
+http://www.ec-cube.co.jp/
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+#}
+<header id="masthead" class="site-header" role="banner">
+    <div class="inner cf">
+        <p class="site-description">全部がアタリ！当サイトオリジナルグッズが盛りだくさん！！</p>
+        <h1 class="site-title"><a href="{{ url('homepage') }}" title="{{ BaseInfo.shop_name }}| 全部がアタリ！当サイトオリジナルグッズが盛りだくさん！！" rel="home"><img src="{{ asset('logo.svg', 'save_image') }}" class="img-responsive" /></a></h1>
+        <div class="snav cf">
+            <div class="membership" style="padding-top: .5rem;">
+                <a href="{{ url('mypage') }}"><i class="fa fa-user"></i></a>
+                <ul class="cf">
+                    {{ include('Block/login.twig') }}
+                </ul>
+            </div>
+            <div class="incart-btn ec-headerRole__cart">
+               {{ include('Block/cart.twig') }}
+            </div>
+        </div><!-- .snav -->  
+    </div><!-- .inner -->
+</header><!-- #masthead -->

@@ -1,0 +1,64 @@
+{#
+Copyright (c) 2018 VeriTrans Inc., a Digital Garage company. All rights reserved.
+http://www.veritrans.co.jp/
+#}
+{% extends  'default_frame.twig' %}
+
+{% block javascript %}
+    <script>
+    {% if tplIsLoading %}
+        $(document).ready(function () {
+            setTimeout(function () {
+                document.form1.submit();
+            }, 0);
+        });
+    {% endif %}
+    </script>
+{% endblock %}
+
+{% block main %}
+    <div style="margin:0 25px;">
+        <h2 class="ec-font-bold ec-para-normal">{{ title }}</h2>
+        <form name="form1" id="vt4g_form_recruit" method="post" action="{{ url('vt4g_shopping_payment') }}">
+            {{ form_widget(form._token) }}
+            <input type="hidden" name="mode" value="next">
+            {% if tplIsLoading %}
+                <div id="payment_form_loading">
+                    <div class="information">
+                        <p>処理中です。そのまま、お待ち下さい。</p>
+                        <span class="text-danger">※画面が切り替るまで少々時間がかかる場合がございますが、そのままお待ちください。</span>
+                    </div>
+                    <div class="dl_table" style="margin-top: 20px;">
+                        <dl>
+                            <dd style="text-align: center;">
+                                <img src="{{ asset(loadingImage, 'plugin') }}"/>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+
+            {% else %}
+
+                {% if error.payment is not empty %}
+                    <div class="message">
+                        <p class="errormsg bg-danger">
+                            <div class="ec-alert-warning">
+                                <div class="ec-alert-warning__icon"><img src="{{ asset('assets/icon/exclamation-white.svg') }}"></div>
+                                <div class="ec-alert-warning__text">
+                                    {{ error.payment|raw }}
+                                </div>
+                            </div>
+                        </p>
+                    </div>
+                {% endif %}
+
+                <div class="ec-off4Grid" style="width:100%">
+                    <div class="ec-off4Grid__cell">
+                        <p><a class="ec-blockBtn--cancel" id="vt4g_btn_back" href="{{ url('vt4g_shopping_payment_back', { 'no': orderNo }) }}">ご注文手続きに戻る</a></p>
+                    </div>
+                </div>
+
+            {% endif %}
+        </form>
+    </div>
+{% endblock %}

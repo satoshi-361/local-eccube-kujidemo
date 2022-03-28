@@ -1,0 +1,128 @@
+{#
+This file is part of EC-CUBE
+
+Copyright (c) 2006 PAYGENT Co.,Ltd. All rights reserved.
+
+https://www.paygent.co.jp/
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#}
+
+{% block javascript %}
+<script>
+$(function() {
+    elem = $('.paygentEdit');
+    elem.insertAfter('.c-primaryCol > .card:last')
+
+    {% if paygentOnClickButton is defined and paygentOnClickButton %}
+    // ボタン押下後、要素へ移動
+    $("html,body").animate({scrollTop:$('#paygentEdit').offset().top},500);
+    {% endif %}
+});
+</script>
+{% endblock javascript %}
+{% block main %}
+<div class="card rounded border-0 mb-4 paygentEdit">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-8">
+                <span class="card-title">▼{{ paygentMethodName }}</span>
+            </div>
+            <div class="col-4 text-right"><a data-toggle="collapse" href="#paygentEdit" aria-expanded="false" aria-controls="paygentEdit"><i class="fa fa-angle-up fa-lg"></i></a></div>
+        </div>
+    </div>
+    <div class="collapse show ec-cardCollapse" id="paygentEdit">
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <div class="row mb-3 form-group">
+                        <label class="col-3 col-form-label">{{ paygentMethodName }}ステータス</label>
+                        <div class="col form-control-plaintext">
+                            <span>
+                            {% if paygentMessage is defined and paygentMessage %}
+                                {{ paygentMessage }}
+                            {% elseif paygentStatusName %}
+                                {{ paygentStatusName }}
+                            {% else %}
+                                未処理
+                            {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    {% if paygentError and (paygentFlags.isCredit is defined and paygentFlags.isCredit) %}
+                    <div class="row mb-3 form-group">
+                        <label class="col-3 col-form-label">{{ paygentMethodName }}エラーメッセージ</label>
+                        <div class="col form-control-plaintext">
+                            <p class="text-danger mb-0">{{ paygentError }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if paygentFlags.change_auth is defined and paygentFlags.change_auth %}
+                    <div class="row mb-3 form-group">
+                        <label class="col-3 col-form-label">{{ paygentMethodName }}オーソリ変更</label>
+                        <div class="col">
+                            <button type="submit" class="btn btn-ec-regular" name="paygentType" value="{{ paygentFlags.change_auth }}">
+                                オーソリ変更
+                            </button>
+                            <p class="font-weight-bold text-danger mb-0">※ 金額変更時には、オーソリ変更ボタンをクリックしてください。</p>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="row mb-3 form-group">
+                        <label class="col-3 col-form-label">{{ paygentMethodName }}売上変更</label>
+                        <div class="col">
+                            <button type="submit" class="btn btn-ec-regular" name="paygentType"
+                            {% if paygentFlags.change == false %}
+                                disabled
+                            {% else %}
+                                value="{{ paygentFlags.change }}"
+                            {% endif %}>
+                                売上変更
+                            </button>
+                            {% if (paygentFlags.isCareer is defined and paygentFlags.isCareer) or (paygentFlags.isCredit is defined and paygentFlags.isCredit) %}
+                                <p class="font-weight-bold text-danger mb-0">※ 金額変更時には、売上変更ボタンをクリックしてください。</p>
+                            {% elseif paygentFlags.isPaidy is defined and paygentFlags.isPaidy %}
+                                <p class="font-weight-bold text-danger mb-0">※ 決済金額変更時には、売上変更ボタンをクリックしてください。決済金額が増加する変更には対応していません。</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="row mb-3 form-group">
+                        <label class="col-3 col-form-label">{{ paygentMethodName }}電文送信</label>
+                        <div class="col">
+                            <button type="submit" class="btn btn-ec-regular" name="paygentType"
+                            {% if paygentFlags.commit == false %}
+                                disabled
+                            {% else %}
+                                value="{{ paygentFlags.commit }}"
+                            {% endif %}>
+                                売上
+                            </button>
+                            <button type="submit" class="btn btn-ec-regular" name="paygentType"
+                            {% if paygentFlags.cancel == false %}
+                                disabled
+                            {% else %}
+                                value="{{ paygentFlags.cancel }}"
+                            {% endif %}>
+                                取消
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

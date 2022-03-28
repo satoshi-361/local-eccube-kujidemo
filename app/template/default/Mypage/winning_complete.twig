@@ -1,0 +1,365 @@
+{#
+    This file is part of EC-CUBE
+    
+    Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+    
+    http://www.ec-cube.co.jp/
+    
+    For the full copyright and license information, please view the LICENSE
+    file that was distributed with this source code.
+    #}
+    {% extends 'default_frame.twig' %}
+    
+    {% set body_class = 'cart_page' %}
+
+    {% block stylesheet %}
+   <style>
+        .anim_wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 1000px;
+    min-height: 545px;
+    margin: 0 auto;
+    text-align: center;
+}
+#anim_start{
+    position: relative;
+    background-image: url("{{ asset('assets/img/bg_kuji.jpg', 'user_data') }}");
+    background-position: center;
+    background-size: cover;
+    padding: 50px 0;
+}
+
+#result {
+    position: relative;
+    background-image: url("{{ asset('assets/img/bg_kuji.jpg', 'user_data') }}");
+    background-position: center;
+    background-size: cover;
+    padding: 50px 0;
+}
+#anim_start1{
+    position: relative;
+    background-image: url("{{ asset('assets/img/bg_kuji.jpg', 'user_data') }}");
+    background-position: center;
+    background-size: cover;
+    padding: 50px 0;
+}
+
+#anim_start .kuji_machine {
+    max-width: 320px;
+}
+
+#anim_start form {
+
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    margin: auto;
+    width: 140px;
+    height: 150px;
+    background: none;
+}
+
+#anim_start form button {
+    outline: none;
+    border: none;
+    background: none;
+}
+
+#anim_start .btn_kuji_start {
+    max-width: 120px;
+    animation-name: pulse;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+}
+
+#anim_start .btn_kuji_start:hover {
+    opacity: 1;
+    animation-name: bounce;
+}
+
+#anim_start .kuji_sponser_img {
+    max-width: 120px;
+    position: absolute;
+    right: 0;
+    left: 0;
+    bottom: 20.5%;
+    margin: auto;
+}
+
+.btn_area {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-around;
+    width: 300px;
+    margin: 30px auto;
+}
+
+.btn_area .btn_skip {
+    padding: 10px 0;
+    background: #ddd;
+    border-radius: 5px;
+    border: none;
+    width: 130px;
+}
+
+.btn_area #btn_retry {
+    padding: 10px 0;
+    background: #ff8c00;
+    color: white;
+    border-radius: 5px;
+    border: none;
+    width: 130px;
+    height: 41px;
+    text-align: center;
+}
+
+.btn_area .btn_back {
+    padding: 10px 0;
+    background: #eee;
+    border-radius: 5px;
+    border: none;
+    width: 130px;
+    text-align: center;
+}
+
+
+#anim_kuji,
+#moving {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 545px;
+}
+
+#anim_kuji {
+    z-index: 3;
+}
+
+#moving {
+    z-index: 2;
+}
+
+
+#result {
+    position: absolute;
+    top: -150vh;
+}
+
+#result.show {
+    position: relative;
+    top: 0;
+}
+
+#result .text_wrap {
+    position: relative;
+    font-weight: bold;
+    width: 470px;
+    height: 470px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-size: cover;
+}
+
+#result .text_wrap.red {
+    color: white;
+    background-image: url("{{ asset('assets/animation/kuji_open_red@2x.png', 'user_data') }}" );
+}
+
+#result .text_wrap.blue {
+    color: white;
+    background-image: url("{{ asset('assets/animation/kuji_open_blue@2x.png', 'user_data') }}" );
+}
+
+#result .text_wrap.gray {
+    color: black;
+    background-image: url("{{ asset('assets/animation/kuji_open_gray@2x.png', 'user_data') }}" );
+}
+
+#result .text_wrap.green {
+    color: white;
+    background-image: url("{{ asset('assets/animation/kuji_open_green@2x.png', 'user_data') }}" );
+}
+
+#result .text_wrap.orange {
+    color: white;
+    background-image: url("{{ asset('assets/animation/kuji_open_orange@2x.png', 'user_data') }}" );
+}
+
+#result .text_wrap.pink {
+    color: white;
+    background-image: url("{{ asset('assets/animation/kuji_open_pink@2x.png', 'user_data') }}" );
+}
+
+#result .text_wrap.gold {
+    color: black;
+    background-image: url("{{ asset('assets/animation/kuji_open_gold@2x.png', 'user_data') }}" );
+}
+
+#result .text_wrap.silver {
+    color: black;
+    background-image: url("{{ asset('assets/animation/kuji_open_silver@2x.png', 'user_data') }}" );
+}
+
+#result .text_wrap.yellow {
+    color: black;
+    background-image: url("{{ asset('assets/animation/kuji_open_yellow@2x.png', 'user_data') }}" );
+}
+
+#result .text_wrap.white {
+    color: black;
+    background-image: url("{{ asset('assets/animation/kuji_open_white@2x.png', 'user_data') }}" );
+}
+
+#result .text_wrap .inner {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#result .text_wrap .inner div.rank {
+    font-size: 42px;
+    line-height: 62px;
+}
+
+#result .text_wrap .inner div.itemename {
+    font-size: 16px;
+}
+
+#result .text_wrap .inner #twitter-widget-0 {
+    margin: 20px auto 0;
+}
+
+#result_action {
+    position: initial;
+    top: -200vh;
+    margin-top: 30px;
+}
+
+#result_action.show {
+    position: relative;
+    top: 0;
+}
+
+#kuji_item_img {
+    display: block;
+    margin: 0 auto 30px;
+}
+
+#result .kuji_sponser_img {
+    display: block;
+    top: 100px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    max-width: 140px;
+}
+
+@media only screen and (max-width: 480px) {
+
+    #anim_start,
+    #result {
+        padding: 15px 0;
+    }
+
+    #anim_start .kuji_machine {
+        max-width: 210px;
+    }
+
+    #anim_start .btn_kuji_start {
+        max-width: 100px;
+    }
+
+    #anim_start .kuji_sponser_img {
+        max-width: 80px;
+        bottom: 17%;
+    }
+
+    .anim_wrapper .btn_area{
+        margin-top: 10px;
+    }
+
+    #result_action{
+        margin-top: 10px;
+    }
+
+    #result .kuji_sponser_img {
+        display: block;
+        position: absolute;
+        top: 65px;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        max-width: 80px;
+        border: 2px #a20000 solid;
+    }
+
+    #result .text_wrap {
+        width: 320px;
+        height: 320px;
+    }
+
+    .anim_wrapper {
+        min-height: 100vh;
+    }
+
+
+    #anim_kuji,
+    #moving {
+        height: 100vh;
+    }
+
+    #anim_kuji {
+        background-position: center;
+        background-size: cover;
+    }
+
+    /* #anim_kuji svg {} */
+
+}
+    </style>
+    {% endblock %}
+    
+    {% block main %}
+
+
+<div id="main" class="wrapper one-column no-padding">
+    <div class="anim_wrapper">
+        <div id="anim_kuji"></div>
+        <div id="moving"></div>
+        <div id="results_area" class="get" style="height: 650px;">
+            <div class="results_area_inner" style="padding: 0;">
+                {% if Product.ProductImage | length > 1 %}
+                <img src="{{ asset(Product.getProductImage()[2], 'save_image') }}" width="350" style="margin-bottom: 20px;">
+                {% else %}
+                <img src="{{ asset(Product.main_list_image|no_image_product, 'save_image') }}" width="350" style="margin-bottom: 20px;"/><br/> 
+                {% endif %}
+                <div class="rank" style="margin: 15px;">{{util.prizeGrade}}{{util.prizeClassName}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{util.prizeName}}</div>     
+                {% for Prize in Prizes %}
+                <div class="itemname" style="margin: 10px;"><h4>{{ Prize.name }}</h4></div>
+                {% endfor %}
+                <div style="font-size: 1.5rem;" class="mt-5">が当選しました！</div>
+            </div>
+        </div>
+        <div id="result_action">
+                <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large" data-text="{{util.prizeGrade}}{{util.prizeClassName}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{util.prizeName}}が当選しました！" data-url="{{ url('homepage') ~ 'products/detail/' ~ util.productId }}" data-hashtags="{{ Product.twitter_tags }}" data-show-count="false">Tweet</a>
+                <script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+            <div class="btn_area">
+                {%if quantity > 0 %}
+                <a href="{{ path('winning_complete', {order_no: util.orderId, product_id: util.productId}) }}" title="もう一度ひく  | {{ BaseInfo.shop_name }}">
+                    <button id="btn_retry">もう一度ひく</button>	
+                </a>	
+                {% endif %}
+                <a href="{{ path('mypage') }}" class="btn_back">購入履歴に戻る</a>
+            </div>
+                <p class="text-center mgb30 black">ブラウザバックやリロードをしないでください。</p>
+            </div>
+        </div>
+</div>
+
+{% endblock %}

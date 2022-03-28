@@ -1,0 +1,58 @@
+{% set config = repository('Plugin\\CMBlog\\Entity\\Config').get() %}
+{% set blogs = repository('Plugin\\CMBlog\\Entity\\Blog').getList() %}
+
+{% block stylesheet %}
+<style>
+.news_area .row>.col-sm-6:first-child {
+	display: block;
+}
+
+@media only screen and (max-width: 575px) {
+	article.col-sm-6 {
+		padding: 0;
+	}
+}
+</style>
+{% endblock %}
+{% block javascript %}{% endblock %}
+
+
+
+<section class="block news_area">
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-6">
+				<h3 class="orange text-center mgb30">News</h3>
+				
+                {% if blogs is defined and blogs|length > 0 %}
+                {% for blog in blogs %}
+				<article id="post-102" class="col-sm-6 mgb30">
+					<a href="{{ url('cm_blog_page_detail', {'id': blog.id}) }}" rel="bookmark">
+						<div class="post_thumbnail mgb15">
+						    {% if blog.getMainListImage %}
+                                <img width="500" height="500" src="{{ asset(blog.getMainListImage|no_image_product, 'save_image') }}" class="img-responsive center-block" loading="lazy"></img>
+                                {% else %}
+                                <img width="500" height="500" src="{{ asset(''|no_image_product, 'save_image') }}" class="img-responsive center-block" loading="lazy"></img>
+                            {% endif %}
+						</div>
+						<div class="post_content">
+							<header class="entry-header">
+								<center><p class="entry-title under_line">{{ blog.getTitle|length > 40 ? blog.getTitle|striptags|replace({('&nbsp;'):' '})|slice(0, 40)|raw ~ '...' : blog.getTitle|raw }}</p></center>
+							</header><!-- .entry-header -->
+						</div>
+					</a>
+				</article><!-- #post-102 -->
+				{% endfor %}		
+				<div class="old_news_link" style="float: left;">
+					<center><a href="{{ url('homepage') }}/blog/" style="background-color: #eeeeee; padding: 16px;">もっとみる</a></center>
+				</div>
+                {% endif %}
+			</div>
+			<div class="col-sm-6">
+			    <h3 class="orange text-center mgb30">Twitter</h3>
+				<a class="twitter-timeline" data-width="600" data-height="500" data-dnt="true" href="https://twitter.com/virtual_kuji?ref_src=twsrc%5Etfw">Tweets by virtual_kuji</a>
+				<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> 
+			</div>
+		</div>
+	</div>
+</section>

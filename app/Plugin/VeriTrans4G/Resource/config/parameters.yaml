@@ -1,0 +1,595 @@
+# Copyright (c) 2018 VeriTrans Inc., a Digital Garage company. All rights reserved.
+# http://www.veritrans.co.jp/
+
+parameters:
+    vt4g_plugin.const:
+        VT4G_CODE: VeriTrans4G
+        VT4G_SERVICE_NAME: ベリトランス4G
+        VT4G_PLUGIN_NAME: ベリトランス4G決済プラグイン
+
+        VT4G_PLUGIN_PATH: vt4g
+        VT4G_PLUGIN_CSS_FILENAME: vt4g_css.twig
+        VT4G_PLUGIN_TOKEN_JS_FILENAME: /js/token.js
+        VT4G_PLUGIN_LOADING_IMAGE: /img/loading.gif
+
+        VT4G_PLUGIN_TOKEN_API_ENDPOINT: https://api.veritrans.co.jp/4gtoken
+
+        VT4G_USED_MAIL_TO: sales@veritrans.jp
+        VT4G_USED_MAIL_SUBJECT: "[EC-CUBE4] ベリトランス4Gプラグインご利用通知"
+
+        VT4G_CUSTOMER_ID_DIGITS: 10
+
+        VT4G_PAYTYPEID_CREDIT: 10
+        VT4G_PAYTYPEID_CVS: 20
+        VT4G_PAYTYPEID_BANK: 30
+        VT4G_PAYTYPEID_ATM: 31
+        VT4G_PAYTYPEID_UPOP: 40
+        VT4G_PAYTYPEID_ALIPAY: 50
+        VT4G_PAYTYPEID_RAKUTEN: 60
+        VT4G_PAYTYPEID_RECRUIT: 61
+        VT4G_PAYTYPEID_LINEPAY: 62
+        VT4G_PAYTYPEID_CARRIER: 63
+        VT4G_PAYTYPEID_PAYPAL: 70
+
+        VT4G_PAYNAME_PAYTYPEID_10: クレジットカード決済
+        VT4G_PAYNAME_PAYTYPEID_12: 本人認証(クレジットカード決済)
+        VT4G_PAYNAME_PAYTYPEID_20: コンビニ決済
+        VT4G_PAYNAME_PAYTYPEID_30: ネットバンク決済
+        VT4G_PAYNAME_PAYTYPEID_31: ATM決済
+        VT4G_PAYNAME_PAYTYPEID_40: 銀聯ネット決済
+        VT4G_PAYNAME_PAYTYPEID_50: Alipay決済
+        VT4G_PAYNAME_PAYTYPEID_60: 楽天ペイ
+        VT4G_PAYNAME_PAYTYPEID_61: リクルートかんたん支払い
+        VT4G_PAYNAME_PAYTYPEID_62: LINE Pay
+        VT4G_PAYNAME_PAYTYPEID_63: キャリア決済
+        VT4G_PAYNAME_PAYTYPEID_70: PayPal決済
+        VT4G_REMOVED_PAYNAME_LABEL: (VT4Gプラグイン削除済み)
+
+        VT4G_CODE_PAYTYPEID_10: Credit
+        VT4G_CODE_PAYTYPEID_20: CVS
+        VT4G_CODE_PAYTYPEID_30: Bank
+        VT4G_CODE_PAYTYPEID_31: ATM
+        VT4G_CODE_PAYTYPEID_40: UPOP
+        VT4G_CODE_PAYTYPEID_50: Alipay
+        VT4G_CODE_PAYTYPEID_60: Rakuten
+        VT4G_CODE_PAYTYPEID_61: Recruit
+        VT4G_CODE_PAYTYPEID_62: LINEPay
+        VT4G_CODE_PAYTYPEID_63: Carrier
+        VT4G_CODE_PAYTYPEID_70: PayPal
+
+        VT4G_METHOD_COMMON: CommonMethod
+
+        VT4G_SERVICE_PAYTYPEID_30: netbank-pc
+        VT4G_SERVICE_PAYTYPEID_31: atm
+
+        VT4G_PAYMENT:
+            URL:
+                INDEX:
+                    NAME: vt4g_shopping_payment
+                    LABEL: 商品購入/ベリトランス4G決済画面
+                    TEMPLATE: VeriTrans4G/Resource/template/default/Shopping/vt4g_payment
+                COMPLETE:
+                    NAME: vt4g_shopping_payment_complete
+                BACK:
+                    NAME: vt4g_shopping_payment_back
+
+        VT4G_PAY_STATUS:
+            AUTH:
+                VALUE: 1
+                LABEL: 与信
+                RECV_NAME: 申込結果
+            CAPTURE:
+                VALUE: 2
+                LABEL: 売上
+                RECV_NAME: 売上結果
+            CANCEL:
+                VALUE: 3
+                LABEL: 取消
+                RECV_NAME: 取消結果
+            REQUEST:
+                VALUE: 4
+                LABEL: 申込
+            DEPOSIT:
+                VALUE: 5
+                LABEL: 入金
+                RECV_NAME: 入金結果
+            REFUND:
+                VALUE: 6
+                LABEL: 返金
+                RECV_NAME: 返金結果
+            EXPIRED:
+                VALUE: 7
+                LABEL: 期限切れ
+            NEWLY:
+                VALUE: 8
+                LABEL: 新規決済
+            CAPTURE_REQUEST:
+                VALUE: 9
+                LABEL: 売上要求中
+            CANCEL_REQUEST:
+                VALUE: 10
+                LABEL: 取消要求中
+            REDUCTION_REQUEST:
+                VALUE: 11
+                LABEL: 減額要求中
+            FAILURE:
+                VALUE: 99
+                LABEL: 決済失敗
+
+        VT4G_LABEL_RENAME:
+                RAKUTEN:
+                    REFUND: 減額
+
+        VT4G_CONVENI:
+            SEVENELEVEN:
+                CODE: sej
+                LABEL: セブン－イレブン
+            LAWSON:
+                CODE: lawson
+                LABEL: ローソン(ローソン、ミニストップ、セイコーマート)
+            FAMILYMART:
+                CODE: famima
+                LABEL: ファミリーマート
+            DAILYYAMAZAKI:
+                CODE: other
+                LABEL: デイリーヤマザキ・ヤマザキデイリーストア
+            ECON:
+                CODE: econ
+                LABEL: ローソン・ファミリーマート・ミニストップ・セイコーマート
+
+        VT4G_RECV_CVS_TYPE:
+            sej: セブン－イレブン
+            econ-lw: ローソン
+            econ-fm: ファミリーマート
+            econ-mini: ミニストップ
+            econ-other: セイコーマート
+            lawson: ローソン、ミニストップ、セイコーマート
+            famima: ファミリーマート
+            other: デイリーヤマザキ・ヤマザキデイリーストア
+
+        VT4G_RECV_PAYPAL_FIXED: 1
+
+        VT4G_RECV_TXN_TYPE_AUTH: Authorize
+        VT4G_RECV_TXN_TYPE_CAPTURE: Capture
+        VT4G_RECV_TXN_TYPE_REFUND: Refund
+        VT4G_RECV_TXN_TYPE_CANCEL: Cancel
+        VT4G_RECV_TXN_TYPE_CREDIT :
+            - Verify
+            - AuthorizeConfirm
+            - VerifyNotify
+
+        VT4G_RECV_RECODE_HEAD:
+            - numberOfNotify
+            - pushTime
+            - pushId
+
+        VT4G_RECV_RECODE_BODY:
+            VT4G_PAYTYPEID_CREDIT:
+                - orderId
+                - vResultCode
+                - txnType
+                - mpiMstatus
+                - cardMstatus
+                - dummy
+            VT4G_PAYTYPEID_CVS:
+                - orderId
+                - cvsType
+                - receiptNo
+                - receiptDate
+                - rcvAmount
+                - dummy
+            VT4G_PAYTYPEID_BANK:
+                - orderId
+                - kikanNo
+                - kigyoNo
+                - rcvDate
+                - customerNo
+                - confNo
+                - rcvAmount
+                - dummy
+            VT4G_PAYTYPEID_UPOP:
+                - orderId
+                - txnType
+                - mstatus
+                - traceNumber
+                - traceTime
+                - settleAmount
+                - settleDate
+                - settleRate
+                - dummy
+            VT4G_PAYTYPEID_ALIPAY:
+                - orderId
+                - txnType
+                - mstatus
+                - vResultCode
+                - centerTradeId
+                - dummy
+            VT4G_PAYTYPEID_RAKUTEN:
+                - orderId
+                - txnType
+                - txnTime
+                - vResultCode
+                - mstatus
+                - usedPoint
+                - dummy
+            VT4G_PAYTYPEID_RAKUTEN:
+                - orderId
+                - txnType
+                - txnTime
+                - vResultCode
+                - mstatus
+                - usedPoint
+                - dummy
+            VT4G_PAYTYPEID_RECRUIT:
+                - orderId
+                - txnType
+                - txnTime
+                - vResultCode
+                - mstatus
+                - recruitOrderId
+                - usePoint
+                - givePoint
+                - recruitCoupon
+                - merchantCoupon
+                - dummy
+            VT4G_PAYTYPEID_LINEPAY:
+                - orderId
+                - txnType
+                - txnTime
+                - vResultCode
+                - mstatus
+                - linepayOrderId
+                - dummy
+            VT4G_PAYTYPEID_PAYPAL:
+                - orderId
+                - mstatus
+                - txnType
+                - receivedDatetime
+                - amount
+                - payerId
+                - centerTxnId
+                - dummy
+
+        VT4G_RECV_MAIL_SUBJECT:
+            ERROR: " - 結果通知エラー報知メール"
+            RESULT: 要求結果報知メール
+
+        VT4G_OPERATION_AUTH: AUTH
+        VT4G_OPERATION_CAPTURE: CAPTURE
+        VT4G_OPERATION_CANCEL: CANCEL
+        VT4G_OPERATION_REFUND: REFUND
+        VT4G_OPERATION_REFUND_ALL: REFUND_ALL
+        VT4G_OPERATION_NEWLY: NEWLY
+
+        VT4G_OPERATION_NAME:
+            REFUND: 再売上（減額用）
+            REFUND_ALL: 全額返金
+
+        VT4G_MAIL_TIMING:
+            ORDER:
+                ON_COMPLETE: 0
+                ON_PAYMENT: 1
+            BANK:
+                ON_PAYMENT: 0
+                ON_RECEIVE: 1
+
+        VT4G_MAIL_TARGET:
+            RAKUTEN:
+                FAILURE: 0
+                ALL: 1
+
+        VT4G_FORM:
+            REGEX:
+                VERITRANS_ID_PREFIX: '/^[[:alnum:]_\-\.]+$/i'
+                INTEGER: '/^[0-9]+$/'
+            RANGE:
+                MIN:
+                    PAYMENT_TERM: 1
+                    CARDINFO_REGIST_MAX: 1
+                MAX:
+                    PAYMENT_TERM: 60
+                    CARDINFO_REGIST_MAX: 10
+            LENGTH:
+                MIN:
+                    VERITRANS_ID_PREFIX: 1
+                    CARD_NO: 14
+                    SECURITY_CODE: 3
+                    CARD_NAME: 2
+                MAX:
+                    PAYMENT_TERM: 2
+                    CONTENTS: 12
+                    CONTENTS_KANA: 24
+                    ORDER_MAIL_TITLE1: 50
+                    ORDER_MAIL_BODY1: 1000
+                    VERITRANS_ID_PREFIX: 17
+                    MERCHANT_CCID: 24
+                    MERCHANT_PASS: 64
+                    MERCHANT_ID: 24
+                    MERCHANT_HASH: 24
+                    TOKEN_API_KEY: 36
+                    VT4G_ORDER_ID_PREFIX: 50
+                    FREE: 16
+                    CARD_NO: 16
+                    SECURITY_CODE: 4
+                    CARD_NAME: 45
+                    COMMODITY_NAME: 100
+                    REFUND_REASON: 80
+                    ITEM_NAME: 255
+                    ORDER_DESCRIPTION: 127
+                    PAYMENT_TERM_DAY: 2
+            CHOICES:
+                COMMON_FLG:
+                    '利用する': 1
+                    '利用しない': 0
+                WITH_CAPTURE:
+                    '与信+売上': 1
+                    '与信のみ': 0
+                CREDIT_PAY_METHOD:
+                    '一括払い': '10'
+                    'ボーナス一括': '21'
+                    '分割2回払い': '61C02'
+                    '分割3回払い': '61C03'
+                    '分割4回払い': '61C04'
+                    '分割5回払い': '61C05'
+                    '分割6回払い': '61C06'
+                    '分割7回払い': '61C07'
+                    '分割8回払い': '61C08'
+                    '分割9回払い': '61C09'
+                    '分割10回払い': '61C10'
+                    '分割11回払い': '61C11'
+                    '分割12回払い': '61C12'
+                    '分割13回払い': '61C13'
+                    '分割14回払い': '61C14'
+                    '分割15回払い': '61C15'
+                    '分割16回払い': '61C16'
+                    '分割17回払い': '61C17'
+                    '分割18回払い': '61C18'
+                    '分割19回払い': '61C19'
+                    '分割20回払い': '61C20'
+                    '分割21回払い': '61C21'
+                    '分割22回払い': '61C22'
+                    '分割23回払い': '61C23'
+                    '分割24回払い': '61C24'
+                    'リボルビング払い': '80'
+                CARRIER_SERVICE_TYPE:
+                    'auかんたん決済':                 'au'
+                    'ドコモケータイ払い':             'docomo'
+                    'ソフトバンクまとめて支払い（A）': 'sb_matomete'
+                    'ソフトバンクまとめて支払い（B）': 'sb_ktai'
+                CARRIER_TERMINAL_KIND:
+                    'PC':               0
+                    'スマートフォン':     1
+                    'フィーチャーフォン': 2
+                CARRIER_ITEM_TYPE:
+                    'デジタルコンテンツ': 0
+                    '物販':              1
+                    '役務':              2
+                CARRIER_ACCOUNT_TYPE:
+                    '都度': 0
+                    '継続': 1
+                    '随時': 4
+                MPI_OPTION:
+                    '完全認証': 'mpi-complete'
+                    '通常認証（カード会社リスク負担）': 'mpi-company'
+                    '通常認証（カード会社、加盟店リスク負担）': 'mpi-merchant'
+                ONE_CLICK_FLG:
+                    'かんたん決済': 2
+                    'ベリトランス会員ID決済': 1
+                    '利用しない': 0
+                CONVENI:
+                    '01:セブンイレブン': 'sej'
+                    '02:ローソン・ミニストップ・セイコーマート': 'lawson'
+                    '03:ファミリーマート': 'famima'
+                    '04:デイリーヤマザキ・ヤマザキデイリーストア': 'other'
+                    '05:ローソン・ファミリーマート・ミニストップ・セイコーマート': 'econ'
+                MAIL_TIMING:
+                    '入金通知受信時': 1
+                    '決済申込完了時': 0
+                ORDER_MAIL_TIMING_FLG:
+                    '入金(結果)通知受信時': 1
+                    '注文完了画面表示時': 0
+                DUMMY_MODE_FLG:
+                    '本番モードで稼働': 0
+                    'ダミーモードで稼働': 1
+                RESULT_MAIL_TARGET:
+                    'すべて': 1
+                    '要求不成立のみ': 0
+                REGISTRATION_FLG:
+                    '登録する': 1
+                    '登録しない': 0
+                    '初期値なし': 2
+                RETRADE_FLG:
+                    '利用する': 1
+                    '利用しない': 0
+
+            DEFAULT:
+                WITH_CAPTURE: 0
+                SECURITY_FLG: 1
+                MPI_FLG: 0
+                SECURE_SECOND_FLG: 0
+                MPI_OPTION: 'mpi-company'
+                ONE_CLICK_FLG: 0
+                ORDER_MAIL_TIMING_FLG: 0
+                DUMMY_MODE_FLG: 1
+                MAIL_TIMING: 0
+                RESULT_MAIL_TARGET: 0
+                CARDINFO_REGIST_DEFAULT: 2
+                CARDINFO_REGIST_MAX: 5
+
+        VT4G_REQUEST:
+            CREDIT:
+                RETRY_LIMIT: 3
+                RETRY_WAIT: 3
+
+        VT4G_RESPONSE:
+            MSTATUS:
+                OK: success
+                NG: failure
+                PENDING: pending
+
+        VT4G_DOC_PATH : /Resource/doc
+        VT4G_EXPLAIN_FILE_NAME_FMT : /explain_%s.txt
+
+        VT4G_CREDIT_ERR_RESPONSE_YEAR98: 98
+        VT4G_CREDIT_ERR_RESPONSE_YEAR99: 99
+
+        VT4G_CREDIT_MPI_OPTION:
+            COMPLETE: mpi-complete
+            COMPANY: mpi-company
+            MERCHANT: mpi-merchant
+
+        VT4G_CREDIT_ONE_CLICK:
+            RETRADE: 2
+            VERITRANS_ID: 1
+            DISABLED: 0
+        VT4G_CREDIT_RETRADE:
+            DATETIME_FORMAT: Y-m-d 00:00:00
+            LIMIT_CARDS: 10
+            VALID_MONTH: 13
+
+        VT4G_CREDIT_ERR_TRANS_PREFIX: front.order.vt4g.vresult_code_
+        VT4G_CREDIT_VERITRANS_ID_SESSION_KEY: vt4g_veritrans_id
+        VT4G_CREDIT_VERIFY_TIMEOUT: 25
+        VT4G_CREDIT_VERIFY_RESULT_LINK: 2
+        VT4G_CREDIT_PAYNOWID_TEMP_REG: 1
+        VT4G_CREDIT_DEVICE_CHANNEL: '02'
+
+        VT4G_ALIPAY_CURRENCY: JPY
+
+        VT4G_UPOP_CURRENCY:
+            392: 日本円
+            156: 中国元
+
+        VT4G_PAYPAL_ACTION:
+            CREDIT: set
+            COMPLETE: do
+
+        VT4G_PAYPAL_SHIPPING:
+            DISABLED: 0
+
+        VT4G_MERCHANT_CCID:
+            EXCLUDE:
+                - 69951cc
+                - 69992cc
+
+        RULE_MIN_PAYTYPEID_10: 2
+        RULE_MIN_PAYTYPEID_20: 1
+        RULE_MIN_PAYTYPEID_30: 1
+        RULE_MIN_PAYTYPEID_31: 1
+        RULE_MIN_PAYTYPEID_40: 1
+        RULE_MIN_PAYTYPEID_50: 1
+        RULE_MIN_PAYTYPEID_60: 100
+        RULE_MIN_PAYTYPEID_61: 1
+        RULE_MIN_PAYTYPEID_62: 1
+        RULE_MIN_PAYTYPEID_63: 1
+        RULE_MIN_PAYTYPEID_70: 1
+        RULE_MAX_PAYTYPEID_10: 99999999
+        RULE_MAX_PAYTYPEID_20: 299999
+        RULE_MAX_PAYTYPEID_30: 2000000000
+        RULE_MAX_PAYTYPEID_31: 2000000000
+        RULE_MAX_PAYTYPEID_40: 999999999
+        RULE_MAX_PAYTYPEID_50: 9999999
+        RULE_MAX_PAYTYPEID_60: 99999999
+        RULE_MAX_PAYTYPEID_61: 9999999
+        RULE_MAX_PAYTYPEID_62: 9999999
+        RULE_MAX_PAYTYPEID_63: 9999999
+        RULE_MAX_PAYTYPEID_70: 1000000
+
+        ORDER_CSV_COLUMN_CONFIG:
+            NAME: 注文ID
+        ORDER_CSV_TEMPLATE: order.csv
+
+        VT4G_MYPAGE:
+            URL:
+                INDEX:
+                    NAME: mypage_vt4g_account_id
+                    LABEL: MYページ/ベリトランス会員ID
+                    TEMPLATE: VeriTrans4G/Resource/template/default/Mypage/vt4g_account_id
+
+        VT4G_RAKUTEN_BUTTON:
+            URL:
+                INDEX:
+                    NAME: vt4g_admin_preview_rakuten_button
+                    LABEL: 商品購入/楽天ペイ支払いボタン
+                    TEMPLATE: VeriTrans4G/Resource/template/default/Shopping/vt4g_button_rakuten
+
+        VT4G_MYPAGE_SUBSC_PAYMENT:
+            URL:
+                INDEX:
+                    NAME: mypage_vt4g_subsc_payment
+                    LABEL: MYページ/継続課金決済履歴
+                    TEMPLATE: VeriTrans4G/Resource/template/default/Mypage/vt4g_subsc_payment
+
+        VT4G_MYPAGE_SUBSC_PAYMENT_HISTORY:
+            URL:
+                INDEX:
+                    NAME: mypage_vt4g_subsc_payment_history
+                    LABEL: MYページ/継続課金決済履歴詳細
+                    TEMPLATE: VeriTrans4G/Resource/template/default/Mypage/vt4g_subsc_payment_history
+
+        VT4G_WITHDRAW_ERROR_MAIL_SUBJECT: " - ベリトランス会員ID削除エラー報知メール"
+
+        VT4G_DTB_CSV:
+            CUSTOMER:
+                VT4G_ACCOUNT_ID:
+                    DISP_NAME: ベリトランス会員ID
+                    FIELD_NAME: vt4g_account_id
+            ORDER:
+                VT4G_PAYMENT_STATUS:
+                    DISP_NAME: 決済状況
+                    FIELD_NAME: vt4g_payment_status
+
+        VT4G_SUBSC_PRODUCT_CULUMN:
+            MY_PAGE_DISP_FLG_ON: 1
+            MY_PAGE_DISP_FLG_OFF: 0
+
+        # 少額与信の金額
+        VT4G_FEW_CREDIT_AMOUNT: 2
+
+        # 継続課金ステータス
+        VTG4_SUBSC_STATUS_SUBSC: 1
+        VTG4_SUBSC_STATUS_CANCEL: 2
+
+        # 決済依頼ステータス
+        VTG4_PAYMENT_REQUEST:
+          REQUEST_STATUS:
+            BEFORE_CREATION: 0
+            NOT_APPLICABLE: 2
+            WAITING_FOR_REFRECTON: 5
+            SUCCESS_PAYMENT: 7
+            FAILURE_PAYMENT: 9
+          REQUEST_STATUS_NAME:
+            BEFORE_CREATION: CSV未作成
+            NOT_APPLICABLE: 対象外
+            WAITING_FOR_REFRECTON: 反映待ち
+            SUCCESS_PAYMENT: 決済成功
+            FAILURE_PAYMENT: 決済失敗
+
+        # 小額与信フラグ
+        VG4G_FEW_CREDIT_FLG_ON: 1
+
+        # 決済対象フラグ
+        VT4G_PAYMENT_TARGET_YES: 1
+        VT4G_PAYMENT_TARGET_NO: 0
+
+        VT4G_CSV_REQUEST_DETAIL_HEADER:
+            - 決済依頼イベント番号
+            - 決済依頼イベント名
+            - 継続課金用販売種別名
+            - 決済依頼番号
+            - 決済依頼ステータス
+            - 会員番号
+            - 会員名
+            - 初回注文ID
+            - 取引ID
+            - 決済金額
+            - 決済手数料
+            - 決済依頼明細番号
+            - 商品名
+            - 金額
+            - 数量
+            - 付与ポイント
+            - 出荷ID
+            - 配送先_お名前
+            - 配送先_住所
+            - CSV対象

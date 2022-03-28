@@ -1,0 +1,266 @@
+# Copyright (c) 2018 VeriTrans Inc., a Digital Garage company. All rights reserved.
+# http://www.veritrans.co.jp/
+
+imports:
+    - resource: parameters.yaml
+
+services:
+    vt4g_plugin.service.admin.plugin.config:
+        public: true
+        class: Plugin\VeriTrans4G\Service\Admin\PluginConfigService
+        arguments:
+            - '@service_container'
+
+    vt4g_plugin.service.admin.setting_shop_payment:
+        public: true
+        class: Plugin\VeriTrans4G\Service\Admin\SettingPaymentService
+        arguments:
+            - '@service_container'
+
+    vt4g_plugin.service.admin.setting_shop_payment_add_regist_btn:
+      public: true
+      class: Plugin\VeriTrans4G\Service\Admin\Setting\Shop\SettingPaymentAddRegistBtn
+      arguments:
+          - '@service_container'
+
+    vt4g_plugin.service.admin.order_index_extension:
+        public: true
+        class: Plugin\VeriTrans4G\Service\Admin\Order\IndexExtensionService
+        arguments:
+            - '@service_container'
+
+    vt4g_plugin.service.admin.order_edit_extension:
+        public: true
+        class: Plugin\VeriTrans4G\Service\Admin\Order\EditExtensionService
+        arguments:
+            - '@service_container'
+
+    vt4g_plugin.service.util:
+        public: true
+        class: Plugin\VeriTrans4G\Service\UtilService
+        arguments:
+            - '@service_container'
+
+    vt4g_plugin.service.method.common:
+        public: true
+        class: Plugin\VeriTrans4G\Service\Method\CommonMethod
+        arguments:
+            - '@service_container'
+            - '@Eccube\Repository\Master\OrderStatusRepository'
+            - '@eccube.purchase.flow.shopping'
+
+    vt4g_plugin.service.payment_base:
+        public: true
+        class: Plugin\VeriTrans4G\Service\Payment\BaseService
+        arguments:
+            - '@service_container'
+            - '@eccube.purchase.flow.shopping'
+            - '@Eccube\Security\Core\Encoder\PasswordEncoder'
+            - '@Eccube\Service\CartService'
+            - '@Eccube\Service\MailService'
+
+    vt4g_plugin.service.payment_credit:
+        public: true
+        class: Plugin\VeriTrans4G\Service\Payment\CreditService
+        arguments:
+            - '@service_container'
+            - '@eccube.purchase.flow.shopping'
+            - '@Eccube\Security\Core\Encoder\PasswordEncoder'
+            - '@Eccube\Service\CartService'
+            - '@Eccube\Service\MailService'
+
+
+    vt4g_plugin.service.payment_atm:
+        public: true
+        class: Plugin\VeriTrans4G\Service\Payment\ATMService
+        arguments:
+            - '@service_container'
+            - '@eccube.purchase.flow.shopping'
+            - '@Eccube\Security\Core\Encoder\PasswordEncoder'
+            - '@Eccube\Service\CartService'
+            - '@Eccube\Service\MailService'
+
+
+    vt4g_plugin.service.payment_bank:
+        public: true
+        class: Plugin\VeriTrans4G\Service\Payment\BankService
+        arguments:
+            - '@service_container'
+            - '@eccube.purchase.flow.shopping'
+            - '@Eccube\Security\Core\Encoder\PasswordEncoder'
+            - '@Eccube\Service\CartService'
+            - '@Eccube\Service\MailService'
+
+
+    vt4g_plugin.service.payment_cvs:
+        public: true
+        class: Plugin\VeriTrans4G\Service\Payment\CVSService
+        arguments:
+            - '@service_container'
+            - '@eccube.purchase.flow.shopping'
+            - '@Eccube\Security\Core\Encoder\PasswordEncoder'
+            - '@Eccube\Service\CartService'
+            - '@Eccube\Service\MailService'
+
+
+    vt4g_plugin.service.payment_alipay:
+        public: true
+        class: Plugin\VeriTrans4G\Service\Payment\AlipayService
+        arguments:
+            - '@service_container'
+            - '@eccube.purchase.flow.shopping'
+            - '@Eccube\Security\Core\Encoder\PasswordEncoder'
+            - '@Eccube\Service\CartService'
+            - '@Eccube\Service\MailService'
+
+
+    vt4g_plugin.service.payment_upop:
+        public: true
+        class: Plugin\VeriTrans4G\Service\Payment\UPOPService
+        arguments:
+            - '@service_container'
+            - '@eccube.purchase.flow.shopping'
+            - '@Eccube\Security\Core\Encoder\PasswordEncoder'
+            - '@Eccube\Service\CartService'
+            - '@Eccube\Service\MailService'
+
+
+    vt4g_plugin.service.payment_rakuten:
+        public: true
+        class: Plugin\VeriTrans4G\Service\Payment\RakutenService
+        arguments:
+            - '@service_container'
+            - '@eccube.purchase.flow.shopping'
+            - '@Eccube\Security\Core\Encoder\PasswordEncoder'
+            - '@Eccube\Service\CartService'
+            - '@Eccube\Service\MailService'
+
+
+    vt4g_plugin.service.payment_carrier:
+        public: true
+        class: Plugin\VeriTrans4G\Service\Payment\CarrierService
+        arguments:
+            - '@service_container'
+            - '@eccube.purchase.flow.shopping'
+            - '@Eccube\Security\Core\Encoder\PasswordEncoder'
+            - '@Eccube\Service\CartService'
+            - '@Eccube\Service\MailService'
+
+
+    vt4g_plugin.service.payment_recruit:
+        public: true
+        class: Plugin\VeriTrans4G\Service\Payment\RecruitService
+        arguments:
+            - '@service_container'
+            - '@eccube.purchase.flow.shopping'
+            - '@Eccube\Security\Core\Encoder\PasswordEncoder'
+            - '@Eccube\Service\CartService'
+            - '@Eccube\Service\MailService'
+
+
+    vt4g_plugin.service.payment_linepay:
+        public: true
+        class: Plugin\VeriTrans4G\Service\Payment\LINEPayService
+        arguments:
+            - '@service_container'
+            - '@eccube.purchase.flow.shopping'
+            - '@Eccube\Security\Core\Encoder\PasswordEncoder'
+            - '@Eccube\Service\CartService'
+            - '@Eccube\Service\MailService'
+
+
+    vt4g_plugin.service.payment_paypal:
+        public: true
+        class: Plugin\VeriTrans4G\Service\Payment\PayPalService
+        arguments:
+            - '@service_container'
+            - '@eccube.purchase.flow.shopping'
+            - '@Eccube\Security\Core\Encoder\PasswordEncoder'
+            - '@Eccube\Service\CartService'
+            - '@Eccube\Service\MailService'
+
+
+    vt4g_plugin.service.mail_message:
+        public: true
+        class: Plugin\VeriTrans4G\Service\MailMessageService
+        arguments:
+            - '@service_container'
+            - '@Eccube\Service\MailService'
+
+
+    vt4g_plugin.service.payment_recv:
+        public: true
+        class: Plugin\VeriTrans4G\Service\Payment\PaymentRecvService
+        arguments:
+            - '@service_container'
+            - '@eccube.purchase.flow.shopping'
+            - '@Eccube\Security\Core\Encoder\PasswordEncoder'
+            - '@Eccube\Service\CartService'
+            - '@Eccube\Service\MailService'
+
+
+    vt4g_plugin.service.front.mypage_extension:
+        public: true
+        class: Plugin\VeriTrans4G\Service\Mypage\MypageExtensionService
+        arguments:
+            - '@service_container'
+
+    vt4g_plugin.service.vt4g_account_id:
+        public: true
+        class: Plugin\VeriTrans4G\Service\Vt4gAccountIdService
+        arguments:
+            - '@service_container'
+
+    vt4g_plugin.service.shopping_index_extension:
+        public: true
+        class: Plugin\VeriTrans4G\Service\Shopping\IndexExtensionService
+        arguments:
+            - '@service_container'
+
+    vt4g_plugin.service.shopping.confirm:
+        public: true
+        class: Plugin\VeriTrans4G\Service\Shopping\ConfirmExtensionService
+        arguments:
+            - '@service_container'
+
+    vt4g_plugin.service.front.mypage.withdraw_extension:
+        public: true
+        class: Plugin\VeriTrans4G\Service\Mypage\WithdrawExtensionService
+        arguments:
+            - '@service_container'
+
+    vt4g_plugin.service.admin.customer_index_extension:
+        public: true
+        class: Plugin\VeriTrans4G\Service\Admin\Customer\IndexExtensionService
+        arguments:
+            - '@service_container'
+
+    vt4g_plugin.service.admin.customer_edit_extension:
+        public: true
+        class: Plugin\VeriTrans4G\Service\Admin\Customer\EditExtensionService
+        arguments:
+            - '@service_container'
+
+    vt4g_plugin.service.admin.customer_csv_export_extension:
+        public: true
+        class: Plugin\VeriTrans4G\Service\Admin\Setting\Shop\CsvExportExtensionService
+        arguments:
+            - '@service_container'
+
+    vt4g_plugin.service.vt4g_mdk:
+        public: true
+        class: Plugin\VeriTrans4G\Service\Vt4gMdkService
+        arguments:
+            - '@service_container'
+
+    vt4g_plugin.service.admin.product.subsc_extension:
+        public: true
+        class: Plugin\VeriTrans4G\Service\Admin\Product\SubscExtensionService
+        arguments:
+            - '@service_container'
+
+    vt4g_plugin.service.cart.index_extension:
+        public: true
+        class: Plugin\VeriTrans4G\Service\Cart\IndexExtensionService
+        arguments:
+            - '@service_container'

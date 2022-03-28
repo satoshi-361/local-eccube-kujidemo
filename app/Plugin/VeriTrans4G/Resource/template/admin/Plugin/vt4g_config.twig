@@ -1,0 +1,201 @@
+{#
+Copyright (c) 2018 VeriTrans Inc., a Digital Garage company. All rights reserved.
+http://www.veritrans.co.jp/
+#}
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['store', 'plugin', 'plugin_list'] %}
+
+{% block title %}VeriTrans4G{% endblock %}
+{% block sub_title %}プラグイン設定{% endblock %}
+
+{% form_theme form '@admin/Form/bootstrap_4_horizontal_layout.html.twig' %}
+
+{% block stylesheet %}{% endblock stylesheet %}
+
+{% block javascript %}{% endblock javascript %}
+
+{% block main %}
+    <form role="form" method="post">
+
+        {{ form_widget(form._token) }}
+
+        <div class="c-contentsArea__cols">
+            <div class="c-contentsArea__primaryCol">
+                <div class="c-primaryCol">
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header"><span>設定</span></div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3"><span>マーチャントCCID</span><span
+                                            class="badge badge-primary ml-1">必須</span></div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.merchant_ccid) }}
+                                    {{ form_errors(form.merchant_ccid) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3"><span>マーチャント認証鍵</span><span
+                                            class="badge badge-primary ml-1">必須</span></div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.merchant_pass) }}
+                                    {{ form_errors(form.merchant_pass) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3"><span>マーチャントID</span></div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.merchant_id) }}
+                                    {{ form_errors(form.merchant_id) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3"><span>ハッシュシード</span></div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.merchant_hash) }}
+                                    {{ form_errors(form.merchant_hash) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3"><span>トークンAPI キー</span><span
+                                            class="badge badge-primary ml-1">必須</span></div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.token_api_key) }}
+                                    {{ form_errors(form.token_api_key) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3"><span>取引IDプレフィックス</span></div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.vt4g_order_id_prefix) }}
+                                    {{ form_errors(form.vt4g_order_id_prefix) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3"><span>有効にする支払方法</span><span
+                                            class="badge badge-primary ml-1">必須</span></div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.enable_payment_type) }}
+                                    {{ form_errors(form.enable_payment_type) }}
+                                    <p class='small'>*支払方法ごとの詳細設定はプラグイン設定完了後に支払方法設定画面で行います。</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3"><span>ダミーモード</span><span
+                                            class="badge badge-primary ml-1">必須</span></div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.dummy_mode_flg) }}
+                                    {{ form_errors(form.dummy_mode_flg) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3"><span>注文完了メール送信タイミング</span><span
+                                            class="badge badge-primary ml-1">必須</span></div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.order_mail_timing_flg) }}
+                                    {{ form_errors(form.order_mail_timing_flg) }}
+                                    <p class='small'>*ネットバンク決済は支払方法設定画面の設定値を使います。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="c-primaryCol">
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header"><span>その他情報</span></div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3"><span>入金(結果)通知プログラム</span></div>
+                                <div class="col mb-2">
+                                    <p>
+                                    入金(結果)通知プログラムとは、購入者が注文完了後にコンビニ、銀行・郵貯などで入金操作を行ったという情報を4Gサーバーから自動で受信するプログラムのことです。<br />
+                                    MAP(ベリトランスのマーチャント管理ポータルサービス)で入金(結果)通知プログラムを有効にして以下のURLを設定して下さい。<br />
+                                    ※クレジットカード決済以外の決済は入金(結果)通知プログラムを有効にしないと返金処理などをEC-CUBEから行うことができません。<br />
+                                    </p>
+                                    <hr>
+                                    <p>お客様の入金(結果)通知URL</p>
+                                    <p>{{ recv_url }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3"><span>EC-CUBEご利用状況の確認</span><span
+                                            class="badge badge-primary ml-1">必須</span></div>
+                                <div class="col mb-2">
+                                    <p>
+                                    加盟店様のEC-CUBEのご利用状況確認のため、下記情報のご提供をお願いいたします。<br />
+                                    決済プラグイン設定完了時に下記の情報を、ベリトランス株式会社宛にメール送信いたします。<br />
+                                    ・ショップ名<br />
+                                    ・EC-CUBEバージョン情報<br />
+                                    ・決済モジュールバージョン情報<br />
+                                    ・マーチャントCCID<br />
+                                    <br />
+                                    補足事項：<br />
+                                    本メールは本番モードでマーチャント情報を登録する際に送信されます。<br />
+                                    ダミーモードの場合で登録する際にメールは送信されません。<br />
+                                    メールの送信は1度だけですが、複数サーバで運用されている場合、対象サーバごとでの送信となります。<br />
+                                    メールの送信先は{{ usedMail.to }}となります。<br />
+                                    送信されるメールはSHOPマスタのメール送信アドレス({{ usedMail.cc }})にもCcされます。<br />
+                                    後日ベリトランスよりEC-CUBEご利用状況について確認のためにご連絡させていただくことがございます。<br />
+                                    連絡は、メールに記載されたマーチャントCCIDに紐づく登録先にご連絡させていただきます。<br />
+                                    詳細につきましては店舗管理者向け操作マニュアルもご参照ください。<br />
+                                    お問い合わせは上記メールの送信先またはベリトランス担当営業までお願い致します。<br />
+                                    </p>
+                                    <hr>
+                                    {% if usedMail.send_date is null %}
+                                    <div class="row">
+                                        <div class="col mb-2">
+                                            {{ form_widget(form.used_mail_flg) }}
+                                            {{ form_errors(form.used_mail_flg) }}
+                                        </div>
+                                    </div>
+                                    {% else %}
+                                    メール送信済(送信日：{{ usedMail.send_date }})<br />
+
+                                    <div class="form-group d-none" >
+                                        {{ form_widget(form.used_mail_flg) }}
+                                    </div>
+                                    {% endif %}
+                                    <p>
+                                    本件は、ベリトランスにてEC-CUBEのご利用状況を把握することが目的となります。<br />
+                                    ご不明な点がございましたら直接ベリトランスまでお問い合わせください。<br />
+                                    (お問い合わせ先：{{ usedMail.to }})
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+        <div class="c-conversionArea">
+            <div class="c-conversionArea__container">
+                <div class="row justify-content-between align-items-center">
+                    <div class="col-6">
+                        <div class="c-conversionArea__leftBlockItem">
+                            <a class="c-baseLink"
+                               href="{{ url('admin_store_plugin') }}">
+                                <i class="fa fa-backward" aria-hidden="true"></i>
+                                <span>プラグイン一覧</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row align-items-center justify-content-end">
+                            <div class="col-auto">
+                                <button class="btn btn-ec-conversion px-5"
+                                        type="submit">登録</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}

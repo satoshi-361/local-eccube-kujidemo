@@ -1,0 +1,128 @@
+{#
+Copyright (c) 2018 VeriTrans Inc., a Digital Garage company. All rights reserved.
+http://www.veritrans.co.jp/
+#}
+<script>
+$(function() {
+$('div.card.rounded.border-0.mb-4').append(
+'<div class="card rounded border-0 mb-4">'+
+'    <div class="card-header"><span>ベリトランス4G設定</span></div>'+
+'    <div class="card-body">'+
+'        <div class="row">'+
+'            <div class="col-3"><span>決済種別</span></div>'+
+'            <div class="col mb-2">'+
+'                {{ vt4g.payName }}'+
+'            </div>'+
+'        </div>'+
+'        <div class="row">'+
+'            <div class="col-3">'+
+'                <span>処理区分</span><span class="badge badge-primary ml-1">必須</span>'+
+'            </div>'+
+'            <div class="col mb-2">'+
+'                {{ form_widget(form.withCapture) | spaceless }}'+
+'                {{ form_errors(form.withCapture) | spaceless }}'+
+'            </div>'+
+'        </div>'+
+'        <div class="row">'+
+'            <div class="col-3">'+
+'                <span>支払い種別</span><span class="badge badge-primary ml-1">必須</span>'+
+'            </div>'+
+'            <div class="col mb-2">'+
+'                {{ form_widget(form.credit_pay_methods) | spaceless }}'+
+'                {{ form_errors(form.credit_pay_methods) | spaceless }}'+
+'                <p class="small text-danger">※収納代行契約は、分割払い（3回～24回）、リボルビング払いをご利用いただけます。</p>'+
+'            </div>'+
+'        </div>'+
+'        <div class="row">'+
+'            <div class="col-3">'+
+'                <span>セキュリティコード認証</span><span class="badge badge-primary ml-1">必須</span>'+
+'            </div>'+
+'            <div class="col mb-2">'+
+'                {{ form_widget(form.security_flg) | spaceless }}'+
+'                {{ form_errors(form.security_flg) | spaceless }}'+
+'            </div>'+
+'        </div>'+
+'        <div class="row">'+
+'            <div class="col-3">'+
+'                <span>本人認証(3Dセキュア)</span><span class="badge badge-primary ml-1">必須</span>'+
+'            </div>'+
+'            <div class="col mb-2">'+
+'                {{ form_widget(form.mpi_flg) | spaceless }}'+
+'                {{ form_errors(form.mpi_flg) | spaceless }}'+
+'            </div>'+
+'        </div>'+
+'        <div class="row">'+
+'            <div class="col-3">'+
+'                <span>3Dセキュア2.0</span><span class="badge badge-primary ml-1">必須</span>'+
+'            </div>'+
+'            <div class="col mb-2">'+
+'                {{ form_widget(form.secure_second_flg) | spaceless }}'+
+'                {{ form_errors(form.secure_second_flg) | spaceless }}'+
+'            </div>'+
+'        </div>'+
+'        <div class="row">'+
+'            <div class="col-3">'+
+'                <span>本人認証タイプ</span><span class="badge badge-primary ml-1">必須</span>'+
+'            </div>'+
+'            <div class="col mb-2">'+
+'                {{ form_widget(form.mpi_option) | spaceless }}'+
+'                {{ form_errors(form.mpi_option) | spaceless }}'+
+'                <p class="small text-danger">※本人認証ご利用時に有効です。</p>'+
+'            </div>'+
+'        </div>'+
+'        <div class="row">'+
+'            <div class="col-3">'+
+'                <span>ワンクリック機能</span><span class="badge badge-primary ml-1">必須</span>'+
+'            </div>'+
+'            <div class="col mb-2">'+
+'                {{ form_widget(form.one_click_flg) | spaceless }}'+
+'                {{ form_errors(form.one_click_flg) | spaceless }}'+
+'            </div>'+
+'        </div>'+
+'        <div class="row">'+
+'            <div class="col-3"><span>ベリトランス会員IDプレフィックス</span><span class="badge badge-primary ml-1">必須</span></div>'+
+'            <div class="col mb-2">'+
+'                {{ form_widget(form.veritrans_id_prefix) }}<span class="text-danger">（上限17文字）</span>'+
+'                {{ form_errors(form.veritrans_id_prefix) | spaceless }}'+
+'                <p class="small text-danger">ベリトランス会員ID決済ご利用時に使用されます。</p>'+
+'            </div>'+
+'        </div>'+
+'        <div class="row">'+
+'            <div class="col-3"><span>決済完了案内タイトル</span></div>'+
+'            <div class="col mb-2">'+
+'                {{ form_widget(form.order_mail_title1) }}<span class="text-danger">（上限50文字）</span>'+
+'                {{ form_errors(form.order_mail_title1) | spaceless }}'+
+'                <p class="small text-danger">ご注文完了画面とご注文完了メールに、支払いに関する案内文を入れる場合にはタイトルと本文を入れて下さい。(両方入っていない場合は有効になりません。)</p>'+
+'            </div>'+
+'        </div>'+
+'        <div class="row">'+
+'            <div class="col-3"><span>決済完了案内本文</span></div>'+
+'            <div class="col mb-2">'+
+'                {{ form_widget(form.order_mail_body1) }}<span class="text-danger">（上限1000文字）</span>'+
+'                {{ form_errors(form.order_mail_body1) | spaceless }}'+
+'            </div>'+
+'        </div>'+
+'        <div class="row">'+
+'            <div class="col-3">'+
+'                <span>カード情報登録の初期値</span><span class="badge badge-primary ml-1">必須</span>'+
+'            </div>'+
+'            <div class="col mb-2">'+
+'                {{ form_widget(form.cardinfo_regist_default) | spaceless }}'+
+'                {{ form_errors(form.cardinfo_regist_default) | spaceless }}'+
+'            </div>'+
+'        </div>'+
+'        <div class="row">'+
+'            <div class="col-3">'+
+'                <span>カード情報登録の上限数</span><span class="badge badge-primary ml-1">必須</span>'+
+'            </div>'+
+'            <div class="col mb-2">'+
+'                {{ form_widget(form.cardinfo_regist_max) }} <br /><span class="text-danger errormsg">（半角数字で入力）</span>'+
+'                {{ form_errors(form.cardinfo_regist_max) | spaceless }}'+
+'                <p class="small text-danger">ベリトランス会員ID決済をご利用の際、カード登録上限数の設定が行えます。</p>'+
+'            </div>'+
+'        </div>'+
+'    </div>'+
+'</div>'
+);
+});
+</script>

@@ -1,0 +1,79 @@
+{#
+Copyright (c) 2018 VeriTrans Inc., a Digital Garage company. All rights reserved.
+http://www.veritrans.co.jp/
+#}
+{% extends  'default_frame.twig' %}
+
+{% block javascript %}
+    <script>
+    </script>
+{% endblock %}
+
+{% block main %}
+    <div style="margin:0 25px;">
+        <h2 class="ec-font-bold ec-para-normal">{{ title }}</h2>
+        <form name="form1" id="vt4g_form_line" method="post" action="{{ url('vt4g_shopping_payment') }}">
+            {{ form_widget(form._token) }}
+            <input type="hidden" name="mode" value="next">
+            {% if error.payment is not empty %}
+                    <div class="message">
+                        <p class="errormsg bg-danger">
+                            <div class="ec-alert-warning">
+                                <div class="ec-alert-warning__icon"><img src="{{ asset('assets/icon/exclamation-white.svg') }}"></div>
+                                <div class="ec-alert-warning__text">
+                                    {{ error.payment|raw }}
+                                </div>
+                            </div>
+                        </p>
+                    </div>
+            {% else %}
+                    <div class="ec-borderedDefs">
+                        <dl>
+                            <dt><label for="service_option_type" class="ec-label">サービスオプションタイプ</label><span class="ec-required">必須</span></dt>
+                            <dd>
+                                <div class="ec-input {% if form.service_option_type.vars.errors is not empty %}error{% endif %}">
+                                    {{ form_widget(form.service_option_type, {'id': 'service_option_type'}) }}
+                                    {{ form_errors(form.service_option_type) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt><label for="terminal_kind" class="ec-label">端末種別</label><span class="ec-required">必須</span></dt>
+                            <dd>
+                                <div class="ec-input {% if form.terminal_kind.vars.errors is not empty %}error{% endif %}">
+                                    {{ form_widget(form.terminal_kind, {'id': 'terminal_kind'}) }}
+                                    {{ form_errors(form.terminal_kind) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt><label for="item_type" class="ec-label">商品タイプ</label><span class="ec-required">必須</span></dt>
+                            <dd>
+                                <div class="ec-input {% if form.item_type.vars.errors is not empty %}error{% endif %}">
+                                    {{ form_widget(form.item_type, {'id': 'item_type'}) }}
+                                    {{ form_errors(form.item_type) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt><label for="accounting_type" class="ec-label">課金種別</label><span class="ec-required">必須</span></dt>
+                            <dd>
+                                <div class="ec-input {% if form.accounting_type.vars.errors is not empty %}error{% endif %}">
+                                    {{ form_widget(form.accounting_type, {'id': 'accounting_type'}) }}
+                                    {{ form_errors(form.accounting_type) }}
+                                </div>
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="ec-orderRole__actions">
+                        <div class="ec-off4Grid">
+                            <div class="ec-off4Grid__cell">
+                                <p class="ec-para-normal"><button class="ec-blockBtn--action" id="vt4g_btn_token">入力したクレジットカード情報でお支払い</button></p>
+                                <a class="ec-blockBtn--cancel" id="vt4g_btn_token_back" href="{{ url('vt4g_shopping_payment_back', { 'no': orderNo }) }}">ご注文手続きに戻る</a>
+                            </div>
+                        </div>
+                    </div>
+            {% endif %}
+        </form>
+    </div>
+{% endblock %}

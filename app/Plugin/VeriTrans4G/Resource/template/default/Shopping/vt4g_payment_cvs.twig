@@ -1,0 +1,62 @@
+{#
+Copyright (c) 2018 VeriTrans Inc., a Digital Garage company. All rights reserved.
+http://www.veritrans.co.jp/
+#}
+{% extends 'default_frame.twig' %}
+
+{% form_theme form 'Form/form_div_layout.twig' %}
+
+{% block main %}
+
+    <h2 class="title">{{ title }}</h2>
+
+    <form name="form1" id="vt4g_form_cvs" method="post" action="{{ url('vt4g_shopping_payment', { 'no': orderNo }) }}">
+        {{ form_widget(form._token) }}
+        <input type="hidden" name="mode" value="next"/>
+
+        {% if error.payment is not empty %}
+            <div class="message">
+                <p class="errormsg bg-danger">
+                    <div class="ec-alert-warning">
+                        <div class="ec-alert-warning__icon"><img src="{{ asset('assets/icon/exclamation-white.svg') }}"></div>
+                        <div class="ec-alert-warning__text">
+                            {{ error.payment|raw }}
+                        </div>
+                    </div>
+                </p>
+            </div>
+        {% else %}
+
+            <div class="ec-off1Grid">
+                <div class="ec-off1Grid__cell">
+                    <p class="ec-color-red ec-para-normal" id="vt4g_form_payment_error">{{ error.payment|raw }}</p>
+                    <div class="ec-borderedDefs">
+                        <dl>
+                            <dt><label for="vt4g_conveni" class="ec-label">コンビニ選択</label><span class="ec-required">必須</span></dt>
+                            <dd>
+                                <div class="ec-select {% if form.conveni.vars.errors is not empty %}error{% endif %}">
+                                    {{ form_widget(form.conveni) }}
+                                    {{ form_errors(form.conveni) }}
+                                </div>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="ec-orderRole__actions">
+            <div class="ec-off4Grid">
+                <div class="ec-off4Grid__cell">
+                    {% if error.payment is empty %}
+                        <p class="ec-para-normal">
+                            <button type="submit" class="btn ec-blockBtn--action btn-block">ご注文完了ページへ</button>
+                        </p>
+                    {% endif %}
+                    <a class="ec-blockBtn--cancel" id="vt4g_btn_back" href="{{ url('vt4g_shopping_payment_back', { 'no': orderNo }) }}">ご注文手続きに戻る</a>
+                </div>
+            </div>
+        </div>
+
+    </form>
+{% endblock %}

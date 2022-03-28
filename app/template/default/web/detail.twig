@@ -1,0 +1,128 @@
+{% extends 'default_frame.twig' %}
+
+
+{% block javascript %}{% endblock %}
+
+{% block stylesheet %}
+<style>
+.cm_blog_main_image img {
+    width: 1000px !important;
+    height: auto;
+}
+
+.pluginCMBblog .post_meta {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 95%;
+    margin: 0 auto;
+}
+.pluginCMBblog .blog_category{
+    margin: 0;
+    padding: 0;
+}
+.pluginCMBblog .blog_category{
+    display: initial;
+}
+.pluginCMBblog .blog_category li{
+    display: initial;
+    border-right: 1px solid #ddd;
+}
+
+.pluginCMBblog .blog_category li:last-child {
+    border-right: none;
+}
+
+.pluginCMBblog .post_meta .post_meta_list{
+    padding-right: 2rem;
+}
+
+.pluginCMBblog .list_category_link{
+    color: #337ab7;
+    padding: 0 0.5rem;
+}
+.pluginCMBblog .main_image_blog{
+    padding: 3rem 0;
+}
+
+.pluginCMBblog .post_meta_list.time{
+    width: 15rem;
+    display: inline-table;
+}
+.pluginCMBblog .tag_dl{
+    display: flex;
+}
+
+.pluginCMBblog .blog_Title{
+    word-break: break-word;
+    margin-bottom: 20px;
+}
+.pluginCMBblog .cm_blog_main_image{
+    text-align: center;
+}
+.pluginCMBblog .cm_blog_main_image img{
+    max-width: 100%;
+    width: auto;
+}
+
+
+@media screen and (max-width: 768px){
+    .pluginCMBblog .post_meta {
+        display: block;
+    }
+    
+    .pluginCMBblog .post_meta_list.time{
+        width: 100%;
+    }   
+}
+
+</style>
+{% endblock %}
+
+{% block main %}
+
+<div class="ec-role blog_detail pluginCMBblog">
+    <div class="ec-pageHeader">
+        <h1 class="blog_Title">{{ blog.title }}</h1>
+    </div>
+    <ul class="post_meta ">
+        <li class="post_meta_list time"><i class="fas fa-calendar-alt"></i>&nbsp;{{blog.release_date|date('Y-m-d')}}</li>
+        <li class="post_meta_list">
+            <dl class="tag_dl">
+                <dt><i class="fas fa-tags"></i></dt>
+                <dd>
+                <ul class="blog_category">
+                    {% for category in blog.getBlogCategories %}
+                        <li class="{{category.getCategory.class|raw}}">
+                            <a href="{{ url('cm_blog_page_list', {categories: [category.getCategory().getId()]}) }}" class="list_category_link">
+                            {{ category.getCategory.getName|raw }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                </dd>
+            </dl>
+        </li>
+    </ul>
+    <div class="ec-off1Grid">
+        <div >
+            <div class="cm_blog_main_image">
+                {% if blog.getBlogImage | length > 1 %}
+                <img width="1000" height="1000" src="{{ asset(blog.getBlogImage[1], 'save_image') }}" class="main_image_blog" loading="lazy"></img>
+                {% else %}
+                    {% if blog.getMainListImage %}
+                    <img width="1000" height="1000" src="{{ asset(blog.getMainListImage|no_image_product, 'save_image') }}" class="main_image_blog" loading="lazy"></img>
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div class="ec-grid2__cell">
+                <div class="ec-productRole__profile">
+                    <div class="ec-productRole__description">{{ blog.body|raw }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

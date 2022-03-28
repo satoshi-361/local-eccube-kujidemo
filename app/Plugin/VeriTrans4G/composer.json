@@ -1,0 +1,1 @@
+{"name":"ec-cube\/veritrans4g","version":"1.5.0","description":"\u30d9\u30ea\u30c8\u30e9\u30f3\u30b94G","type":"eccube-plugin","require":{"ec-cube\/plugin-installer":"~0.0.6 || ^2.0"},"extra":{"code":"VeriTrans4G","id":1835}}

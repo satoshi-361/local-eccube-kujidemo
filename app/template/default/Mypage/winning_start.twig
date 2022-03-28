@@ -1,0 +1,396 @@
+{#
+    This file is part of EC-CUBE
+    
+    Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+    
+    http://www.ec-cube.co.jp/
+    
+    For the full copyright and license information, please view the LICENSE
+    file that was distributed with this source code.
+    #}
+    {% extends 'default_frame.twig' %}
+    
+    {% set body_class = 'page-template-default page page-id-17 page-parent logged-in' %}
+
+    {% block stylesheet %}
+    <style>
+        .anim_wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 1000px;
+    min-height: 545px;
+    margin: 0 auto;
+    text-align: center;
+}
+#result {
+    position: relative;
+    background-image: url("{{ asset('assets/img/bg_kuji.jpg', 'user_data') }}");
+    background-position: center;
+    background-size: cover;
+    padding: 50px 0;
+}
+#anim_start{
+    position: relative;
+    background-image: url("{{ asset('assets/img/bg_kuji.jpg', 'user_data') }}");
+    background-position: center;
+    background-size: cover;
+    padding: 50px 0;
+}
+#anim_start .kuji_machine {
+    max-width: 320px;
+}
+#anim_start form {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    margin: auto;
+    width: 140px;
+    height: 150px;
+    background: none;
+}
+#anim_start form button {
+    outline: none;
+    border: none;
+    background: none;
+}
+#anim_start .btn_kuji_start {
+    max-width: 120px;
+    animation-name: pulse;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+}
+@-webkit-keyframes pulse {
+    0% {
+        -webkit-transform: scaleX(1);
+        transform: scaleX(1)
+    }
+    50% {
+        -webkit-transform: scale3d(1.05,1.05,1.05);
+        transform: scale3d(1.05,1.05,1.05)
+    }
+    to {
+        -webkit-transform: scaleX(1);
+        transform: scaleX(1)
+    }
+}
+@keyframes pulse {
+    0% {
+        -webkit-transform: scaleX(1);
+        transform: scaleX(1)
+    }
+    50% {
+        -webkit-transform: scale3d(1.05,1.05,1.05);
+        transform: scale3d(1.05,1.05,1.05)
+    }
+    to {
+        -webkit-transform: scaleX(1);
+        transform: scaleX(1)
+    }
+}
+.animate__pulse {
+    -webkit-animation-name: pulse;
+    animation-name: pulse;
+    -webkit-animation-timing-function: ease-in-out;
+    animation-timing-function: ease-in-out
+}
+#anim_start .btn_kuji_start:hover {
+    opacity: 1;
+    animation-name: bounce;
+}
+@-webkit-keyframes bounce {
+    0%,20%,53%,to {
+        -webkit-animation-timing-function: cubic-bezier(.215,.61,.355,1);
+        animation-timing-function: cubic-bezier(.215,.61,.355,1);
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0)
+    }
+    40%,43% {
+        -webkit-animation-timing-function: cubic-bezier(.755,.05,.855,.06);
+        animation-timing-function: cubic-bezier(.755,.05,.855,.06);
+        -webkit-transform: translate3d(0,-30px,0) scaleY(1.1);
+        transform: translate3d(0,-30px,0) scaleY(1.1)
+    }
+    70% {
+        -webkit-animation-timing-function: cubic-bezier(.755,.05,.855,.06);
+        animation-timing-function: cubic-bezier(.755,.05,.855,.06);
+        -webkit-transform: translate3d(0,-15px,0) scaleY(1.05);
+        transform: translate3d(0,-15px,0) scaleY(1.05)
+    }
+    80% {
+        -webkit-transition-timing-function: cubic-bezier(.215,.61,.355,1);
+        transition-timing-function: cubic-bezier(.215,.61,.355,1);
+        -webkit-transform: translateZ(0) scaleY(.95);
+        transform: translateZ(0) scaleY(.95)
+    }
+    90% {
+        -webkit-transform: translate3d(0,-4px,0) scaleY(1.02);
+        transform: translate3d(0,-4px,0) scaleY(1.02)
+    }
+}
+@keyframes bounce {
+    0%,20%,53%,to {
+        -webkit-animation-timing-function: cubic-bezier(.215,.61,.355,1);
+        animation-timing-function: cubic-bezier(.215,.61,.355,1);
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0)
+    }
+    40%,43% {
+        -webkit-animation-timing-function: cubic-bezier(.755,.05,.855,.06);
+        animation-timing-function: cubic-bezier(.755,.05,.855,.06);
+        -webkit-transform: translate3d(0,-30px,0) scaleY(1.1);
+        transform: translate3d(0,-30px,0) scaleY(1.1)
+    }
+    70% {
+        -webkit-animation-timing-function: cubic-bezier(.755,.05,.855,.06);
+        animation-timing-function: cubic-bezier(.755,.05,.855,.06);
+        -webkit-transform: translate3d(0,-15px,0) scaleY(1.05);
+        transform: translate3d(0,-15px,0) scaleY(1.05)
+    }
+    80% {
+        -webkit-transition-timing-function: cubic-bezier(.215,.61,.355,1);
+        transition-timing-function: cubic-bezier(.215,.61,.355,1);
+        -webkit-transform: translateZ(0) scaleY(.95);
+        transform: translateZ(0) scaleY(.95)
+    }
+    90% {
+        -webkit-transform: translate3d(0,-4px,0) scaleY(1.02);
+        transform: translate3d(0,-4px,0) scaleY(1.02)
+    }
+}
+.animate__bounce {
+    -webkit-animation-name: bounce;
+    animation-name: bounce;
+    -webkit-transform-origin: center bottom;
+    transform-origin: center bottom
+}
+#anim_start .kuji_sponser_img {
+    max-width: 120px;
+    position: absolute;
+    right: 0;
+    left: 0;
+    bottom: 20.5%;
+    margin: auto;
+}
+.btn_area {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-around;
+    width: 300px;
+    margin: 30px auto;
+}
+.btn_area .btn_skip {
+    padding: 10px 0;
+    background: #ddd;
+    border-radius: 5px;
+    border: none;
+    width: 130px;
+}
+.btn_area #btn_retry {
+    padding: 10px 0;
+    background: #ff8c00;
+    color: white;
+    border-radius: 5px;
+    border: none;
+    width: 130px;
+    text-align: center;
+}
+.btn_area .btn_back {
+    padding: 10px 0;
+    background: #eee;
+    border-radius: 5px;
+    border: none;
+    width: 130px;
+    text-align: center;
+}
+.btn_area .btn_skip {
+    padding: 10px 0;
+    background: #eee;
+    border-radius: 5px;
+    border: none;
+    width: 130px;
+    text-align: center;
+}
+#anim_kuji,
+#moving {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 545px;
+}
+#anim_kuji {
+    z-index: 3;
+}
+#moving {
+    z-index: 2;
+}
+#result {
+    position: absolute;
+    top: -150vh;
+}
+#result.show {
+    position: relative;
+    top: 0;
+}
+#result .text_wrap {
+    position: relative;
+    font-weight: bold;
+    width: 470px;
+    height: 470px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-size: cover;
+}
+#result .text_wrap.red {
+    color: white;
+    background-image: url("{{ asset('assets/animation/kuji_open_red@2x.png', 'user_data') }}");
+}
+#result .text_wrap.blue {
+    color: white;
+    background-image: url("{{ asset('assets/animation/kuji_open_blue@2x.png', 'user_data') }}");
+}
+#result .text_wrap.gray {
+    color: black;
+    background-image: url("{{ asset('assets/animation/kuji_open_gray@2x.png', 'user_data') }}");
+}
+#result .text_wrap.green {
+    color: white;
+    background-image: url("{{ asset('assets/animation/kuji_open_green@2x.png', 'user_data') }}");
+}
+#result .text_wrap.orange {
+    color: white;
+    background-image: url("{{ asset('assets/animation/kuji_open_orange@2x.png', 'user_data') }}");
+}
+#result .text_wrap.pink {
+    color: white;
+    background-image: url("{{ asset('assets/animation/kuji_open_pink@2x.png', 'user_data') }}");
+}
+#result .text_wrap.gold {
+    color: black;
+    background-image: url("{{ asset('assets/animation/kuji_open_gold@2x.png', 'user_data') }}");
+}
+#result .text_wrap.silver {
+    color: black;
+    background-image: url("{{ asset('assets/animation/kuji_open_silver@2x.png', 'user_data') }}");
+}
+#result .text_wrap.yellow {
+    color: black;
+    background-image: url("{{ asset('assets/animation/kuji_open_yellow@2x.png', 'user_data') }}");
+}
+#result .text_wrap.white {
+    color: black;
+    background-image: url("{{ asset('assets/animation/kuji_open_white@2x.png', 'user_data') }}");
+}
+#result .text_wrap .inner {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+#result .text_wrap .inner div.rank {
+    font-size: 42px;
+    line-height: 62px;
+}
+#result .text_wrap .inner div.itemename {
+    font-size: 16px;
+}
+#result .text_wrap .inner #twitter-widget-0 {
+    margin: 20px auto 0;
+}
+#result_action {
+    position: absolute;
+    top: -200vh;
+    margin-top: 30px;
+}
+#result_action.show {
+    position: relative;
+    top: 0;
+}
+#kuji_item_img {
+    display: block;
+    margin: 0 auto 30px;
+}
+#result .kuji_sponser_img {
+    display: block;
+    position: absolute;
+    top: 100px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    max-width: 140px;
+}
+@media only screen and (max-width: 480px) {
+    #anim_start,
+    #result {
+        padding: 15px 0;
+    }
+    #anim_start .kuji_machine {
+        max-width: 210px;
+    }
+    #anim_start .btn_kuji_start {
+        max-width: 100px;
+    }
+    #anim_start .kuji_sponser_img {
+        max-width: 80px;
+        bottom: 17%;
+    }
+    .anim_wrapper .btn_area{
+        margin-top: 10px;
+    }
+    #result_action{
+        margin-top: 10px;
+    }
+    #result .kuji_sponser_img {
+        display: block;
+        position: absolute;
+        top: 65px;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        max-width: 80px;
+        border: 2px #a20000 solid;
+    }
+    #result .text_wrap {
+        width: 320px;
+        height: 320px;
+    }
+    .anim_wrapper {
+        min-height: 100vh;
+    }
+    #anim_kuji,
+    #moving {
+        height: 100vh;
+    }
+    #anim_kuji {
+        background-image: url("{{ asset('assets/animation/bg_kuji.jpg', 'user_data') }}");
+        background-position: center;
+        background-size: cover;
+    }
+    /* #anim_kuji svg {} */
+}
+    </style>
+    {% endblock %}
+    
+    {% block main %}
+        <div id="main" class="wrapper one-column no-padding">            
+            <div class="anim_wrapper">
+                <div id="anim_start">
+                    <img src="{{ asset('assets/img/kuji_box.svg', 'user_data') }}" alt="" class="kuji_machine">
+                    <form action="{{ path('winning_complete', {order_no: order_no, product_id: product_id}) }}" method="post">
+                        <input type="hidden" name="kuji" value="1975">
+                        <input type="hidden" name="post_id" value="613">
+                        <input type="hidden" name="skip" value="true">
+                        <button type="submit"><img src="{{ asset('assets/img/kuji_machine_btn.png', 'user_data') }}" alt="" class="btn_kuji_start"></button>
+                    </form>
+                    <img src="{{ sponser_image }}" alt="" class="kuji_sponser_img" style="max-height: 65px;">   			
+                </div>
+                <div class="btn_area">
+                    <a href="{{ path('winning_complete', {order_no: order_no, product_id: product_id, anim: true}) }}" class="btn_skip">SKIPする</a>
+                    <a href="{{ path('mypage') }}" class="btn_back">戻る</a>
+                </div>
+            </div>
+         </div>
+    {% endblock %}

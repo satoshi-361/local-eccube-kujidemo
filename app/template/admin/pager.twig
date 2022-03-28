@@ -1,0 +1,107 @@
+{#
+    This file is part of EC-CUBE
+    Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+    http://www.ec-cube.co.jp/
+    For the full copyright and license information, please view the LICENSE
+    file that was distributed with this source code.
+    #}
+    {% if pages.pageCount > 1 %}
+        <ul class="pagination">
+    
+            <!-- 最初へ -->
+            {% if pages.firstPageInRange != 1 %}
+                {% if id is defined %}
+                    {% set pages_first = path(
+                        routes ? routes : app.request.attributes.get('_route'),
+                        app.request.query.all|merge({'page_no': pages.first, 'id': id})) %}
+                {% else %}
+                    {% set pages_first = path(
+                        routes ? routes : app.request.attributes.get('_route'),
+                        app.request.query.all|merge({'page_no': pages.first})) %}
+                {% endif %}
+
+                <li class="page-item">
+                    {# FIXME: Need check pass routes before use default _route from request #}
+                    <a class="page-link" href="{{ pages_first }}">{{ 'admin.common.first'|trans }}</a></li>
+    
+            {% endif %}
+    
+            <!-- 前へ -->
+            {% if pages.previous is defined %}
+
+                {% if id is defined %}
+                    {% set pages_previous = path(routes ? routes : app.request.attributes.get('_route'), app.request.query.all|merge({'page_no': pages.previous, 'id': id})) %}
+                {% else %}
+                    {% set pages_previous = path(routes ? routes : app.request.attributes.get('_route'), app.request.query.all|merge({'page_no': pages.previous})) %}
+                {% endif %}
+                    
+                <li class="page-item">
+                    {# FIXME: Need check pass routes before use default _route from request #}
+                    <a class="page-link"
+                       href="{{ pages_previous }}">{{ 'admin.common.prev'|trans }}</a>
+                </li>
+            {% endif %}
+    
+            <!-- 1ページリンクが表示されない場合、「...」を表示 -->
+            {% if pages.firstPageInRange != 1 %}
+                <li class="page-item">...</li>
+            {% endif %}
+    
+            {% for page in pages.pagesInRange %}
+
+            {% if id is defined %}
+                {% set page_url = path(routes ? routes : app.request.attributes.get('_route'),app.request.query.all|merge({'page_no': page, 'id': id})) %}
+            {% else %}
+                {% set page_url = path(routes ? routes : app.request.attributes.get('_route'),app.request.query.all|merge({'page_no': page})) %}
+            {% endif %}
+
+                <li class="page-item{% if page == pages.current %} active{% endif %}">
+                    {# FIXME: Need check pass routes before use default _route from request #}
+                    <a class="page-link"
+                       href="{{ page_url }}">
+                        {{ page }}
+                    </a>
+                </li>
+            {% endfor %}
+    
+            <!-- 最終ページリンクが表示されない場合、「...」を表示 -->
+            {% if pages.last != pages.lastPageInRange %}
+                <li class="page-item">...</li>
+            {% endif %}
+    
+            <!-- 次へ -->
+            {% if pages.next is defined %}
+
+            {% if id is defined %}
+                {% set pages_next = path(routes ? routes : app.request.attributes.get('_route'),app.request.query.all|merge({'page_no': pages.next, 'id': id})) %}
+            {% else %}
+                {% set pages_next = path(routes ? routes : app.request.attributes.get('_route'),app.request.query.all|merge({'page_no': pages.next})) %}
+            {% endif %}
+
+                <li class="page-item">
+                    {# FIXME: Need check pass routes before use default _route from request #}
+                    <a class="page-link"
+                       href="{{ pages_next }}">{{ 'admin.common.next'|trans }}</a>
+                </li>
+            {% endif %}
+    
+            <!-- 最後へ -->
+            {% if pages.last != pages.lastPageInRange %}
+
+            {% if id is defined %}
+                {% set pages_last = path(
+                    routes ? routes : app.request.attributes.get('_route'),
+                    app.request.query.all|merge({'page_no': pages.last, 'id': id})) %}
+            {% else %}
+                {% set pages_last = path(
+                    routes ? routes : app.request.attributes.get('_route'),
+                    app.request.query.all|merge({'page_no': pages.last})) %}
+            {% endif %}
+
+                <li class="page-item">
+                    {# FIXME: Need check pass routes before use default _route from request #}
+                    <a class="page-link" href="{{ pages_last }}">{{ 'admin.common.last'|trans }}</a></li>
+            {% endif %}
+    
+        </ul>
+    {% endif %}

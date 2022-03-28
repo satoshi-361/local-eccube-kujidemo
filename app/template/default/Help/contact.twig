@@ -1,0 +1,54 @@
+{#
+This file is part of EC-CUBE
+
+Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+
+http://www.ec-cube.co.jp/
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+#}
+{% extends 'default_frame.twig' %}
+
+{% block main %}
+    <div class="ec-role">
+            <header class="entry-header text-center">
+                <h1 class="entry-title mgb50">お問い合わせ</h1>
+            </header>
+            
+                
+            <div class="entry-content">
+                <div role="form" class="wpcf7" id="wpcf7-f220-p119-o1" lang="ja" dir="ltr">
+                <div class="screen-reader-response"><p role="status" aria-live="polite" aria-atomic="true"></p> <ul></ul></div>
+                <form action="/sample_kuji_demo/contact/#wpcf7-f220-p119-o1" method="post" class="wpcf7-form init" novalidate="novalidate" data-status="init">
+                <div style="display: none;">
+                <input type="hidden" name="_wpcf7" value="220">
+                <input type="hidden" name="_wpcf7_version" value="5.4.1">
+                <input type="hidden" name="_wpcf7_locale" value="ja">
+                <input type="hidden" name="_wpcf7_unit_tag" value="wpcf7-f220-p119-o1">
+                <input type="hidden" name="_wpcf7_container_post" value="119">
+                <input type="hidden" name="_wpcf7_posted_data_hash" value="">
+                </div>
+                <p><label> お名前 (必須)<br>
+                    <span class="wpcf7-form-control-wrap your-name"><input type="text" name="your-name" value="" size="40" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" aria-required="true" aria-invalid="false"></span> </label></p>
+                <p><label> お名前（ふりがな）<br>
+                    <span class="wpcf7-form-control-wrap your-jp-name"><input type="text" name="your-jp-name" value="" size="40" class="wpcf7-form-control wpcf7-text" aria-invalid="false"></span> </label></p>
+                <p><label> 郵便番号<br>
+                    <span class="wpcf7-form-control-wrap your-zip"><input type="text" name="your-zip" value="" size="40" class="wpcf7-form-control wpcf7-text" aria-invalid="false"></span> </label></p>
+                <p><label> 住所<br>
+                    <span class="wpcf7-form-control-wrap your-address"><input type="text" name="your-address" value="" size="40" class="wpcf7-form-control wpcf7-text" aria-invalid="false"></span> </label></p>
+                <p><label> 電話番号<br>
+                    <span class="wpcf7-form-control-wrap your-tel"><input type="tel" name="your-tel" value="" size="40" class="wpcf7-form-control wpcf7-text wpcf7-tel wpcf7-validates-as-tel" aria-invalid="false"></span> </label></p>
+                <p><label> お問い合わせ種別<br>
+                    <span class="wpcf7-form-control-wrap contact-type"><select name="contact-type" class="wpcf7-form-control wpcf7-select wpcf7-validates-as-required" aria-required="true" aria-invalid="false"><option value="商品不良に関するお問い合わせ">商品不良に関するお問い合わせ</option><option value="配送に関するお問い合わせ">配送に関するお問い合わせ</option><option value="サービス全般に関するお問い合わせ">サービス全般に関するお問い合わせ</option><option value="A賞「名刺入れ」ご当選時のお名前のご連絡">A賞「名刺入れ」ご当選時のお名前のご連絡</option></select></span> </label></p>
+                <p><label> メールアドレス (必須)<br>
+                    <span class="wpcf7-form-control-wrap your-email"><input type="email" name="your-email" value="" size="40" class="wpcf7-form-control wpcf7-text wpcf7-email wpcf7-validates-as-required wpcf7-validates-as-email" aria-required="true" aria-invalid="false"></span> </label></p>
+                <p><label> ご注文番号<br>
+                    <span class="wpcf7-form-control-wrap your-ordernum"><input type="text" name="your-ordernum" value="" size="40" class="wpcf7-form-control wpcf7-text" aria-invalid="false"></span> </label></p>
+                <p><label> お問い合わせ内容<br>
+                    <span class="wpcf7-form-control-wrap your-message"><textarea name="your-message" cols="40" rows="10" class="wpcf7-form-control wpcf7-textarea wpcf7-validates-as-required" aria-required="true" aria-invalid="false"></textarea></span> </label></p>
+                <p><input type="submit" value="送信" class="wpcf7-form-control wpcf7-submit"><span class="ajax-loader"></span></p>
+                <div class="wpcf7-response-output" aria-hidden="true"></div></form></div>
+            </div><!-- .entry-content -->
+    </div>
+{% endblock %}

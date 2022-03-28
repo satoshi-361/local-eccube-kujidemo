@@ -1,0 +1,15 @@
+{#
+Copyright(c) 2018 VeriTrans Inc. All rights reserved.
+http://www.veritrans.co.jp/
+#}
+
+
+{% if arrOther.title is defined and arrOther.message is defined %}
+************************************************
+　{{ arrOther.title }}情報
+************************************************
+{% endif %}
+{% if arrOther.message is defined %}{% for key, item in arrOther.message %}
+{% if item.title is defined %}{% if item.title != '' %}{{ item.title|raw }}:{% endif %}{% endif %}{% if item.content is defined %}{% if item.content != '' %}{{ item.content|raw }}
+{% endif %}{% endif %}
+{% endfor %}{% endif %}

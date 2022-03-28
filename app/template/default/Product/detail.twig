@@ -1,0 +1,823 @@
+{#
+    This file is part of EC-CUBE
+    
+    Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+    
+    http://www.ec-cube.co.jp/
+    
+    For the full copyright and license information, please view the LICENSE
+    file that was distributed with this source code.
+    #}
+    {% extends 'default_frame.twig' %}
+    
+    {% set body_class = 'product_page' %}
+    
+    {% block stylesheet %}
+        <style>
+        .btn.bulk {
+            background-color: #dca910;
+            color: white;
+        }
+        button[type=submit] {
+            background-color: black;
+        }
+    
+        .slick-slider
+        {
+            position: relative;
+        
+            display: block;
+            box-sizing: border-box;
+        
+            -webkit-user-select: none;
+               -moz-user-select: none;
+                -ms-user-select: none;
+                    user-select: none;
+        
+            -webkit-touch-callout: none;
+            -khtml-user-select: none;
+            -ms-touch-action: pan-y;
+                touch-action: pan-y;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .slick-list
+        {
+            position: relative;
+        
+            display: block;
+            overflow: hidden;
+        
+            margin: 0;
+            padding: 0;
+        }
+        .slick-list:focus
+        {
+            outline: none;
+        }
+        .slick-list.dragging
+        {
+            cursor: pointer;
+            cursor: hand;
+        }
+        
+        .slick-slider .slick-track,
+        .slick-slider .slick-list
+        {
+            -webkit-transform: translate3d(0, 0, 0);
+               -moz-transform: translate3d(0, 0, 0);
+                -ms-transform: translate3d(0, 0, 0);
+                 -o-transform: translate3d(0, 0, 0);
+                    transform: translate3d(0, 0, 0);
+        }
+        
+        .slick-track
+        {
+            position: relative;
+            top: 0;
+            left: 0;
+        
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .slick-track:before,
+        .slick-track:after
+        {
+            display: table;
+        
+            content: '';
+        }
+        .slick-track:after
+        {
+            clear: both;
+        }
+        .slick-loading .slick-track
+        {
+            visibility: hidden;
+        }
+        
+        .slick-slide
+        {
+            display: none;
+            float: left;
+        
+            height: 100%;
+            min-height: 1px;
+        }
+        [dir='rtl'] .slick-slide
+        {
+            float: right;
+        }
+        .slick-slide img
+        {
+            display: block;
+        }
+        .slick-slide.slick-loading img
+        {
+            display: none;
+        }
+        .slick-slide.dragging img
+        {
+            pointer-events: none;
+        }
+        .slick-initialized .slick-slide
+        {
+            display: block;
+        }
+        .slick-loading .slick-slide
+        {
+            visibility: hidden;
+        }
+        .slick-vertical .slick-slide
+        {
+            display: block;
+        
+            height: auto;
+        
+            border: 1px solid transparent;
+        }
+        .slick-arrow.slick-hidden {
+            display: none;
+        }
+    
+    
+        @charset 'UTF-8';
+        /* Slider */
+        .slick-loading .slick-list
+        {
+            background: #fff url('./ajax-loader.gif') center center no-repeat;
+        }
+        
+        /* Icons */
+        @font-face
+        {
+            font-family: 'slick';
+            font-weight: normal;
+            font-style: normal;
+        
+            src: url('./fonts/slick.eot');
+            src: url('./fonts/slick.eot?#iefix') format('embedded-opentype'), url('./fonts/slick.woff') format('woff'), url('./fonts/slick.ttf') format('truetype'), url('./fonts/slick.svg#slick') format('svg');
+        }
+        /* Arrows */
+        .slick-prev,
+        .slick-next
+        {
+            font-size: 0;
+            line-height: 0;
+        
+            position: absolute;
+            top: 50%;
+        
+            display: block;
+        
+            width: 20px;
+            height: 20px;
+            padding: 0;
+            -webkit-transform: translate(0, -50%);
+            -ms-transform: translate(0, -50%);
+            transform: translate(0, -50%);
+        
+            cursor: pointer;
+        
+            color: transparent;
+            border: none;
+            outline: none;
+            background: transparent;
+        }
+        .slick-prev:hover,
+        .slick-prev:focus,
+        .slick-next:hover,
+        .slick-next:focus
+        {
+            color: transparent;
+            outline: none;
+            background: transparent;
+        }
+        .slick-prev:hover:before,
+        .slick-prev:focus:before,
+        .slick-next:hover:before,
+        .slick-next:focus:before
+        {
+            opacity: 1;
+        }
+        .slick-prev.slick-disabled:before,
+        .slick-next.slick-disabled:before
+        {
+            opacity: .25;
+        }
+        
+        .slick-prev:before,
+        .slick-next:before
+        {
+            font-family: 'slick';
+            font-size: 20px;
+            line-height: 1;
+        
+            opacity: .75;
+            color: white;
+        
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .slick-prev
+        {
+            left: -25px;
+        }
+        [dir='rtl'] .slick-prev
+        {
+            right: -25px;
+            left: auto;
+        }
+        .slick-prev:before
+        {
+            content: '←';
+        }
+        [dir='rtl'] .slick-prev:before
+        {
+            content: '→';
+        }
+        
+        .slick-next
+        {
+            right: -25px;
+        }
+        [dir='rtl'] .slick-next
+        {
+            right: auto;
+            left: -25px;
+        }
+        .slick-next:before
+        {
+            content: '→';
+        }
+        [dir='rtl'] .slick-next:before
+        {
+            content: '←';
+        }
+        
+        /* Dots */
+        .slick-dotted.slick-slider
+        {
+            margin-bottom: 30px;
+        }
+        
+        .slick-dots
+        {
+            position: absolute;
+            bottom: -25px;
+        
+            display: block;
+        
+            width: 100%;
+            padding: 0;
+            margin: 0;
+        
+            list-style: none;
+        
+            text-align: center;
+        }
+        .slick-dots li
+        {
+            position: relative;
+        
+            display: inline-block;
+        
+            width: 20px;
+            height: 20px;
+            margin: 0 5px;
+            padding: 0;
+        
+            cursor: pointer;
+        }
+        .slick-dots li button
+        {
+            font-size: 0;
+            line-height: 0;
+        
+            display: block;
+        
+            width: 20px;
+            height: 20px;
+            padding: 5px;
+        
+            cursor: pointer;
+        
+            color: transparent;
+            border: 0;
+            outline: none;
+            background: transparent;
+        }
+        .slick-dots li button:hover,
+        .slick-dots li button:focus
+        {
+            outline: none;
+        }
+        .slick-dots li button:hover:before,
+        .slick-dots li button:focus:before
+        {
+            opacity: 1;
+        }
+        .slick-dots li button:before
+        {
+            font-family: 'slick';
+            font-size: 6px;
+            line-height: 20px;
+        
+            position: absolute;
+            top: 0;
+            left: 0;
+        
+            width: 20px;
+            height: 20px;
+        
+            content: '•';
+            text-align: center;
+        
+            opacity: .25;
+            color: black;
+        
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .slick-dots li.slick-active button:before
+        {
+            opacity: .75;
+            color: black;
+        }
+    </style>
+    {% endblock %}
+    
+    {% block javascript %}
+        <script>
+            $('.prize_slider').slick({
+            //   dots: true,
+            //   infinite: false,
+              speed: 300,
+              slidesToShow: 4,
+              slidesToScroll: 1,
+              responsive: [
+                {
+                  breakpoint: 1024,
+                  settings: {
+                    slidesToShow: 4,
+                    slidesToScroll: 4,
+                    infinite: true,
+                    dots: true
+                  }
+                },
+                {
+                  breakpoint: 600,
+                  settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 3
+                  }
+                },
+                {
+                  breakpoint: 480,
+                  settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 2
+                  }
+                }
+              ]
+            });
+        </script>
+        <script>
+            eccube.classCategories = {{ class_categories_as_json(Product)|raw }};
+    
+            // 規格2に選択肢を割り当てる。
+            function fnSetClassCategories(form, classcat_id2_selected) {
+                var $form = $(form);
+                var product_id = $form.find('input[name=product_id]').val();
+                var $sele1 = $form.find('select[name=classcategory_id1]');
+                var $sele2 = $form.find('select[name=classcategory_id2]');
+                eccube.setClassCategories($form, product_id, $sele1, $sele2, classcat_id2_selected);
+            }
+    
+            {% if form.classcategory_id2 is defined %}
+            fnSetClassCategories(
+                $('#form1'), {{ form.classcategory_id2.vars.value|json_encode|raw }}
+            );
+            {% elseif form.classcategory_id1 is defined %}
+            eccube.checkStock($('#form1'), {{ Product.id }}, {{ form.classcategory_id1.vars.value|json_encode|raw }}, null);
+            {% endif %}
+        </script>
+        <script>
+            $(function() {
+                // bfcache無効化
+                $(window).bind('pageshow', function(event) {
+                    if (event.originalEvent.persisted) {
+                        location.reload(true);
+                    }
+                });
+    
+                $('.item_visual').slick({
+                    dots: false,
+                    arrows: false,
+                    responsive: [{
+                        breakpoint: 768,
+                        settings: {
+                            dots: true
+                        }
+                    }]
+                });
+    
+    
+                $('.slideThumb').on('click', function() {
+                    var index = $(this).attr('data-index');
+                    $('.item_visual').slick('slickGoTo', index, false);
+                });
+    
+                // $(".bulk").on('click', function(event) {
+                //     event.preventDefault();
+                //     {% if bulkProduct != '' %}
+                //     $.post("{{ path('product_add_cart', {id: bulkProduct.id}) }}", {}, function(){
+                //         window.location.replace("{{ url('cart') }}");
+                //     });
+                //     {% endif %}
+                // });
+                {% if Product.limit_count == '1日に1回' or Product.limit_count == '1アカウントに1回' %}
+                    $("#quantity").attr('max', 1);
+                {% endif %}
+                {% if sale_limit %}
+                    $("button[type='submit']").attr('disabled', 'disabled');
+                {% endif %}
+            });
+        </script>
+        <script>
+            $(function() {
+                $('.add-cart').on('click', function(event) {
+                    {% if form.classcategory_id1 is defined %}
+                    // 規格1フォームの必須チェック
+                    if ($('#classcategory_id1').val() == '__unselected' || $('#classcategory_id1').val() == '') {
+                        $('#classcategory_id1')[0].setCustomValidity('{{ '項目が選択されていません'|trans }}');
+                        return true;
+                    } else {
+                        $('#classcategory_id1')[0].setCustomValidity('');
+                    }
+                    {% endif %}
+    
+                    {% if form.classcategory_id2 is defined %}
+                    // 規格2フォームの必須チェック
+                    if ($('#classcategory_id2').val() == '__unselected' || $('#classcategory_id2').val() == '') {
+                        $('#classcategory_id2')[0].setCustomValidity('{{ '項目が選択されていません'|trans }}');
+                        return true;
+                    } else {
+                        $('#classcategory_id2')[0].setCustomValidity('');
+                    }
+                    {% endif %}
+    
+                    // 個数フォームのチェック
+                    if ($('#quantity').val() < 1) {
+                        $('#quantity')[0].setCustomValidity('{{ '1以上で入力してください。'|trans }}');
+                        return true;
+                    } else {
+                        $('#quantity')[0].setCustomValidity('');
+                    }
+    
+                    event.preventDefault();
+                    $form = $('#form1');
+                    $.ajax({
+                        url: $form.attr('action'),
+                        type: $form.attr('method'),
+                        data: $form.serialize(),
+                        dataType: 'json',
+                        beforeSend: function(xhr, settings) {
+                            // Buttonを無効にする
+                            $('.add-cart').prop('disabled', true);
+                        }
+                    }).done(function(data) {
+                        // レスポンス内のメッセージをalertで表示
+                        $.each(data.messages, function() {
+                            $('#ec-modal-header').html(this);
+                        });
+    
+                        $('.ec-modal').show()
+    
+                        // カートブロックを更新する
+                        $.ajax({
+                            url: "{{ url('block_cart') }}",
+                            type: 'GET',
+                            dataType: 'html'
+                        }).done(function(html) {
+                            $('.ec-headerRole__cart').html(html);
+    //                        var cart_count = $(html).find('.ec-cartNavi__badge').text();
+    //                        $(".ec-headerRole__cart .total-quant").text(cart_count);
+    //                        console.log(html);
+                            window.location.replace("{{ url('cart') }}");
+                        });
+                    }).fail(function(data) {
+                        alert('{{ 'カートへの追加に失敗しました。'|trans }}');
+                    }).always(function(data) {
+                        // Buttonを有効にする
+                        $('.add-cart').prop('disabled', false);
+                    });
+                });
+            });
+    
+            $('.ec-modal-overlay, .ec-modal .ec-inlineBtn--cancel').on('click', function() {
+                $('.ec-modal').hide()
+            });
+            var twitter_tags = '';
+            {% set twitter_tags = Product.twitter_tags|split(',') %}
+            {% for item in twitter_tags %}
+                {% if item == 'カテゴリー' %}
+                    twitter_tags += '?カテゴリー=';
+                    {% for ct in Product.getClassCategories1() %}
+                        twitter_tags += '{{ ct.name }}'
+                    {% endfor %}
+                {% endif %}
+                {% if item == '日付' %}
+                    twitter_tags += '?日付={{Product.create_date|date("Y-m-d")}}';
+                {% endif %}
+                {% if item == '投稿 タイトル' %}
+                    twitter_tags += '?投稿 タイトル={{Product.name}}';
+                {% endif %}
+                {% if item == '投稿コンテンツ' %}
+                    twitter_tags += '?投稿コンテンツ={{Product.name}}';
+                {% endif %}
+            {% endfor %}
+        </script>
+    {% endblock %}
+    
+    {% block main %}
+        <div id="main" class="wrapper item_page one-column">
+            <article class="post-361 post type-post status-publish format-standard has-post-thumbnail category-item category-itemnew category-itemnormal" id="post-361">
+                    <div class="storycontent">
+                        <div id="itempage">
+                            <div id="img-box">
+                                <div class="itemimg">
+                                        {% if Product.ProductImage | length > 1 %}
+                                        <img width="1000" src="{{ asset(Product.getProductImage()[1], 'save_image') }}" class="img-responsive" loading="lazy">
+                                        {% elseif Product.ProductImage | length %}
+                                        <img width="1000" src="{{ asset(Product.main_list_image|no_image_product, 'save_image') }}" class="img-responsive" loading="lazy" />
+                                        {% else %}
+                                            <img width="1000" src="{{ asset(''|no_image_product, 'save_image') }}" class="img-responsive" loading="lazy"/>
+                                        {% endif %}
+                                    <!-- </a> -->
+                                </div>
+                                <section class="prize_slider">
+                                    {# {% set Products = CustomizeNewProduct() %}
+                                    {% if Products|length > 0 %} #}
+                                    {% for item in allPrizes %}
+                                        <li>
+                                            <a href="#{{ item.image }}" title="{{ Product.name }} | {{ BaseInfo.shop_name }}" class="article_inner">
+                                                <img width="273" height="273" src="{{ asset('', 'temp_image') }}{{ item.image }}" class="img-responsive" alt="" loading="lazy">
+                                            </a>
+                                        </li>
+                                    {#<div class="slide-item">#}
+                                    {#    <img  width="273" height="273"  src="{{ asset(Product.main_list_image|no_image_product, 'save_image') }}" class="img-responsive" />#}
+                                    {#</div>#}
+                                    {% endfor %}
+                                    {# {% endif %} #}
+                                </section>
+    
+                                <section class="block item_detail px15">
+                                {% if Product.premium or Product.niconico >= "1" or Product.specifics >= "1" or (Product.limit_count != "" and Product.limit_count != "制限なし")%}
+                                <div class="alert alert-warning text-center ischannel">
+                                    {% set double_case = 0 %}
+                                    {% if Product.limit_count == "1日に1回" or Product.limit_count == "1アカウントに1回" %}
+                                        {% if Product.premium == "1" and Product.niconico >= "1" %} この商品はニコニコプレミアム会員専用商品です。<br/>また、 ニコニコチャンネル会員専用商品です。<br/>また、 {% set double_case = 1 %} {% endif %}
+                                        {% if Product.premium == "1" and Product.specifics >= "1" %} この商品はニコニコプレミアム会員専用商品です。<br/>また、ニコニコチケット購入者専用商品です。<br/>また、 {% set double_case = 1 %} {% endif %}
+                                        {% if Product.niconico >= "1" and Product.specifics >= "1" %} この商品はニコニコチャンネル会員専用商品です。<br/>また、ニコニコチケット購入者専用商品です。<br/>また、 {% set double_case = 1 %}  {% endif %}
+                                        {% if double_case == 0 %}  
+                                            {% if Product.premium == "1" %} この商品はニコニコプレミアム会員専用商品です。<br/>また、 {% endif %}
+                                            {% if Product.niconico >= "1" %} この商品はニコニコチャンネル会員専用商品です。<br/>また、 {% endif %} 
+                                            {% if Product.specifics >= "1" %}この商品はニコニコチケット購入者専用商品です。<br/>また、 {% endif %}    
+                                        {% endif %}
+                                        {{ Product.limit_count}} 限定商品です。
+                                    {% else %}
+                                        {% if Product.premium == "1" and Product.niconico >= "1" %} この商品はニコニコプレミアム会員専用商品です。<br/>また、 ニコニコチャンネル会員専用商品です。{% set double_case = 1 %} {% endif %}
+                                        {% if Product.premium == "1" and Product.specifics >= "1" %} この商品はニコニコプレミアム会員専用商品です。<br/>また、ニコニコチケット購入者専用商品です。 {% set double_case = 1 %} {% endif %}
+                                        {% if Product.niconico >= "1" and Product.specifics >= "1" %} この商品はニコニコチャンネル会員専用商品です。<br/>また、ニコニコチケット購入者専用商品です。 {% set double_case = 1 %}  {% endif %}
+                                        {% if double_case == 0 %}  
+                                            {% if Product.premium == "1" %} この商品はニコニコプレミアム会員専用商品です。 {% endif %}
+                                            {% if Product.niconico >= "1" %} この商品はニコニコチャンネル会員専用商品です。{% endif %} 
+                                            {% if Product.specifics >= "1" %}この商品はニコニコチケット購入者専用商品です。{% endif %}    
+                                        {% endif %}
+                                    {% endif %}
+                                </div>              
+                                {% endif %}    
+                                    <header class="item-header text-center">
+                                        <h1>{{Product.name}}</h1>
+                                    </header>
+                                    <!-- .item-header -->
+                                    <div class="maxw600 center-block">
+                                        <table class="table">
+                                            <tbody>
+                                                <tr>
+                                                    <th>販売期間</th>
+                                                    <td>
+                                                        {% if Product.sales_start | date("Y") != -1 and Product.sales_start != null  %} {{ Product.sales_start | date("Y年m月d日 H:i")}} {% endif %} ~ {% if Product.sales_end | date("Y") != -1 and Product.sales_end != null %}{{ Product.sales_end | date("Y年m月d日 H:i")}}{% endif %}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>価格</th>
+                                                    <td>{% set price = ProductClass.price02|number_format(2, '.', ',')|split('.') %} {% if price | length %} {{ price[0] }} {% endif %} 円（税込み）
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>配送手数料</th>
+                                                    <td>{{ assist.getFreeText() }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>お届け目安</th>
+                                                    <td>{{ assist.getDeliveryDayText() }}即日</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>説明</th>
+                                                    <td>{{ Product.description_detail|nl2br }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        {% set display = false %}
+                                        {%if ProductClass.getRemainStatus() == 3 or ProductClass.getRemainStatus() == 4 %}
+                                            {% set display = false %}  
+                                        {% else %}
+                                            {% if Customer == false %}
+                                                {% if (Product.premium == 0 or Product.premium == '0') and (Product.niconico == 0 or Product.niconico == '0') and (Product.specifics == 0 or Product.specifics == '0') %}
+                                                    {% set display = true %}
+                                                {% endif %}
+                                            {% elseif Customer.customer_rank is defined %}
+                                                {% if Product.premium == 0 or Product.premium == '0' or Customer.premium == Product.premium %}
+                                                    {% set compare_premium = true %}
+                                                {% endif %}
+                                                {% if Product.niconico == 0 or Product.niconico == '0' or Customer.channel == Product.niconico %}
+                                                    {% set compare_niconico = true %}
+                                                {% endif %}
+                                                {% if Product.specifics == 0 or Product.specifics == '0' or Customer.ticket == Product.specifics %}
+                                                    {% set compare_ticket = true %}
+                                                {% endif %}
+                                                
+                                                {% if compare_niconico is defined and compare_premium is defined and compare_ticket is defined and compare_niconico and compare_premium and compare_ticket %}
+                                                    {% set display = true %}
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endif %}
+    
+                                        {%if display %}
+                                        <a href="#buy" class="btn buy" style="padding:10px 30px; font-size:28px;">くじを引く</a>
+                                        {% endif %}
+                                        {%if bulkTexts != null %}
+                                        <p class="text-center">
+                                        {%for bt in bulkTexts%}
+                                            {{ bt }}
+                                        {% endfor %}
+                                        </p>
+                                        {%endif%}
+                                        {%if cartButtonText != "" %}
+                                        <div class="text-center">
+                                            <a href="{{ path('product_detail', {id: bulkProduct.id}) }}" class="btn bulk" style="padding:10px 30px; font-size:28px;">{{ cartButtonText }}</a>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </section>		
+                                <div>
+                                    {% for id, itemConf in bulkConf %}
+                                        <section id="" class="container mgt30 mgb30" style="width:auto;">
+                                            <div class="row mgb15">
+                                                <h3><span class="rank"><strong>{{ itemConf[0].grade }}</strong>{{ itemConf[0].className }}</span>{{ itemConf[1].name }}<small class="probability">{{ itemConf[0].showText }}</small></h3>
+                                                {% for itemImage in bulkImage[id] %}
+                                                <div class="col-sm-4 mgb15 spmgb15" id="{{ itemImage.image }}">
+                                                    <a href="{{ asset('', 'temp_image') }}{{ itemImage.image }}" class="shadow_box"><img  width="273" height="273"  src="{{ asset('', 'temp_image') }}{{ itemImage.image }}" class="img-responsive center-block" alt="" loading="lazy"/>
+                                                        <h4>{{ itemImage.name }}</h4>
+                                                    </a>
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                            <p>{{ itemConf[0].descriptionText }}</p>
+                                        </section>								
+                                    {% endfor %}
+                                </div>
+                                <div>
+                                    {% for id, itemConf in confirmedConf %}
+                                        <section id="" class="container mgt30 mgb30" style="width:auto;">
+                                            <div class="row mgb15">
+                                                <h3><span class="rank"><strong>{{ itemConf[0].grade }}</strong>{{ itemConf[0].className }}</span>{{ itemConf[1].name }}<small class="probability">{{ itemConf[0].showText }}</small></h3>
+                                                {% for itemImage in confirmedImage[id] %}
+                                                <div class="col-sm-4 mgb15 spmgb15" id="{{ itemImage.image }}">
+                                                    <a href="{{ asset('', 'temp_image') }}{{ itemImage.image }}" class="shadow_box"><img  width="273" height="273"  src="{{ asset('', 'temp_image') }}{{ itemImage.image }}" class="img-responsive center-block" alt="" loading="lazy"/>
+                                                        <h4>{{ itemImage.name }}</h4>
+                                                    </a>
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                            <p>{{ itemConf[0].descriptionText }}</p>
+                                        </section>								
+                                    {% endfor %}
+                                </div>
+                                <div>
+                                    {% for id, itemConf in lotteryConf %}
+                                        <section id="" class="container mgt30 mgb30" style="width:auto;">
+                                            <div class="row mgb15">
+                                                <h3><span class="rank"><strong>{{ itemConf[0].grade }}</strong>{{ itemConf[0].className }}</span>{{ itemConf[1].name }}<small class="probability">当選確率は{{ itemConf[0].showText }}</small></h3>
+                                                {% for itemImage in lotteryImage[id] %}
+                                                <div class="col-sm-4 mgb15 spmgb15" id="{{ itemImage.image }}">
+                                                    <a href="{{ asset('', 'temp_image') }}{{ itemImage.image }}" class="shadow_box"><img  width="273" height="273"  src="{{ asset('', 'temp_image') }}{{ itemImage.image }}" class="img-responsive center-block" alt="" loading="lazy"/>
+                                                        <h4>{{ itemImage.name }}</h4>
+                                                    </a>
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                            <p>{{ itemConf[0].descriptionText }}</p>
+                                        </section>								
+                                    {% endfor %}
+                                </div>
+    
+                            </div>
+                            <!-- #img-box -->
+                            <section id="buy" class="block item_detail px15">
+                                {% if Product.premium or Product.niconico >= "1" or Product.specifics >= "1" or (Product.limit_count != "" and Product.limit_count != "制限なし")%}
+                                <div class="alert alert-warning text-center ischannel">
+                                    {% set double_case = 0 %}
+                                    {% if Product.limit_count == "1日に1回" or Product.limit_count == "1アカウントに1回" %}
+                                        {% if Product.premium == "1" and Product.niconico >= "1" %} この商品はニコニコプレミアム会員専用商品です。<br/>また、 ニコニコチャンネル会員専用商品です。<br/>また、 {% set double_case = 1 %} {% endif %}
+                                        {% if Product.premium == "1" and Product.specifics >= "1" %} この商品はニコニコプレミアム会員専用商品です。<br/>また、ニコニコチケット購入者専用商品です。<br/>また、 {% set double_case = 1 %} {% endif %}
+                                        {% if Product.niconico >= "1" and Product.specifics >= "1" %} この商品はニコニコチャンネル会員専用商品です。<br/>また、ニコニコチケット購入者専用商品です。<br/>また、 {% set double_case = 1 %}  {% endif %}
+                                        {% if double_case == 0 %}  
+                                            {% if Product.premium == "1" %} この商品はニコニコプレミアム会員専用商品です。<br/>また、 {% endif %}
+                                            {% if Product.niconico >= "1" %} この商品はニコニコチャンネル会員専用商品です。<br/>また、 {% endif %} 
+                                            {% if Product.specifics >= "1" %}この商品はニコニコチケット購入者専用商品です。<br/>また、 {% endif %}    
+                                        {% endif %}
+                                        {{ Product.limit_count}} 限定商品です。
+                                    {% else %}
+                                        {% if Product.premium == "1" and Product.niconico >= "1" %} この商品はニコニコプレミアム会員専用商品です。<br/>また、 ニコニコチャンネル会員専用商品です。{% set double_case = 1 %} {% endif %}
+                                        {% if Product.premium == "1" and Product.specifics >= "1" %} この商品はニコニコプレミアム会員専用商品です。<br/>また、ニコニコチケット購入者専用商品です。 {% set double_case = 1 %} {% endif %}
+                                        {% if Product.niconico >= "1" and Product.specifics >= "1" %} この商品はニコニコチャンネル会員専用商品です。<br/>また、ニコニコチケット購入者専用商品です。 {% set double_case = 1 %}  {% endif %}
+                                        {% if double_case == 0 %}  
+                                            {% if Product.premium == "1" %} この商品はニコニコプレミアム会員専用商品です。 {% endif %}
+                                            {% if Product.niconico >= "1" %} この商品はニコニコチャンネル会員専用商品です。{% endif %} 
+                                            {% if Product.specifics >= "1" %}この商品はニコニコチケット購入者専用商品です。{% endif %}    
+                                        {% endif %}
+                                    {% endif %}
+                                </div>              
+                                {% endif %}                                                                                                    
+                                <div class="item-info mgt0" style="max-width: 640px; margin: auto;">
+                                    <div class="c-box text-center">
+                                        {% if Product.ProductImage | length > 1 %}
+                                        <img width="273" src="{{ asset(Product.getProductImage()[4], 'save_image') }}" class="img-responsive center-block" loading="lazy">
+                                        {% else %}
+                                        <img  width="273" height="273"  src="{{ asset(Product.main_list_image|no_image_product, 'save_image') }}" class="img-responsive center-block" alt="" loading="lazy"/>
+                                        {% endif %}
+                                        {% if display %}
+                                            {% if ProductClass.stock != "" %}
+                                                <div class="zaikostatus mgt20">在庫状態 : {{ ProductClass.stock }}</div>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                    <div class="error_message"></div>
+                                    
+                                    {%if display %}
+                                    <form action="{{ url('product_add_cart', {id:Product.id}) }}" method="post" id="form1" name="form1">
+                                                {% if Product.stock_find %}
+                                                    <div class="ec-productRole__actions text-center">
+                                                        {% if form.classcategory_id1 is defined %}
+                                                            <div class="ec-select">
+                                                                {{ form_widget(form.classcategory_id1) }}
+                                                                {{ form_errors(form.classcategory_id1) }}
+                                                            </div>
+                                                            {% if form.classcategory_id2 is defined %}
+                                                                <div class="ec-select">
+                                                                    {{ form_widget(form.classcategory_id2) }}
+                                                                    {{ form_errors(form.classcategory_id2) }}
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                        <div class="ec-numberInput"><span>{{ '数量'|trans }}</span>
+                                                            {{ form_widget(form.quantity) }}
+                                                            {{ form_errors(form.quantity) }}
+                                                            <div class="ec-productRole__btn" style="display:inline-block; margin-left:1rem;">
+                                                        <button type="submit" class="ec-blockBtn--action add-cart" style="border: none;">
+                                                            {{ 'カートに入れる'|trans }}
+                                                        </button>
+                                                    </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    {%if cartButtonText != "" %}
+                                                    <div class="text-center">
+                                                        <a href="{{ path('product_detail', {id: bulkProduct.id}) }}" class="btn bulk" style="padding:10px 30px; font-size:28px;">{{ cartButtonText }}</a>
+                                                    </div>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <div class="ec-productRole__btn">
+                                                        <button type="button" class="ec-blockBtn--action" disabled="disabled">
+                                                            {{ 'ただいま品切れ中です。'|trans }}
+                                                        </button>
+                                                    </div>
+                                                {% endif %}							
+                                    </form>
+                                    {% else %}
+                                        <h4 style="font-weight: 800; text-align:center;">只今お取扱い出来ません。</h4>
+                                    {% endif %}
+                                </div>
+                            </section>
+                        </div>
+                        <!-- #itemspage -->
+                    </div>
+                    <!-- .storycontent -->
+            </article>
+        </div>
+    {% endblock %}

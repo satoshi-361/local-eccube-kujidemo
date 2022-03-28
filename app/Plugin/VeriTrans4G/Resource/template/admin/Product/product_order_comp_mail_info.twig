@@ -1,0 +1,71 @@
+{#
+Copyright (c) 2018 VeriTrans Inc., a Digital Garage company. All rights reserved.
+http://www.veritrans.co.jp/
+#}
+
+<script>
+    $(function () {
+        $('.append-order-comp-mail').appendTo($('.c-primaryCol'));
+    })
+</script>
+<script>
+    const params = {};
+    // 初期表示
+    $(function() {
+        disableMailInfo();
+    });
+
+    $("#admin_product_class_sale_type").change(function(){
+        disableMailInfo();
+    });
+
+    function disableMailInfo (){
+        params['saleType']   = $("#admin_product_class_sale_type option:selected").val();
+        params['productIdForAjax']   = $("#admin_product_product_Id_ForAjax").val();
+
+        // alert("{{url('vtg4_admin_product_chang_Sale_Type')}}");
+
+        $.ajax({
+          type: "GET",
+          url: "{{url('vtg4_admin_product_chang_Sale_Type')}}",
+          data:params
+        })
+        .done(function (data) {
+          //成功した時は項目を活性非活性にする
+          if (data.result) {
+            // 編集可能
+            $("#admin_product_order_mail_title1").prop('readonly', false);
+            $("#admin_product_order_mail_body1").prop('readonly', false);
+          } else {
+            // データクリアかつ編集不可
+            $("#admin_product_order_mail_title1")
+              .val('')
+              .prop('readonly', true);
+            $("#admin_product_order_mail_body1")
+              .val('')
+              .prop('readonly', true);
+          }
+        })
+      }
+
+</script>
+<div class="card rounded border-0 mb-4 append-order-comp-mail">
+    <div class="card-header"><span>継続課金商品用　注文完了メール情報</span><span class="small text-danger">（継続課金用の販売種別が設定されている場合（商品規格の販売種別の設定も考慮）のみ編集と登録が可能です。左記以外は情報がクリアされます。）</span></div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-3"><span>タイトル</span></div>
+            <div class="col mb-2">
+                {{ form_widget(form.order_mail_title1) }}<span class="text-danger errormsg">（上限50文字）</span>
+                {{ form_errors(form.order_mail_title1) | spaceless }}
+                <p class="small text-danger">ご注文完了画面とご注文完了メールに、支払いに関する案内文を入れる場合にはタイトルと本文を入れて下さい。(両方入っていない場合は有効になりません。)</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3"><span>本文</span></div>
+            <div class="col mb-2">
+                {{ form_widget(form.order_mail_body1) }}<span class="text-danger errormsg">（上限1000文字）</span>
+                {{ form_errors(form.order_mail_body1) | spaceless }}
+            <div>{{ form_widget(form.product_Id_ForAjax) }}</div>
+            <div>
+        </div>
+</div>

@@ -1,0 +1,194 @@
+{#
+Copyright (c) 2020 VeriTrans Inc., a Digital Garage company. All rights reserved.
+http://www.veritrans.co.jp/
+#}
+{% extends '@admin/default_frame.twig' %}
+{% set menus = ['order', 'vt4g_order_csv_request'] %}
+
+{% block title %}CSV決済依頼管理 明細{% endblock %}
+{% block sub_title %}受注管理{% endblock %}
+
+{% form_theme form '@admin/Form/bootstrap_4_horizontal_layout.html.twig' %}
+
+{% block stylesheet %}{% endblock stylesheet %}
+{% block javascript %}
+    {{ include('VeriTrans4G/Resource/template/default/css/vt4g_css.twig') }}
+    <script src="{{ asset('assets/js/vendor/spin.min.js', 'admin') }}"></script>
+{% endblock javascript %}
+
+{% block main %}
+<form name="form1" id="form1" method="POST" action="{{ url('vt4g_admin_order_csv_request_edit', { 'event_id': event_id, 'request_id': request_id }) }}">
+    {{ form_widget(form._token) }}
+    <div class="c-contentsArea__cols">
+        <div class="c-contentsArea__primaryCol">
+            <div class="c-primaryCol">
+                <div class="card rounded border-0 mb-4">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="d-inline-block"><span class="card-title">決済依頼情報</span></div>
+                            </div>
+                            <div class="col-4 text-right"><a data-toggle="collapse" href="#paymentRequest" aria-expanded="false" aria-controls="paymentRequest"><i class="fa fa-angle-up fa-lg"></i></a></div>
+                        </div>
+                    </div>
+                    <div class="collapse show ec-cardCollapse" id="paymentRequest">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="row mb-3">
+                                        <div class="col-4">イベント名</div>
+                                        <div class="col">{{ event.sale_type_name }} {{ event.event_name }}</div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-4">決済依頼番号</div>
+                                        <div class="col">{{ pay_request.id }}</div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-4">会員</div>
+                                        <div class="col">
+                                            <a target="_blank" href="{{ url('admin_customer_edit', { id : pay_request.customer_id }) }}">{{ pay_request.customer_id }}<br>{{ pay_request.name01 }} {{ pay_request.name02 }}</a>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-4">初回注文ID</div>
+                                        <div class="col">
+                                            <a target="_blank" href="{{ url('admin_order_edit', { id : pay_request.first_order_id }) }}">{{ pay_request.first_order_id }}</a>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-4">決済依頼ステータス</div>
+                                        <div class="col">{{ request_status[pay_request.request_status] }}</div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-4">取引ID</div>
+                                        <div class="col">{{ pay_request.transaction_id }}</div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-4">処理結果メッセージ</div>
+                                        <div class="col">{{ pay_request.err_message }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="row mb-3">
+                                        <div class="col-3">決済手数料</div>
+                                        <div class="col">
+                                            {% if not numericInputFieldDiable %}
+                                                {{ form_widget(form.settlement_fee, {'attr' : {'class' : 'text-right'}}) }}
+                                                {{ form_errors(form.settlement_fee) }}
+                                            {% else %}
+                                                {{ form_widget(form.settlement_fee, { 'attr' : {'class' : 'text-right', 'readonly' : true} }) }}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- .card.rounded -->
+                <div class="card rounded border-0 mb-4">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="d-inline-block"><span class="card-title">明細情報</span></div>
+                            </div>
+                            <div class="col-4 text-right"><a data-toggle="collapse" href="#paymentRequestItem" aria-expanded="false" aria-controls="paymentRequestItem"><i class="fa fa-angle-up fa-lg"></i></a></div>
+                        </div>
+                    </div>
+                    <div class="collapse show ec-cardCollapse" id="paymentRequestItem">
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="border-top-0 pt-2 pb-3 pl-3 text-nowrap text-center">明細番号</th>
+                                    <th class="border-top-0 pt-2 pb-3 text-center">出荷ID</th>
+                                    <th class="border-top-0 pt-2 pb-3 text-center">商品名</th>
+                                    <th class="border-top-0 pt-2 pb-3 text-center">商品金額</th>
+                                    <th class="border-top-0 pt-2 pb-3 text-center">数量</th>
+                                    <th class="border-top-0 pt-2 pb-3 text-center">付与ポイント</th>
+                                    <th class="border-top-0 pt-2 pb-3 text-center">CSV対象</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for item in form.pay_req_items %}
+                                {% set vals = item_vals[loop.index0] %}
+                                    <tr>
+                                        <td class="align-middle pl-3 text-center">
+                                            {{ loop.index }}
+                                            {{ form_widget(item.id) }}
+                                            {{ form_widget(item.order_item_type_id) }}
+                                        </td>
+                                        <td class="align-middle pl-3 text-center">{{ vals.shipping_id }}</td>
+                                        <td class="align-middle pl-3">
+                                        {% if vals.order_item_type_id == 2 %}
+                                            送料
+                                        {% else %}
+                                            {{ vals.name }}
+                                        {% endif %}
+                                        </td>
+                                        <td class="align-middle pl-3 text-right">
+                                        {% if vals.order_item_type_id == 1 %}
+                                            {{ vals.amount|price }}
+                                        {% elseif vals.order_item_type_id == 2 %}
+                                            {% if not numericInputFieldDiable %}
+                                                {{ form_widget(item.amount, {'attr' : {'class' : 'text-right'}}) }}
+                                                {{ form_errors(item.amount) }}
+                                            {% else %}
+                                                {{ form_widget(item.amount, { 'attr' : {'class' : 'text-right', 'readonly' : 'readonly'} }) }}
+                                            {% endif %}
+                                        {% endif %}
+                                        </td>
+                                        <td class="align-middle pl-3 text-right">{{ vals.quantity|number_format }}</td>
+                                        <td class="align-middle pl-3">
+                                        {% if vals.order_item_type_id == 1 %}
+                                            {% if not numericInputFieldDiable %}
+                                                {{ form_widget(item.point, {'attr' : {'class' : 'text-right'}}) }}
+                                                {{ form_errors(item.point) }}
+                                            {% else %}
+                                                {{ form_widget(item.point, { 'attr' : {'class' : 'text-right', 'readonly' : 'readonly'} }) }}
+                                            {% endif %}
+                                        {% endif %}
+                                        </td>
+                                        <td class="align-middle pl-3 text-center">
+                                        {% if pay_request.request_status < vt4gconst.VTG4_PAYMENT_REQUEST.REQUEST_STATUS.WAITING_FOR_REFRECTON %}
+                                            {% if vals.order_item_type_id == 1 %}
+                                                {{ form_widget(item.payment_target) }}
+                                                {{ form_errors(item.payment_target) }}
+                                            {% endif %}
+                                        {% else %}
+                                            対象 <!-- {{ vals.payment_target }} -->
+                                        {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div><!-- .card.rounded -->
+            </div>
+        </div>
+    </div>
+    <!-- コンバージョンエリア -->
+    <div class="c-conversionArea">
+        <div class="c-conversionArea__container">
+            <div class="row justify-content-between align-items-center">
+                <div class="col-6">
+                    <div class="c-conversionArea__leftBlockItem">
+                        <a class="c-baseLink" href="{{ url('vt4g_admin_order_csv_request_list_page', { 'page_no' : app.session.get('eccube.admin.csvrequest.search.page_no')|default('1') } ) }}?resume=1"><i class="fa fa-backward" aria-hidden="true"></i><span>決済依頼一覧画面</span></a>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row align-items-center justify-content-end">
+                        <div class="col-auto">
+                            {% if pay_request.request_status < vt4gconst.VTG4_PAYMENT_REQUEST.REQUEST_STATUS.SUCCESS_PAYMENT %}
+                                <button type="submit" class="btn btn-ec-conversion px-5" name="mode" value="register">変更</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

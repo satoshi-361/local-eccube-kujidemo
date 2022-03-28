@@ -1,0 +1,165 @@
+{#
+Copyright (c) 2018 VeriTrans Inc., a Digital Garage company. All rights reserved.
+http://www.veritrans.co.jp/
+#}
+<script>
+    // 名前空間を設定
+    window.VeriTrans4G = window.VeriTrans4G || {};
+
+    VeriTrans4G.isProcessing = false;
+    VeriTrans4G.unloadMessage = 'この画面を離れるとご注文は取消となりますがよろしいですか？';
+
+    // 支払方法のバリデーション
+    VeriTrans4G.validateOneClickPaymentType = function(formKey) {
+        var paymentTypeSelect = document.querySelector('select[name="'+formKey+'[payment_type]"]');
+        VeriTrans4G.hideErrorMessage(paymentTypeSelect);
+
+        return VeriTrans4G.validateNotBlank('payment_type', 'お支払い方法', null, formKey);
+    }
+
+    // カード名義人名のバリデーションチェック
+    VeriTrans4G.validateOneClickCardName = function(formKey) {
+        var nameKey = 'card_name';
+        var name = 'カード名義人名';
+        var cardNameSelect = document.querySelector('input[name="'+formKey+'['+nameKey+']"]');
+
+        //本人認証無しの場合は入力フォームが存在しないので、処理を終了する。
+        if(cardNameSelect == undefined){
+            return true;
+        }
+
+        var minLength = cardNameSelect.getAttribute('minlength');
+        var maxLength = cardNameSelect.getAttribute('maxlength');
+
+        VeriTrans4G.hideErrorMessage(cardNameSelect);
+
+        return VeriTrans4G.validateNotBlank(nameKey, name, null, formKey) &&
+               VeriTrans4G.validateRegex(nameKey, name, '[^a-zA-Z ]', '※ '+name+'は半角英字(半角スペースのみ許可)で入力してください', formKey) &&
+               VeriTrans4G.validateRange(nameKey, name, minLength, maxLength, formKey);
+    }
+
+    VeriTrans4G.setSubmit = function(targetId, mode) {
+        var $target = $('#'+targetId);
+
+        if (!$target.length) {
+            return false;
+        }
+
+        $target.on('click', function(e) {
+            e.preventDefault();
+
+            var elm = e.currentTarget;
+            var $form = $(elm).parents('form');
+            var $modeInput = $form.find('input[name="mode"]');
+
+            if (!$modeInput.length) {
+                return false;
+            }
+
+            $modeInput.val(mode);
+
+            if (VeriTrans4G.isProcessing) {
+                alert('只今、処理中です。しばらくお待ちください。');
+                return false;
+            }
+
+            VeriTrans4G.isProcessing = false;
+            switch (targetId) {
+                case 'vt4g_btn_token':
+                    VeriTrans4G.fetchMdkToken();
+                    return true;
+                case 'vt4g_btn_account':
+                case 'vt4g_btn_retrade':
+                    var formKey = {
+                        'vt4g_btn_account': 'payment_credit_account',
+                        'vt4g_btn_retrade': 'payment_credit_one_click'
+                    }[targetId];
+                    var isValid = true;
+
+                    if (!VeriTrans4G.validateOneClickPaymentType(formKey)) {
+                        isValid = false;
+                    }
+                   
+                    if (!VeriTrans4G.validateOneClickCardName(formKey)) {
+                        isValid = false;
+                    }
+
+                    if(!isValid){
+                        return false;
+                    }
+
+                    break;
+                default:
+                    break;
+            }
+
+            $form.submit();
+            // EC-CUBE側で定義されているオーバーレイ表示 実行
+            window.loadingOverlay();
+
+            return true;
+        });
+    }
+
+    // カード登録情報にカード名義人名が登録済みかどうかを確認する。
+    VeriTrans4G.checkCardName = function() {
+
+        $('input[name="payment_order_id"], input[name="card_id"]').change(function(){
+            var cardName = $('input[name="payment_order_id"]:checked').parents('tr').find('.registered_card_name').val();
+            if(cardName !== undefined){
+                cardName.length == 0 ? $('#payment_credit_one_click_card_name').parents('dl').show() : $('#payment_credit_one_click_card_name').parents('dl').hide();
+                $('#payment_credit_one_click_card_name').val(cardName)
+            }
+
+            var cardName = $('input[name="card_id"]:checked').parents('tr').find('.registered_card_name').val();
+            if(cardName !== undefined){
+                cardName.length == 0 ? $('#payment_credit_account_card_name').parents('dl').show() : $('#payment_credit_account_card_name').parents('dl').hide();
+                $('#payment_credit_account_card_name').val(cardName)
+            }
+        });
+
+        $('input[name="payment_order_id"], input[name="card_id"]').trigger('change');
+    }
+
+    $(function() {
+        VeriTrans4G.setSubmit('vt4g_btn_token', 'token');
+        VeriTrans4G.setSubmit('vt4g_btn_account', 'account');
+        VeriTrans4G.setSubmit('vt4g_btn_retrade', 'retrade');
+        VeriTrans4G.checkCardName();
+        
+        {% if error.payment is empty %}
+            $('a').each(function(idx, elm) {
+                var linkId = elm.getAttribute('id');
+                var href = elm.getAttribute('href');
+                // ページ内リンク以外の場合
+                if (!href || (href.substr(0, 1) !== '#' && !/vt4g_btn_(.+)_back/.test(linkId))) {
+                    $(elm).on('click', function() {
+                        var isConfirm = window.confirm(VeriTrans4G.unloadMessage);
+                        if (!isConfirm) {
+                            $('.bg-load-overlay').remove();
+                        }
+                        return isConfirm;
+                    })
+                }
+            });
+
+            $('form').each(function(idx, elm) {
+                var formId = elm.getAttribute('id');
+
+                // 除外するフォームのIDを設定
+                if (!formId || !/vt4g_form_credit/.test(formId)) {
+                    $(elm).on('submit', function(e) {
+                        var isConfirm = window.confirm(VeriTrans4G.unloadMessage);
+                        if (!isConfirm) {
+                            $('.bg-load-overlay').remove();
+                        }
+                        return isConfirm;
+                    });
+                }
+            });
+        {% endif %}
+    })
+
+    //バリデーションチェックエラーが発生した場合、値が残ってしまうため削除する
+    $('[name="payment_credit[card_name]"]').val('');
+</script>

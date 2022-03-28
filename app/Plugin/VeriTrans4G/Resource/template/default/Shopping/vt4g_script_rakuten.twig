@@ -1,0 +1,12 @@
+{#
+Copyright (c) 2018 VeriTrans Inc., a Digital Garage company. All rights reserved.
+http://www.veritrans.co.jp/
+#}
+
+<script>
+    var $ecTotalBox = $(".ec-totalBox__btn");
+    var $ecTotalBoxBtn = $ecTotalBox.find("button");
+    var $rakutenBtn = $("[src*='checkout.rakuten.co.jp']");
+    $ecTotalBoxBtn.remove();
+    $ecTotalBox.prepend($rakutenBtn);
+</script>

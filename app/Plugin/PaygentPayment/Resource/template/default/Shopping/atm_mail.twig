@@ -1,0 +1,51 @@
+{#
+This file is part of EC-CUBE
+
+Copyright (c) 2006 PAYGENT Co.,Ltd. All rights reserved.
+
+https://www.paygent.co.jp/
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#}
+{% autoescape false %}
+{{ Order.name01 }} {{ Order.name02 }} 様
+
+この度はご注文いただき誠にありがとうございます。
+ATMにてご入金をお願い致します。
+入金確認が取れ次第、ご注文完了となります。
+
+************************************************
+　ご請求金額
+************************************************
+
+ご注文日時：{{ Order.create_date|date_sec }}
+ご注文番号：{{ Order.order_no }}
+お支払い合計：{{ Order.payment_total|price}}
+お支払い方法：{{ Order.payment_method }}
+{% if BaseInfo.isOptionPoint and Order.Customer is not null %}
+ご利用ポイント：{{ Order.usePoint }} pt
+{% endif %}
+お問い合わせ：{{ Order.message }}
+
+以下URLよりお支払いに必要な情報をご確認いただけます。
+{{ payment_url }}
+お支払期限：{{ limit_date }}
+
+============================================
+
+このメッセージはお客様へのお知らせ専用ですので、
+このメッセージへの返信としてご質問をお送りいただいても回答できません。
+ご了承ください。
+{% endautoescape %}

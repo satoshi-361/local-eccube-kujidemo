@@ -1,0 +1,81 @@
+{% extends 'default_frame.twig' %}
+{% block stylesheet %}
+    <style>
+        .itemimg img{
+            height: 250px;
+        }
+        @media only screen and (max-width: 992px) {
+            .itemimg img{
+                height: 190px;
+            }
+        }
+        @media only screen and (max-width: 576px) {
+            .itemimg img{
+                height: auto;
+            }
+        }
+    </style>
+{% endblock stylesheet %}
+{% block main %}
+    <article id="item_list">
+        <div class="container">
+            <div class="row">
+                {% for Product in Products if Product.Status != '廃止' %}
+                {% set ProductClasses = Product.getProductClasses() %}
+                {% set break = false %}
+                {% for pc in ProductClasses if break == false %}
+                    {% if pc.getClassCategory1() != null %}
+                    {% elseif pc.isVisible() %}
+                        {% set ProductClass = pc %}
+                        {% if ProductClass.getRemainStatus() == 3 or ProductClass.getRemainStatus() == 4 %}
+                        <article class="old_item">
+                            <a href="{{ path('product_detail', {id: Product.id})}}" title="通常くじ_アニメーションOFF" class="article_inner">
+                                <div class="itemimg">
+                                    {% if Product.ProductImage | length > 1 %}
+                                    <img width=500 height=500 src="{{ asset(Product.getProductImage()[3], 'save_image') }}" class="img-responsive" loading="lazy">
+                                    {% elseif Product.ProductImage | length %}
+                                    <img width=500 height=500 src="{{ asset(Product.main_list_image|no_image_product, 'save_image') }}" class="img-responsive" loading="lazy" />
+                                    {% else %}
+                                        <img width=500 height=500 src="{{ asset(''|no_image_product, 'save_image') }}" class="img-responsive" loading="lazy"/>
+                                    {% endif %}
+                                </div>
+                                <div class="content">
+                                    <div class="itemname">{{ Product.name }}</div>
+                                    <div class="date">{% if Product.product_assist_id and assists[Product.id] != ""%}販売期間：{{ assists[Product.id] }}まで{% endif %}&nbsp;&nbsp;&nbsp;</div>
+                                </div>
+                                <div class="ribbon isticket">
+                                    <h2>
+                                        {% set double_case = 0 %}
+                                        {% if Product.limit_count == "1日に1回" or Product.limit_count == "1アカウントに1回" %}
+                                            {% if Product.premium == "1" and Product.niconico >= "1" %} プレミアム会員 & ニコニコチャンネル会員 {% set double_case = 1 %} {% endif %}
+                                            {% if Product.premium == "1" and Product.specifics >= "1" %} プレミアム会員 & ニコニコチケット購入者 {% set double_case = 1 %} {% endif %}
+                                            {% if Product.niconico >= "1" and Product.specifics >= "1" %} ニコニコチャンネル会員 & ニコニコチケット購入者 {% set double_case = 1 %}  {% endif %}
+                                            {% if double_case == 0 %}  
+                                                {% if Product.premium == "1" %} プレミアム会員 {% endif %}
+                                                {% if Product.niconico >= "1" %} ニコニコチャンネル会員 {% endif %} 
+                                                {% if Product.specifics >= "1" %} ニコニコチケット購入者 {% endif %}    
+                                            {% endif %}
+                                            {{ Product.limit_count}} 限定 
+                                        {% else %}
+                                            {% if Product.premium == "1" and Product.niconico >= "1" %} プレミアム会員 & ニコニコチャンネル会員限定 {% set double_case = 1 %} {% endif %}
+                                            {% if Product.premium == "1" and Product.specifics >= "1" %} プレミアム会員 & ニコニコチケット購入者限定 {% set double_case = 1 %} {% endif %}
+                                            {% if Product.niconico >= "1" and Product.specifics >= "1" %} ニコニコチャンネル会員 & ニコニコチケット購入者限定 {% set double_case = 1 %}  {% endif %}
+                                            {% if double_case == 0 %}  
+                                                {% if Product.premium == "1" %} プレミアム会員限定 {% endif %}
+                                                {% if Product.niconico >= "1" %} ニコニコチャンネル会員限定 {% endif %} 
+                                                {% if Product.specifics >= "1" %} ニコニコチケット購入者限定 {% endif %}    
+                                            {% endif %}
+                                        {% endif %}&nbsp;&nbsp;&nbsp;
+                                    </h2>
+                                </div>
+                            </a>
+                        </article>                              
+                        {% endif %}
+                        {% set break = true %}
+                    {% endif %}
+                {% endfor %}    
+                {% endfor %}     
+            </div>
+        </div>
+    </article>
+{% endblock %}

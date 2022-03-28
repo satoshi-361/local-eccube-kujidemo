@@ -1,0 +1,123 @@
+{% extends 'default_frame.twig' %}
+
+{% block javascript %}{% endblock %}
+
+{% block stylesheet %}
+<style>
+.pluginCMBblog .item_blog_image {
+    width: 300px !important;
+    height: auto;
+    object-fit: cover;
+}
+.pluginCMBblog .figure__main_image{
+    margin: 0;
+}
+.pluginCMBblog .ec-topicpath .ec-topicpath__item{
+    display: initial !important;
+}
+
+.pluginCMBblog .list_blog_cat li {
+    display: initial !important;
+    letter-spacing: 0.2rem;
+    border-right: 1px solid #ddd;
+    font-size: 16px;
+}
+.pluginCMBblog .list_category_link{
+    padding: 0 0.5rem;
+}
+
+.pluginCMBblog .list_blog .list_category_link{
+    color: #337ab7;
+    padding: 0 0.5rem;
+}
+
+.pluginCMBblog .blog_category li:last-child{
+    border: none;
+}
+
+.pluginCMBblog .blog_category{
+    margin: 0;
+    padding: 0;
+}
+.pluginCMBblog .blog_category li{
+    display: initial;
+    border-right: 1px solid #ddd;
+}
+
+.pluginCMBblog .list_blog_cat li:last-child {
+    border-right: none;
+}
+
+.pluginCMBblog .blog_title_h3{
+    font-size: 16px !important;
+    line-height: 1.4;  
+    margin-top: 10px;
+    word-break: break-word;
+}
+
+@media screen and (max-width: 768px){
+.pluginCMBblog .item_blog_image {
+    width: 100% !important;
+    height: 40vw;
+    object-fit: cover;
+    }
+}
+
+</style>
+{% endblock %}
+
+{% block main %}
+    <div class="ec-role pluginCMBblog">
+        <div class="ec-searchnavRole__topicpath">
+            <ol class="ec-topicpath list_blog_cat">
+                {% for category in categories %}
+            
+                <li class="{{category.class}}">
+                    <a href="{{ url('cm_blog_page_list', {categories: [category.getId()]}) }}" class="list_category_link">
+                        {{ category.getName|raw }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ol>
+        </div>
+
+        {% if pagination.totalItemCount > 0 %}
+            <div class="ec-shelfRole" style="padding-top: 20px">
+                <ul class="ec-shelfGrid list_blog">
+                    {% for blog in pagination %}
+                    <li class="ec-shelfGrid__item">
+                        <a href="{{ url('cm_blog_page_detail', {'id': blog.id}) }}">
+                            <figure class="figure__main_image">
+                            {% if blog.getMainListImage %}
+                                <img src="{{ asset(blog.getMainListImage|no_image_product, 'save_image') }}" class='item_blog_image'></img>
+                                {% else %}
+                                <img src="{{ asset(''|no_image_product, 'save_image') }}" class='item_blog_image'></img>
+                            {% endif %}
+                            </figure>
+                        </a>
+                        <h3 class="blog_title_h3">
+                            <a href="{{ url('cm_blog_page_detail', {'id': blog.id}) }}">
+                                {{ blog.release_date|date('Y年m月d日')}}<br>
+                                {{ blog.getTitle|length > 45 ? blog.getTitle|striptags|replace({('&nbsp;'):' '})|slice(0, 45)|raw ~ '...' : blog.getTitle|raw }}<br>
+                                <p style="font-weight:200; font-size: 12px">{{ blog.body|length > 45 ? blog.body|striptags|replace({('&nbsp;'):' '})|slice(0, 45)|raw ~ '...' : blog.body|raw }}</p>
+                            </a>
+                        </h3>  
+                        <ul class="blog_category">
+                            {% for category in blog.getBlogCategories %}
+                                <li class="{{category.getCategory.class|raw}}">
+                                    <a href="{{ url('cm_blog_page_list', {categories: [category.getCategory().getId()]}) }}" class="list_category_link">
+                                    {{ category.getCategory.getName|length > 15 ? category.getCategory.getName|striptags|replace({('&nbsp;'):' '})|slice(0, 15)|raw ~ '...' : category.getCategory.getName|raw }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="ec-pagerRole">
+                {% include "pager.twig" with {'pages': pagination.paginationData, 'routes' : 'cm_blog_page_list'} %}
+            </div>
+        {% endif %}
+    </div> 
+{% endblock %}

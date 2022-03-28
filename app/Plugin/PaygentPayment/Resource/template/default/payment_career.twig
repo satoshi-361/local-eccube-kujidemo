@@ -1,0 +1,114 @@
+{#
+This file is part of EC-CUBE
+Copyright (c) 2006 PAYGENT Co.,Ltd. All rights reserved.
+https://www.paygent.co.jp/
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#}
+{% extends 'default_frame.twig' %}
+{% form_theme form 'Form/form_div_layout.twig' %}
+{% block javascript %}
+<script>
+	$("form").submit(function( event ) {
+            $(".btn").attr("disabled",true);
+    });
+	jQuery(document).ready(function() {
+		var w = $(window).width();
+        var x = 767;
+        if (w <= x) {
+            var sbNameShort = 'ソフトバンク・ワイモバイルまとめて支払い';
+        	if (document.getElementById('career6') != null) {
+            	document.getElementById('career6').text = sbNameShort;
+        	}
+        	document.getElementById('sb-name').innerHTML = sbNameShort;
+        	$(".form-control").css("font-size","13px");
+        }
+    });
+</script>
+{% endblock %}
+{% block main %}
+    <div id="main_middle">
+    {% if redirectHtml %}
+        <div style="text-align: center;padding: 24px 0px;">
+            {{ redirectHtml | raw }}
+        </div>
+    {% else %}
+        <div class="ec-role">
+            <div class="ec-rectHeading">
+                <h2>ペイジェント 携帯キャリア</h2>
+                {% if error is not empty %}
+                    <div>
+                        <p style="color:red">{{ error | raw | nl2br }}</p>
+                    </div>
+            	{% endif %}
+            </div>
+            {{ form_start(form) }}
+                {{ form_widget(form._token) }}
+                <div class="ec-borderedDefs"  style="margin-top:16px">
+                    <dl>
+                        <dt>
+                            <label class="ec-label">キャリア決済選択</label>
+                        </dt>
+                        <dd>
+                            <div class="ec-select">
+                                {{ form_widget(form.career_type) }}
+                                <span style="color:red"> {{ form_errors(form.career_type) }} </span>
+                            </div>
+                        </dd>
+                    </dl>
+                </div>
+                <div style="margin-top:10px">
+                    購入代金を、ご選択いただきました携帯電話キャリアの通話料金とまとめてお支払いいただけます。 <br>
+					（各支払い方法は下記一覧をご確認ください）
+                    <hr style="background:#D3D3D3; border:0; height:2px">
+                    下記「次へ」ボタンをクリックしてください。<br>
+                    ※お名前(カナ)に濁点(゛)や半濁点(゜)が含まれる場合は除外されます。<br>
+                    <span style="color:red"> ※画面が切り替るまで少々時間がかかる場合がございますが、そのままお待ちください。 </span>
+                    <hr style="background:#D3D3D3; border:0; height:1px">
+                </div>
+                <div class="row no-padding" style="margin-bottom:50px">
+                    <div class="col-sm-offset-2 col-sm-4">
+                        <a href="{{ url('paygent_payment/payment_career_back') }}" class="ec-blockBtn--cancel" id="paygentPaymentBack">
+                            戻る
+                        </a>
+                    </div>
+                    <div class="col-sm-4">
+                        <button type="submit" class="ec-blockBtn--action">
+                            次へ
+                        </button>
+                    </div>
+                </div>
+				<div class="ec-borderedDefs">
+					<dl style="padding:15px 0">
+						<dt style="line-height:1.5;padding-top:0;">ドコモ払い</dt>
+						<dd style="line-height:1.5">
+							画面からネットワーク暗証番号を入力いただくことでお支払が可能です。対応端末は、spモード契約のあるスマートフォン、およびPCの各種端末からもご利用いただけます。
+						</dd>
+					</dl>
+					<dl style="padding:15px 0">
+						<dt style="line-height:1.5;padding-top:0;">auかんたん決済</dt>
+						<dd style="line-height:1.5">
+							画面からau ID/パスワード、続いてセキュリティパスワードを入力いただくことでお支払が可能です。au IDを取得することで国内3キャリアのスマートフォンおよびPCの各種端末からもご利用いただけます。
+						</dd>
+					</dl>
+					<dl style="padding:15px 0">
+						<dt style="line-height:1.5;padding-top:0;"><div id="sb-name">ソフトバンクまとめて支払い・ワイモバイルまとめて支払い</div></dt>
+						<dd style="line-height:1.5">
+							画面から暗証番号（電話料金等を口座引落で決済されている場合）/セキュリティコード（電話料金等をカードで決済されている場合）を入力いただくことでお支払が可能です。対応端末は、softbankスマートフォン契約のあるスマートフォンとなります。
+						</dd>
+					</dl>
+				</div>
+            {{ form_end(form) }}
+        </div>
+    {% endif %}
+    </div>
+{% endblock %}

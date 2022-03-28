@@ -1,0 +1,268 @@
+{#
+Copyright (c) 2020 VeriTrans Inc., a Digital Garage company. All rights reserved.
+http://www.veritrans.co.jp/
+#}
+{% extends '@admin/default_frame.twig' %}
+{% set menus = ['order', 'vt4g_order_csv_request'] %}
+
+{% block title %}CSV決済依頼管理 決済依頼一覧{% endblock %}
+{% block sub_title %}受注管理{% endblock %}
+
+{% form_theme searchForm '@admin/Form/bootstrap_4_horizontal_layout.html.twig' %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{{ asset('assets/css/tempusdominus-bootstrap-4.min.css', 'admin') }}">
+{% endblock stylesheet %}
+{% block javascript %}
+    <script>
+        let select = document.getElementById('bulk_price_point_item');
+        let pointForm = document.getElementById('bulk_price_point_point');
+        if (select.value == 0) {
+            pointForm.value = "";
+            pointForm.disabled = true;
+        } else {
+            pointForm.disabled = false;
+        }
+
+        select.addEventListener('change', function(){
+            if (select.value == 0) {
+            	pointForm.value = "";
+            	pointForm.disabled = true;
+            } else {
+            	pointForm.disabled = false;
+            }
+
+        }, false);
+    </script>
+{% endblock javascript %}
+
+{% block main %}
+<div class="c-outsideBlock">
+    <div class="c-outsideBlock__contents">
+        <div class="row justify-content-start">
+            {# 決済依頼検索パネル #}
+            <div class="col-6">
+                <form name="search_form" id="search_form" method="post" action="">
+                    {{ form_widget(searchForm._token) }}
+                    <div class="mb-2">
+                        <label class="col-form-label" data-placement="top">決済依頼番号・会員名</label>
+                        {{ form_widget(searchForm.search_keyword) }}
+                        {{ form_errors(searchForm.search_keyword) }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="col-form-label" data-placement="top">決済依頼ステータス</label>
+                        {{ form_widget(searchForm.request_status) }}
+                        {{ form_errors(searchForm.request_status) }}
+                    </div>
+                    <div class="c-outsideBlock__contents mb-5">
+                        <button type="submit" class="btn btn-ec-conversion px-3">{{ 'admin.common.search'|trans }}</button>
+                    </div>
+                </form>
+            </div>
+            {# 一括変更パネル #}
+            <div class="col-6">
+{% if paymentStatusBeforeOrWaitCnt > 0 %}
+                <div class="card rounded border-0 mb-4">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-8">
+                                <span class="card-title">一括変更</span>
+                            </div>
+                            <div class="col-4 text-right"><a data-toggle="collapse" href="#orderOverview" aria-expanded="false" aria-controls="orderOverview"><i class="fa fa-angle-down fa-lg"></i></a></div>
+                        </div>
+                    </div>
+                    <div class="collapse ec-cardCollapse" id="orderOverview">
+                        <div id="ex-delivery-fee" class="card-body p-0">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">決済依頼情報一括変更</li>
+                                <li class="list-group-item">
+                                    <form name="bulkfee_form" id="bulkfee_form" method="post" action="{{ url('vt4g_admin_order_csv_request_list_mode', { 'event_id': event.id, 'mode': 'allsetfee'}) }}">
+                                        {{ form_widget(bulkfeeForm._token) }}
+                                        <table class="table table-sm mb-5" id="search_result">
+                                            <thead>
+                                                <tr>
+                                                    <th class="border-top-0 pt-2 pb-2 text-center pl-3">決済手数料</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="align-middle text-center">
+                                                        <div class="row justify-content-start">
+                                                            <div class="col-9">
+                                                                {{ form_widget(bulkfeeForm.fee) }}
+                                                                {{ form_errors(bulkfeeForm.fee) }}
+                                                            </div>
+                                                            <div class="col-3">
+                                                                <button id="set_fee_all" class="btn btn-ec-conversion" type="submit">変更</button>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </form>
+                                    <form name="bulkprice_form" id="bulkprice_form" method="post" action="{{ url('vt4g_admin_order_csv_request_list_mode', { 'event_id': event.id, 'mode': 'allsetprice' }) }}">
+                                        {{ form_widget(bulkpriceForm._token) }}
+                                        <table class="table table-sm mb-5" id="search_result">
+                                            <thead>
+                                                <tr>
+                                                    <th class="border-top-0 pt-2 pb-2 text-center">商品・送料</th>
+                                                    <th class="border-top-0 pt-2 pb-2 text-center">金額</th>
+                                                    <th class="border-top-0 pt-2 pb-2 text-center">ポイント</th>
+                                                    <th class="border-top-0 pt-2 pb-2 text-center"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="align-middle">
+                                                        {{ form_widget(bulkpriceForm.item) }}
+                                                        {{ form_errors(bulkpriceForm.item) }}
+                                                    </td>
+                                                    <td class="align-middle">
+                                                        {{ form_widget(bulkpriceForm.amount) }}
+                                                        {{ form_errors(bulkpriceForm.amount) }}
+                                                    </td>
+                                                    <td class="align-middle">
+                                                        {{ form_widget(bulkpriceForm.point) }}
+                                                        {{ form_errors(bulkpriceForm.point) }}
+                                                    </td>
+                                                    <td class="align-middle">
+                                                        <button id="set_price_all" class="btn btn-ec-conversion d-inline-block" type="submit">変更</button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div><!-- .card.rounded -->
+            </div>
+{% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="c-contentsArea__cols">
+    <div class="c-contentsArea__primaryCol">
+        <div class="c-primaryCol">
+            {# % if pagination and pagination.totalItemCount % #}
+                <div class="row justify-content-between mb-2">
+                    <div class="col-6">
+{% if paymentStatusBeforeOrWaitCnt > 0 %}
+                        <div class="btn-group" role="group">
+                            <a class="btn btn-ec-regular" href="{{ url('vt4g_admin_order_csv_request_export', {'event_id': event.id}) }}"><i class="fa fa-cloud-download mr-1 text-secondary"></i><span>{{ 'admin.common.csv_download'|trans }}</span></a>
+                        </div>
+{% endif %}
+{% if paymentStatusFailureCnt > 0 %}
+                        <div class="btn-group" role="group">
+                            <a class="btn btn-ec-conversion" href="{{ url('vt4g_admin_order_csv_request_list_mode', { 'event_id': event.id, 'mode': 'resettlement' }) }}"><span>決済失敗取引の再決済</span></a>
+                        </div>
+{% endif %}
+                    </div>
+
+                    <div class="col-5 text-right">
+                        {#Dropdown page count#}
+                        <div class="d-inline-block mr-2">
+                            <select class="custom-select" onchange="location = this.value;">
+                                {% for pageMax in pageMaxis %}
+                                    <option {% if pageMax.name == page_count %} selected {% endif %}
+                                            value="{{ path('vt4g_admin_order_csv_request_list_page', {'event_id': event.id, 'page_no': 1, 'page_count': pageMax.name }) }}">
+                                        {{ 'admin.common.count'|trans({ '%count%': pageMax.name }) }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="d-inline-block">
+                            <div class="btn-group" role="group">
+                                <a class="btn btn-ec-regular" href="{{ url('vt4g_admin_order_csv_request_list_mode', { 'event_id': event.id, 'mode': 'allenable' }) }}"><i class="fa fa-circle-thin mr-1 text-secondary"></i><span>全件CSV対象</span></a>
+                                <a class="btn btn-ec-regular" href="{{ url('vt4g_admin_order_csv_request_list_mode', { 'event_id': event.id, 'mode': 'alldisable' }) }}"><i class="fa fa-ban mr-1 text-secondary"></i><span>全件CSV対象外</span></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card rounded border-0 mb-4 d-block">
+                    <div class="card-header">
+                        <div class="row justify-content-between">
+                            <div class="col-12">
+                                <div class="d-inline-block" title="">
+                                    <span class="align-middle">{{ event.sale_type_name }} {{ event.event_name }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if pagination and pagination.totalItemCount %}
+                    <div class="card-body p-0">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th class="border-top-0 pt-2 pb-3 pl-3 text-center">決済依頼番号</th>
+                                <th class="border-top-0 pt-2 pb-3 text-center">会員</th>
+                                <th class="border-top-0 pt-2 pb-3 text-center">取引ID</th>
+                                <th class="border-top-0 pt-2 pb-3 text-center">決済金額</th>
+                                <th class="border-top-0 pt-2 pb-3 text-center">合計商品金額</th>
+                                <th class="border-top-0 pt-2 pb-3 text-center">送料</th>
+                                <th class="border-top-0 pt-2 pb-3 text-center">決済手数料</th>
+                                <th class="border-top-0 pt-2 pb-3 text-center">合計付与ポイント</th>
+                                <th class="border-top-0 pt-2 pb-3 text-center">決済依頼ステータス</th>
+                                <th class="border-top-0 pt-2 pb-3 text-center">初回注文ID</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for request in pagination %}
+                                <tr>
+                                    <td class="align-middle pl-3 text-center">
+                                        <a href="{{ url('vt4g_admin_order_csv_request_edit', { event_id: event.id, request_id: request.id }) }}">{{ request.id }}</a>
+                                    </td>
+                                    <td class="align-middle pl-3 text-nowrap">
+                                        <a target="_blank" href="{{ url('admin_customer_edit', { id : request.customer_id }) }}">{{ request.customer_id }}<br>{{ request.name01 }} {{ request.name02 }}</a>
+                                    </td>
+                                    <td class="align-middle pl-3 text-center">{{ request.transaction_id }}</td>
+                                    <td class="align-middle pl-3 text-right">{{ (request.order_total+request.delivery_fee_total+request.settlement_fee)|price }}</td>
+                                    <td class="align-middle pl-3 text-right">{{ request.order_total|price }}</td>
+                                    <td class="align-middle pl-3 text-right">{{ request.delivery_fee_total|price }}</td>
+                                    <td class="align-middle pl-3 text-right">{{ request.settlement_fee|price }}</td>
+                                    <td class="align-middle pl-3 text-right">{{ request.point_total|number_format }}</td>
+                                    <td class="align-middle pl-3 text-center">{{ request_status[request.request_status] }}</td>
+                                    <td class="align-middle pl-3 text-center">
+                                        <a target="_blank" href="{{ url('admin_order_edit', { id : request.first_order_id }) }}">{{ request.first_order_id }}</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="card-body p-4">
+                        <div class="text-center text-muted mb-4 h5">{{ 'admin.common.search_no_result'|trans }}</div>
+                        <div class="text-center text-muted">{{ 'admin.common.search_try_change_condition'|trans }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="row justify-content-md-center mb-4">
+                    {% if pagination.totalItemCount > 0 %}
+                        {% include "@admin/pager.twig" with {'pages': pagination.paginationData, 'routes' : 'vt4g_admin_order_csv_request_list_page'} %}
+                    {% endif %}
+                </div>
+
+                <div class="c-conversionArea">
+                    <div class="c-conversionArea__container">
+                        <div class="row justify-content-between align-items-center">
+                            <div class="col-6">
+                                <div class="c-conversionArea__leftBlockItem">
+
+                                        <a class="c-baseLink" href="{{ url('vt4g_admin_order_csv_request') }}">
+                                            <i class="fa fa-backward" aria-hidden="true"></i>
+                                            <span>決済依頼イベント一覧画面</span>
+                                        </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

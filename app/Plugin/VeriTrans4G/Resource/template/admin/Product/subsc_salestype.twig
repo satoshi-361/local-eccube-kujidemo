@@ -1,0 +1,228 @@
+{#
+This file is part of EC-CUBE
+
+Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+
+http://www.ec-cube.co.jp/
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+#}
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['product', 'vt4g_subsc_salestype'] %}
+
+{% block title %}継続課金用販売種別管理{% endblock %}
+{% block sub_title %}{{ 'admin.product.product_management'|trans }}{% endblock %}
+
+{% block stylesheet %}
+    <style>継続課金用販売種別管理
+        .list-group-item:hover {
+            z-index: inherit;
+        }
+    </style>
+{% endblock stylesheet %}
+{% block javascript %}
+    <script src="{{ asset('assets/js/vendor/jquery.ui/jquery.ui.core.min.js', 'admin') }}"></script>
+    <script src="{{ asset('assets/js/vendor/jquery.ui/jquery.ui.widget.min.js', 'admin') }}"></script>
+    <script src="{{ asset('assets/js/vendor/jquery.ui/jquery.ui.mouse.min.js', 'admin') }}"></script>
+    <script>
+        $(function() {
+            // 編集
+            $('.sortable-item').on('click', 'a.action-edit', function(e) {
+                e.preventDefault();
+                var current = $(this).parents("li");
+                current.find('.mode-view').addClass('d-none');
+                current.find('.mode-edit').removeClass('d-none');
+            });
+
+            // 編集キャンセル
+            $('.sortable-item').on('click', 'button.action-edit-cancel', function(e) {
+                e.preventDefault();
+                var current = $(this).parents("li");
+                current.find('[data-origin-value]').each(function(e) {
+                    $(this).val($(this).attr('data-origin-value'));
+                });
+                current.find('.mode-view').removeClass('d-none');
+                current.find('.mode-edit').addClass('d-none');
+            });
+            // 編集時, エラーがあれば入力欄を表示.
+            $('.sortable-item').find('.is-invalid').each(function(e) {
+                var current = $(this).parents("li");
+                current.find('.mode-view').addClass('d-none');
+                current.find('.mode-edit').removeClass('d-none');
+            });
+
+            // 削除モーダルのhrefとmessageの変更
+            $('#DeleteModal').on('shown.bs.modal', function(event) {
+                var target = $(event.relatedTarget);
+                // hrefの変更
+                $(this).find('[data-method="delete"]').attr('href', target.data('url'));
+
+                // messageの変更
+                $(this).find('p.modal-message').text(target.data('message'));
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block main %}
+    <div class="c-contentsArea__cols">
+        <div class="c-contentsArea__primaryCol">
+            <div class="c-primaryCol">
+                <div class="card rounded border-0 mb-4">
+                    <div class="card-body p-0">
+                        <div class="card rounded border-0">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <form role="form" class="form-row" method="post" action="{{ url('vt4g_admin_subsc_salestype') }}">
+                                        {{ form_widget(form._token) }}
+                                        <div class="col-auto align-self-center"><span>{{ 'vt4g_plugin.admin.product.sale_type'|trans }}</span></div>
+                                        <div class="col-3 mr-2">
+                                            {{ form_widget(form.name) }}
+                                            {{ form_errors(form.name) }}
+                                        </div>
+                                        <div class="col-auto align-self-center"><span>{{ 'vt4g_plugin.admin.product.few_credit_flg'|trans }}</span></div>
+                                        <div class="col-auto align-items-center">
+                                            {{ form_widget(form.few_credit_flg) }}
+                                            {{ form_errors(form.few_credit_flg) }}
+                                        </div>
+                                        <div class="col-auto align-items-center">
+                                            <button class="btn btn-ec-regular" type="submit">
+                                                {{ 'admin.common.create__new'|trans }}
+                                            </button>
+                                        </div>
+
+                                        {# エンティティ拡張の自動出力 #}
+                                        {% for f in form if f.vars.eccube_form_options.auto_render %}
+                                            {% if f.vars.eccube_form_options.form_theme %}
+                                                {% form_theme f f.vars.eccube_form_options.form_theme %}
+                                                {{ form_row(f) }}
+                                            {% else %}
+                                                <div class="col-auto align-items-center">
+                                                    <div>
+                                                        <span>{{ f.vars.label|trans }}</span>
+                                                        {{ form_widget(f) }}
+                                                        {{ form_errors(f) }}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </form>
+                                </li>
+                                <!-- 一覧タイトル -->
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        {# <div class="col-auto"><strong>&nbsp;</strong></div> #}
+                                        <div class="col-1"><strong>{{ 'admin.common.id'|trans }}</strong></div>
+                                        <div class="col-3"><strong>{{ 'vt4g_plugin.admin.product.sale_type'|trans }}</strong></div>
+                                        <div class="col-2"><strong>{{ 'vt4g_plugin.admin.product.few_credit_flg'|trans }}</strong></div>
+                                    </div>
+                                </li>
+                                <!-- 一覧表示 -->
+                                {% for SaleType in SaleTypes %}
+                                    <li id="ex-salestype-{{ SaleType.sale_type_id }}" class="list-group-item sortable-item" data-id="{{ SaleType.sale_type_id }}">
+                                        <div class="row justify-content-around mode-view">
+                                            {# <div class="col-auto d-flex align-items-center"><i class="fa fa-bars text-ec-gray"></i></div> #}
+                                            <div class="col-1 d-flex align-items-center">{{ SaleType.sale_type_id }}</div>
+                                            <div class="col-3 d-flex align-items-center"><a>{{ SaleType.name }}</a></div>
+
+                                            {% if  SaleType.few_credit_flg %}
+                                              <div class="col d-flex align-items-center"><a>{{ 'vt4g_plugin.admin.product.few_credit_flg_resence'|trans }}</a></div>
+                                            {% else %}
+                                              <div class="col d-flex align-items-center"><a>{{ 'vt4g_plugin.admin.product.few_credit_flg_absence'|trans }}</a></div>
+                                            {% endif %}
+
+                                            <div class="col-auto text-right">
+                                                <!-- 編集ボタン -->
+                                                <a class="btn btn-ec-actionIcon mr-2 action-edit" data-tooltip="true" data-placement="top" title="{{ 'admin.common.edit'|trans }}">
+                                                    <i class="fa fa-pencil fa-lg text-secondary"></i>
+                                                </a>
+                                                <!-- 削除ボタン -->
+                                                <div class="d-inline-block mr-2" data-tooltip="true"
+                                                     data-placement="top" title="{{ 'admin.common.delete'|trans }}">
+                                                    <!-- 押下時メッセージ -->
+                                                    <a class="btn btn-ec-actionIcon" data-toggle="modal" data-target="#DeleteModal"
+                                                       data-url="{{ url('vt4g_admin_subsc_salestype_delete', {'id' : SaleType.sale_type_id}) }}"
+                                                       data-message="{{ 'admin.common.delete_modal__message'|trans({ "%name%" : SaleType.name }) }}">
+                                                        <i class="fa fa-close fa-lg text-secondary"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <form class="form-row d-none mode-edit" method="post" action="{{ url('vt4g_admin_subsc_salestype') }}">
+                                            {{ form_widget(forms[SaleType.sale_type_id]._token) }}
+                                            <!-- 行データ保持（編集ボタン押下時にhidden） -->
+                                            <div class="col-1 d-flex align-items-center">{{ SaleType.sale_type_id }}</div>
+                                            <div class="col-3 mr-5">
+                                                <!-- 編集用の値をattrで保持してキャンセルで戻せるようにする -->
+                                                {{ form_widget(forms[SaleType.sale_type_id].name, {'attr': {'data-origin-value': forms[SaleType.sale_type_id].name.vars.value }}) }}
+                                                {{ form_errors(forms[SaleType.sale_type_id].name) }}
+                                            </div>
+                                            <div class="col-auto mr-5 align-items-center">
+                                              {{ form_widget(forms[SaleType.sale_type_id].few_credit_flg, {'attr': {'data-origin-value': forms[SaleType.sale_type_id].few_credit_flg.vars.value }}) }}
+                                              {{ form_errors(forms[SaleType.sale_type_id].few_credit_flg) }}
+                                            </div>
+
+                                            {# エンティティ拡張の自動出力 #}
+                                            {% for f in forms[SaleType.sale_type_id] if f.vars.eccube_form_options.auto_render %}
+                                                {% if f.vars.eccube_form_options.form_theme %}
+                                                    {% form_theme f f.vars.eccube_form_options.form_theme %}
+                                                    {{ form_row(f) }}
+                                                {% else %}
+                                                    <div class="col-auto align-items-center">
+                                                        <div>
+                                                            <span>{{ f.vars.label|trans }}</span>
+                                                            {{ form_widget(f) }}
+                                                            {{ form_errors(f) }}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
+
+                                            <div class="col-auto align-items-center">
+                                                <button class="btn btn-ec-conversion" type="submit">{{ 'admin.common.decision'|trans }}</button>
+                                            </div>
+                                            <div class="col-auto align-items-center">
+                                                <button class="btn btn-ec-sub action-edit-cancel" type="button">{{ 'admin.common.cancel'|trans }}</button>
+                                            </div>
+                                        </form>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            <!-- 削除モーダル -->
+                            <div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog"
+                                 aria-labelledby="DeleteModal" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title font-weight-bold">
+                                                {{ 'admin.common.delete_modal__title'|trans }}
+                                            </h5>
+                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body text-left">
+                                            <p class="text-left modal-message"><!-- jsでメッセージを挿入 --></p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-ec-sub" type="button" data-dismiss="modal">
+                                                {{ 'admin.common.cancel'|trans }}
+                                            </button>
+                                            <a class="btn btn-ec-delete" href="#" {{ csrf_token_for_anchor() }}
+                                               data-method="delete" data-confirm="false">
+                                                {{ 'admin.common.delete'|trans }}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

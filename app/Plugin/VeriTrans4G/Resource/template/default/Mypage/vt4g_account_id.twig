@@ -1,0 +1,64 @@
+{#
+Copyright (c) 2018 VeriTrans Inc., a Digital Garage company. All rights reserved.
+http://www.veritrans.co.jp/
+#}
+{% extends  'default_frame.twig' %}
+
+{% set mypageno = 'vt4g_account_id' %}
+
+{% set body_class = 'mypage' %}
+
+{% block main %}
+    <div class="ec-layoutRole__main">
+        <div class="ec-mypageRole">
+            <div class="ec-pageHeader">
+                <h1>マイページ/ベリトランス会員ID</h1>
+            </div>
+            {{ include('Mypage/navi.twig') }}
+        </div>
+        <div class="ec-mypageRole">
+
+            {% if accountCards|length > 0 %}
+                <p class="ec-para-normal">ベリトランス会員IDに登録されているカード情報を削除することができます。</p>
+                <p class="ec-para-normal">登録できるカード情報は{{ cardMax }}件までです。</p>
+            {% else %}
+                <p class="ec-para-normal">ベリトランス会員IDにカード情報は登録されていません。</p>
+            {% endif %}
+
+            {% if msg is defined and msg is not empty%}
+                <p class="ec-para-normal ec-color-accent">{{ msg|raw }}</p>
+            {% endif %}
+
+        </div>
+        <div class="ec-mypageRole">
+            <div class="ec-off1Grid">
+                <div class="ec-off1Grid__cell">
+                    {% if accountCards|length > 0 %}
+                        <div class="vt4g_card_list">
+                            {% for card in accountCards %}
+                                <div class="vt4g_card_list__item">
+                                    <a class="vt4g_card_list__remove" href="{{ url('vt4g_account_id_card_delete', { cardId : card.cardId }) }}" {{ csrf_token_for_anchor() }} data-method="post">
+                                        <div class="ec-icon">
+                                            <img src="{{ asset('assets/icon/cross.svg') }}" alt="remove">
+                                        </div>
+                                    </a>
+                                    <div class="vt4g_card_list__card">
+                                        <div>カード番号 {{ card.cardNumber }}</div>
+                                        <div>有効期限 {{ card.expire }}</div>
+                                        {% if card.alertMsg is not empty %}
+                                            <div class="ec-color-accent">{{ card.alertMsg }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+{{ include('VeriTrans4G/Resource/template/default/css/vt4g_css.twig') }}
+{% endblock %}

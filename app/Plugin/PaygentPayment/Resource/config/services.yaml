@@ -1,0 +1,630 @@
+parameters:
+    paygent_payment:
+        # ペイジェント決済のモジュールコード
+        paygent_payment_code: "PaygentPayment"
+
+        transaction_id_name: "transactionid"
+
+        # トークン生成時の接続先
+        paygent_token_connect_url: ""
+
+        #電文パラメータ Key Length
+        paygentb2bmodule__telegram_key_length: 30
+        #電文パラメータ Valeu Length
+        paygentb2bmodule__telegram_value_length: 102400
+        #電文長：102400byte（ファイル決済以外）
+        paygentb2bmodule__telegram_length: 102400
+        #電文長：10MB（ファイル決済時）
+        paygentb2bmodule__telegram_length_file: 10485760
+        #接続ID
+        paygentb2bmodule__connect_id_key: "connect_id"
+        #接続パスワード
+        paygentb2bmodule__connect_password_key: "connect_password"
+        #電文種別ID
+        paygentb2bmodule__telegram_kind_key: "telegram_kind"
+        #最大検索数
+        paygentb2bmodule__limit_count_key: "limit_count"
+        #取引ファイルデータ
+        paygentb2bmodule__data_key: "data"
+        #処理結果：1
+        paygentb2bmodule__result_status_error: "1"
+        #レスポンスコード：9003
+        paygentb2bmodule__response_code_9003: "9003"
+        #電文種別：201（ファイル決済結果照会）
+        paygentb2bmodule__telegram_kind_file_payment_res: "201"
+        #プロパティファイル名
+        paygentb2bmoduleresources__properties_file_name: "modenv_properties.conf"
+        #照会系電文種別の区切り文字
+        paygentb2bmoduleresources__telegram_kind_separator: ","
+        #電文種別の先頭桁数（接続先URL取得）
+        paygentb2bmoduleresources__telegram_kind_first_chars: 2
+        #クライアント証明書ファイルパス
+        paygentb2bmoduleresources__client_file_path: "paygentB2Bmodule.client_file_path"
+        #クライアント証明書未使用設定
+        paygentb2bmoduleresources__not_use_client_cert: "paygentB2Bmodule.not_use_client_cert"
+        #CA証明書ファイルパス
+        paygentb2bmoduleresources__ca_file_path: "paygentB2Bmodule.ca_file_path"
+        #CA証明書未使用設定
+        paygentb2bmoduleresources__not_use_ca_cert: "paygentB2Bmodule.not_use_ca_cert"
+        #Proxyサーバ名
+        paygentb2bmoduleresources__proxy_server_name: "paygentB2Bmodule.proxy_server_name"
+        #ProxyIPアドレス
+        paygentb2bmoduleresources__proxy_server_ip: "paygentB2Bmodule.proxy_server_ip"
+        #Proxyポート番号
+        paygentb2bmoduleresources__proxy_server_port: "paygentB2Bmodule.proxy_server_port"
+        #デフォルトID
+        paygentb2bmoduleresources__default_id: "paygentB2Bmodule.default_id"
+        #デフォルトパスワード
+        paygentb2bmoduleresources__default_password: "paygentB2Bmodule.default_password"
+        #タイムアウト値
+        paygentb2bmoduleresources__timeout_value: "paygentB2Bmodule.timeout_value"
+        #ログ出力先
+        paygentb2bmoduleresources__log_output_path: "paygentB2Bmodule.log_output_path"
+        #照会MAX件数
+        paygentb2bmoduleresources__select_max_cnt: "paygentB2Bmodule.select_max_cnt"
+        #UTF-8の電文種別ID
+        paygentb2bmoduleresources__telegram_kind_utf8: "paygentB2Bmodule.telegram_kind.utf8"
+        #照会系電文種別ID
+        paygentb2bmoduleresources__telegram_kind_refs: "paygentB2Bmodule.telegram_kind.ref"
+        #接続先URL（共通）
+        paygentb2bmoduleresources__url_comm: "paygentB2Bmodule.url."
+        #デバッグオプション
+        paygentb2bmoduleresources__debug_flg: "paygentB2Bmodule.debug_flg"
+        #モジュールパラメータエラー
+        paygentb2bmoduleconnectexception__module_param_required_error: "E02001"
+        #電文要求パラメータエラー
+        paygentb2bmoduleconnectexception__teregram_param_required_error: "E02002"
+        #電文要求パラメータ固定値想定外エラー
+        paygentb2bmoduleconnectexception__teregram_param_outside_error: "E02003"
+        #証明書エラー
+        paygentb2bmoduleconnectexception__certificate_error: "E02004"
+        #決済センター接続エラー
+        paygentb2bmoduleconnectexception__ks_connect_error: "E02005"
+        #応答対応種別エラー
+        paygentb2bmoduleconnectexception__response_type_error: "E02007"
+        #設定ファイルなしエラー
+        paygentb2bmoduleexception__resource_file_not_found_error: "E01001"
+        #設定ファイル不正エラー
+        paygentb2bmoduleexception__resource_file_required_error: "E01002"
+        #その他のエラー
+        paygentb2bmoduleexception__other_error: "E01901"
+        #CSV出力エラー
+        paygentb2bmoduleexception__csv_output_error: "E01004"
+        #取引ファイルエラー
+        paygentb2bmoduleexception__file_payment_error: "E01005"
+        #文字コード設定エラー
+        paygentb2bmoduleexception__encoding_error: "E01006"
+        #デフォルトの項目区切り文字
+        csvtokenizer__def_separator: ','
+        #デフォルトの項目データ囲み文字
+        csvtokenizer__def_item_envelope: '"'
+        #項目データ囲み文字(囲み自体なし)
+        csvtokenizer__no_item_envelope: "chr(0)"
+        #ファイル出力時の改行コード
+        csvwriter__windows_newline: "\r\n"
+        httpsrequestsender__curle_couldnt_connect: 7
+        httpsrequestsender__curle_ssl_certproblem: 58
+        httpsrequestsender__curle_ssl_cacert: 60
+        httpsrequestsender__curle_ssl_cacert_badfile: 77
+        httpsrequestsender__curle_http_returned_error: 22
+        #HTTPプロトコルを表す定数
+        httpsrequestsender__http: "HTTP"
+        #HTTP通信の成功コード：200
+        httpsrequestsender__http_success: 200
+        #HTTP通信の成功コード：206
+        httpsrequestsender__http_partial_content: 206
+        #リクエスト・レスポンスの改行コード
+        httpsrequestsender__crlf: "/\r\n/"
+        #HTTPステータスコード変数の初期値
+        httpsrequestsender__http_status_init_value: -1
+        #ステータスコードの長さ
+        httpsrequestsender__regexpstatus_len: 3
+        #Content-Length
+        httpsrequestsender__content_length: "Content-Length"
+        #User-Agent
+        httpsrequestsender__user_agent: "User-Agent"
+        #Content-Type
+        httpsrequestsender__content_type: "Content-Type=application/x-www-form-urlencoded"
+        httpsrequestsender__http_encoding: "charset=Windows-31J"
+        #マスク文字
+        httpsrequestsender__mask_string: "X"
+        #行番号（ヘッダー部）= "1"
+        filepaymentresponsedataimpl__lineno_header: "1"
+        #レコード区分 位置: 0
+        filepaymentresponsedataimpl__line_record_division: 0
+        #ヘッダー部 処理結果 位置 6
+        filepaymentresponsedataimpl__line_header_result: 6
+        #ヘッダー部 レスポンスコード 位置: 7
+        filepaymentresponsedataimpl__line_header_response_code: 7
+        #ヘッダー部 レスポンス詳細 位置: 8
+        filepaymentresponsedataimpl__line_header_response_detail: 8
+        #改行文字
+        filepaymentresponsedataimpl__line_separator: "\r\n"
+        #応答電文用区切り文字
+        paymentresponsedataimpl__properties_regex: "="
+        #応答電文用区切り数
+        paymentresponsedataimpl__properties_regex_count: 2
+        #改行文字
+        paymentresponsedataimpl__line_separator: "\r\n"
+        #処理結果
+        responsedata__result: "result"
+        #レスポンスコード
+        responsedata__response_code: "response_code"
+        #レスポンス詳細
+        responsedata__response_detail: "response_detail"
+        #HTML項目
+        responsedata__html_item: "_html"
+        #行番号（ヘッダー部）= "1"
+        responsedata__lineno_header: "1"
+        #行番号（データヘッダー部）: "2"
+        referenceresponsedataimpl__lineno_data_header: "2"
+        #行番号（データ部）: "3"
+        referenceresponsedataimpl__lineno_data: "3"
+        #行番号（トレーラー部）: "4"
+        referenceresponsedataimpl__lineno_trailer: "4"
+        #レコード区分 位置: 0
+        referenceresponsedataimpl__line_record_division: 0
+        #ヘッダー部 処理結果 位置 1
+        referenceresponsedataimpl__line_header_result: 1
+        #ヘッダー部 レスポンスコード 位置: 2
+        referenceresponsedataimpl__line_header_response_code: 2
+        #ヘッダー部 レスポンス詳細 位置: 3
+        referenceresponsedataimpl__line_header_response_detail: 3
+        #トレーラー部 データ件数 位置: 1
+        referenceresponsedataimpl__line_trailer_data_count: 1
+        #改行文字
+        referenceresponsedataimpl__line_separator: "\r\n"
+
+        # 支払いの種類 paymenttype
+        paygent_settlement_detail: '094'
+        paygent_atm: '010'
+        paygent_credit: '020'
+        paygent_credit_processing: '0201'
+        paygent_auth_cancel: '021'
+        paygent_card_commit: '022'
+        paygent_card_commit_cancel: '023'
+        paygent_card_3d: '024'
+        paygent_card_stock_set: '025'
+        paygent_card_stock_del: '026'
+        paygent_card_stock_get: '027'
+        paygent_card_commit_revice: '029'
+        paygent_card_commit_revice_processing: '0291'
+        payment_card_3d2: '450'
+        paygent_conveni_num: '030'
+        paygent_bank: '060'
+        paygent_career: '100'
+        paygent_career_commit: '101'
+        paygent_career_commit_cancel: '102'
+        paygent_career_commit_revice: '103'
+        paygent_career_commit_auth: '104'
+
+        paygent_career_d: '100_1'
+        paygent_career_a: '100_2'
+        paygent_career_s: '100_3'
+
+        paygent_career_auth_d: '104_1'
+        paygent_career_auth_a: '104_2'
+
+        paygent_paidy: 'paidy'
+
+        paygent_paidy_auth_canceled: '340'
+        paygent_paidy_commit: '341'
+        paygent_paidy_refund: '342'
+
+        paygent_paidy_authorized: 'ETC_1'
+        paygent_paidy_auth_expired: 'ETC_2'
+        paygent_paidy_commit_expired: 'ETC_3'
+        paygent_paidy_commit_canceled: 'ETC_4'
+        paygent_paidy_commit_revice: 'ETC_5'
+
+        # バッチで使用する。
+        paygent_ref: '091'
+
+        # ペイジェント決済種別CD
+        payment_type_atm: '01'
+        payment_type_credit: '02'
+        payment_type_conveni_num: '03'
+        payment_type_bank: '05'
+        payment_type_career: '06'
+        payment_type_paidy: '22'
+
+        # ペイジェント決済ステータス
+        status_pre_registration: '10'
+        status_ng_authority: '11'
+        status_payment_expired: '12'
+        status_3dsecure_interruption: '13'
+        status_3dsecure_authorize: '14'
+        status_registration_suspended: '15'
+        status_authority_ok: '20'
+        status_authority_completed: '21'
+        status_clear_requesting: '30'
+        status_authority_canceling: '31'
+        status_authority_canceled: '32'
+        status_authority_expired: '33'
+        status_correct_requesting: '34'
+        status_pre_cleared: '40'
+        status_pre_cleared_expiration_cancellation_sales: '41'
+        status_pre_sales_canceling: '42'
+        status_preliminary_pre_detection: '43'
+        status_complete_cleared: '44'
+        status_pre_sales_cancel_arranging: '50'
+        status_pre_sales_cancellation: '60'
+        status_preliminary_cancellation: '61'
+        status_complete_cancellation: '62'
+
+        # 電文バージョン
+        telegram_version: '1.0'
+
+        # システム種別のID
+        settlement_id:
+            module: 1
+            link: 2
+        # システム種別名称
+        settlement_names:
+            module: "モジュール型"
+            link: "リンク型"
+
+        # 決済モジュールで利用出来る決済方式のID
+        payment_type_id:
+            pay_paygent_credit: 1
+            pay_paygent_conveni_num: 2
+            pay_paygent_atm: 4
+            pay_paygent_bank: 5
+            pay_paygent_career: 6
+            pay_paygent_paidy: 11
+
+        # 決済名称
+        payment_type_names:
+            pay_paygent_credit: "クレジット"
+            pay_paygent_conveni_num: "コンビニ(番号方式)"
+            pay_paygent_atm: "ATM決済"
+            pay_paygent_bank: "銀行ネット"
+            pay_paygent_career: "携帯キャリア"
+            pay_paygent_paidy: "Paidy"
+
+        # 決済モジュールで利用出来る支払い回数のID
+        payment_division_id:
+            pay_paygent_lump_sum: 10
+            pay_paygent_install: 61
+            pay_paygent_revolving_credit: 80
+            pay_paygent_bonus_lump_sum: 21
+
+        # 支払い回数名称
+        payment_division_names:
+            pay_paygent_lump_sum: "一括払い"
+            pay_paygent_install: "分割払い"
+            pay_paygent_revolving_credit: "リボ払い"
+            pay_paygent_bonus_lump_sum: "ボーナス一括払い"
+
+        # 決済モジュールで利用出来る携帯キャリア決済のID
+        career_division_id:
+            career_type_docomo: "5"
+            career_type_au: "4"
+            career_type_softbank: "6"
+
+        # 携帯キャリア決済名称
+        career_division_names:
+            career_type_docomo: "ドコモ払い"
+            career_type_au: "auかんたん決済"
+            career_type_softbank: "ソフトバンクまとめて支払い・ワイモバイルまとめて支払い"
+        
+        # 携帯キャリア決済内で利用するセッションキー
+        career_session:
+            career_type: 'paygent_payment.front.career.career_type'
+            redirect_html: 'paygent_payment.front.career.redirect_html'
+            error: 'paygent_payment.front.career.error'
+
+        # 携帯キャリア決済時に利用するpc_mobile_type
+        career_pc_mobile_type:
+            pc: "0"
+            smartphone: "4"
+
+        # 受注編集画面での決済名の名称
+        admin_target_payment_method_names:
+            # 携帯キャリア決済
+            paygent_career_d: '携帯キャリア'
+            paygent_career_a: '携帯キャリア'
+            paygent_career_s: '携帯キャリア'
+            # クレジット決済
+            paygent_credit: 'クレジット'
+            # Paidy決済
+            paygent_paidy: 'Paidy'
+
+        # 受注編集画面でのステータス内容の名称
+        admin_payment_status_names:
+            # 携帯キャリア決済
+            paygent_career_commit: '売上'
+            paygent_career_commit_cancel: '取消'
+            paygent_career_commit_revice: '売上変更'
+            # クレジット決済
+            paygent_credit: 'オーソリ変更'
+            paygent_credit_processing: 'オーソリ変更処理中'
+            paygent_auth_cancel: 'オーソリキャンセル'
+            paygent_card_commit: '売上'
+            paygent_card_commit_cancel: '売上キャンセル'
+            paygent_card_commit_revice_processing: '売上変更処理中'
+            # Paidy決済
+            paygent_paidy_auth_canceled: 'オーソリキャンセル'
+            paygent_paidy_commit: '売上'    
+            paygent_paidy_authorized: 'オーソリOK'
+            paygent_paidy_auth_expired: 'オーソリ期限切れ'
+            paygent_paidy_commit_expired: '売上(売上取消期限切れ)'
+            paygent_paidy_commit_canceled: '売上キャンセル'
+
+        # 支払方法レコード作成用パラメータ
+        create_payment_param:
+            credit:
+                payment_type: 1
+                method: 'ペイジェントクレジット'
+                method_class:
+                    link: 'Plugin\PaygentPayment\Service\Method\Credit'
+                    module: 'Plugin\PaygentPayment\Service\Method\Module\Credit'
+            conveni:
+                payment_type: 2
+                method: 'ペイジェントコンビニ(番号方式)'
+                method_class: 
+                    link: 'Plugin\PaygentPayment\Service\Method\Conveni'
+                    module: 'Plugin\PaygentPayment\Service\Method\Module\Conveni'
+            atm:
+                payment_type: 4
+                method: 'ペイジェントATM決済'
+                method_class: 
+                    link: 'Plugin\PaygentPayment\Service\Method\Atm'
+                    module: 'Plugin\PaygentPayment\Service\Method\Module\Atm'
+            bank:
+                payment_type: 5
+                method: 'ペイジェント銀行ネット'
+                method_class: 
+                    link: 'Plugin\PaygentPayment\Service\Method\Bank'
+                    module: 'Plugin\PaygentPayment\Service\Method\Module\Bank'
+            career:
+                payment_type: 6
+                method: 'ペイジェント携帯キャリア'
+                method_class: 
+                    link: 'Plugin\PaygentPayment\Service\Method\Career'
+                    module: 'Plugin\PaygentPayment\Service\Method\Module\Career'
+            paidy:
+                payment_type: 11
+                method: 'ペイジェントPaidy'
+                method_class: 
+                    module: 'Plugin\PaygentPayment\Service\Method\Module\Paidy'
+
+        # ページレコード作成用パラメータ
+        create_page_param:
+            link:
+                error_page:
+                    name: 'PAYGENT決済エラーページ'
+                    url: 'shopping_paygent_error'
+                    file_name: 'PaygentPayment/Resource/template/default/Shopping/shopping_error'
+            module:
+                credit:
+                    payment_type: 1
+                    name: 'PAYGENT クレジット'
+                    url: 'paygent_payment/payment_credit'
+                    file_name: 'PaygentPayment/Resource/template/default/payment_credit'
+                conveni:
+                    payment_type: 2
+                    name: 'PAYGENT コンビニ(番号方式)'
+                    url: 'paygent_payment/payment_conveni'
+                    file_name: 'PaygentPayment/Resource/template/default/payment_conveni'
+                atm:
+                    payment_type: 4
+                    name: 'PAYGENT ATM決済'
+                    url: 'paygent_payment/payment_atm'
+                    file_name: 'PaygentPayment/Resource/template/default/payment_atm'
+                bank:
+                    payment_type: 5
+                    name: 'PAYGENT 銀行ネット'
+                    url: 'paygent_payment/payment_bank'
+                    file_name: 'PaygentPayment/Resource/template/default/payment_bank'
+                career:
+                    payment_type: 6
+                    name: 'PAYGENT 携帯キャリア決済'
+                    url: 'paygent_payment/payment_career'
+                    file_name: 'PaygentPayment/Resource/template/default/payment_career'
+                paidy:
+                    payment_type: 11
+                    name: 'PAYGENT Paidy決済'
+                    url: 'paygent_payment/payment_paidy'
+                    file_name: 'PaygentPayment/Resource/template/default/payment_paidy'
+
+        char_code: "UTF-8"
+        char_code_ks: "SJIS-win"
+
+        # 結果成否
+        result_success: "0"
+        result_error: "1"
+        result_unknown: "2"
+        result_3dsecure: "7"
+
+        # クレジット決済 トークン接続先のID
+        credit_token_env_id:
+            dev: 0
+            prod: 1
+
+        # クレジット決済 トークン接続先名称
+        credit_token_env_names:
+            dev: "試験環境"
+            prod: "本番環境"
+
+        # クレジット決済 トークン接続先のjsのURL
+        credit_token_env_js_url:
+            dev: "https://sandbox.paygent.co.jp/js/PaygentToken.js"
+            prod: "https://token.paygent.co.jp/js/PaygentToken.js"
+
+        # カード情報お預かり上限数
+        card_stock_max: 10
+
+        # クレジットカード オーソリ失敗累積カウント上限数
+        credit_authority_retry_limit: 10
+
+        # クレジットカード オーソリ失敗時のエラーメッセージ
+        credit_authority_lock_message: "クレジットカード情報の誤入力が所定回数を超えました。<br>別の決済手段をご検討ください。"
+
+        # クレジットカード決済内で利用するセッションキー
+        credit_session:
+            card_error_count: 'paygent_payment.front.credit.card_error_count'
+            credit_3dError: 'paygent_payment.front.credit.credit_3dError'
+            credit_3d2_input: 'paygent_payment.front.credit.credit_3d_input'
+
+        # クレジットカード 3Dセキュア設定値
+        credit_3d:
+            3dSecure_off: 0
+            3dSecure_1: 1
+            3dSecure_2: 2
+
+        # クレジットカード 3Dセキュア2.0認証申込電文設定値
+        credit_3dSecure2_apply_input:
+            # 認証用途 01:決済取引
+            authentication_type: '01'
+            # 国コード
+            country_code_jp: '392'
+            # ログイン方法：非会員
+            login_guest: '01'
+            # ログイン方法：会員
+            login_user: '02'
+            # アカウント保有時間：アカウントなし
+            account_indicator_guest: '01'
+            # アカウント保有時間：30日未満
+            account_indicator_30_under: '03'
+            # アカウント保有時間：30～60日
+            account_indicator_60_under: '04'
+            # アカウント保有時間：60日を超える期間
+            account_indicator_60_over: '05'
+            # アカウント更新後の経過時間：30日未満
+            account_change_indicator_30_under: '02'
+            # アカウント更新後の経過時間：30～60日
+            account_change_indicator_60_under: '03'
+            # アカウント更新後の経過時間：60日を超える期間
+            account_change_indicator_60_over: '04'
+            # 配送先住所を初回利用してからの経過時間：この取引
+            ship_address_use_indicator_this_trade: '01'
+            # 配送先住所を初回利用してからの経過時間：30日未満
+            ship_address_use_indicator_30_under: '02'
+            # 配送先住所を初回利用してからの経過時間：30～60日
+            ship_address_use_indicator_60_under: '03'
+            # 配送先住所を初回利用してからの経過時間：60日を超える期間
+            ship_address_use_indicator_60_over: '04'
+            # 住所の確認：請求先と配送先の住所が一致する
+            address_match: '01'
+            # 住所の確認：請求先と配送先の住所が一致しない
+            address_not_match: '02'
+            # 期間判定：30日
+            account_indicator_30_day: 30
+            # 期間判定：60日
+            account_indicator_60_day: 60
+            # 期間変更：半年
+            half_year_ago: 180
+            # 期間変更：1年
+            one_year_ago: 365
+            # 期間変更：1日
+            one_day_ago: 24
+            # 出荷方法：購入者の請求先住所に出荷する
+            ship_address_first_use_date_match: '01'
+            # 出荷方法：購入者の請求先住所と異なる住所に出荷する
+            ship_address_first_use_date_not_match: '03'
+            # 再注文区分：初めての注文
+            reorder_indicator_first_order: '01'
+            # 再注文区分：初めての注文
+            reorder_indicator_reorder: '02'
+            # カード情報の指定方法：カード情報トークン利用
+            card_set_method_token: 'token'
+            # カード情報の指定方法：お預かりカード情報利用
+            card_set_method_customer: 'customer'
+
+        #クレジットカード申込電文
+        credit_auth_apply_input:
+            # セキュリティコード利用
+            security_code_use_on: '1'
+            # セキュリティーコードトークン利用
+            security_code_token_on: '1'
+            # カード情報お預りモード
+            stock_card_mode_on: '1'
+            # 3Dセキュア利用タイプ
+            3dsecure_use_type_2: '2'
+
+        no_mapping_message: '恐れ入りますが店舗にお問い合わせ下さいますようお願い致します。'
+        telegram_error_member: 'マイページの「会員情報編集」から登録内容を変更してください。'
+        telegram_error_guest: '<br>「カートに戻る」ボタンを押し、ショッピングカート画面で「レジに進む」ボタンを押して、ご注文手続き画面でお客様情報を変更してください。'
+        module_telegram_error_guest: '「戻る」ボタンを押して、ご注文手続き画面でお客様情報を変更してください。'
+        retry_message: '端末を再起動して注文をやり直してください。<br>'
+
+        # ATM,コンビニ決済時注文仮完了メールタイトル
+        temp_order_mail_title: 'ご注文を受け付けました'
+
+        # Paygent問い合わせ先メールアドレス
+        paygent_support_mail_address: 'pg-support@paygent.co.jp'
+
+        # ステータス不整合メールタイトル
+        status_alert_mail_title: '【ペイジェント】ステータス不整合のお知らせ'
+
+        # Paidy決済 改竄検知時メールタイトル
+        paidy_mismatch_mail_title: '【ペイジェント】Paidy決済金額改竄検知'
+
+        # コンビニ選択NULL
+        cvs_form_non_select: 'ご選択ください'
+
+        # コンビニ決済(番号方式)のコンビニID
+        cvs_company_id:
+            seven-eleven: '00C001'
+            law-son: '00C002'
+            family-mart: '00C005'
+            mini-stop: '00C004'
+            seiko-mart: '00C016'
+            daily-yamazaki: '00C014'
+
+        # コンビニ決済(番号方式)のコンビニ名称
+        cvs_company_name:
+            seven-eleven: 'セブンイレブン'
+            law-son: 'ローソン'
+            family-mart: 'ファミリーマート'
+            mini-stop: 'ミニストップ'
+            seiko-mart: 'セイコーマート'
+            daily-yamazaki: 'デイリーヤマザキ'
+
+        # コンビニ決済(番号方式)支払い種別　1:先払い 3:後払い
+        sales_type: '1'
+        # 注文完了時文言
+        complete_message:
+            # ATM決済
+            atm:
+                title: '■ATMお支払情報'
+                pay_center_number: '収納機関番号'
+                customer_number: 'お客様番号'
+                conf_number: '確認番号'
+                payment_limit_date: 'お支払期日'
+                payment_help_urlname: 'お支払方法の説明'
+                payment_help_url: 'http://www.paygent.co.jp/merchant_info/help/shophelp_atm.html'
+            # コンビニ決済(番号方式)
+            conveni:
+                title: '■コンビニお支払情報'
+                confirm_memo: '特筆事項'
+                confirm_name: '確認番号'
+                confirm_number: '400008'
+                customer_tel: '電話番号'
+                receipt_print_url: '払込票URL'
+                usable_cvs_company_id: 'お支払い可能なコンビニ'
+                payment_limit_date: 'お支払期日'
+                payment_help_urlname: 'お支払方法の説明'
+                payment_help_url: 'https://www.paygent.co.jp/payment_service/way_to_pay/cvs/'
+
+        # ペイジェントリンク型決済時、セッションに保存するpre_order_idの保存名
+        session_pre_order_id : 'paygent.front.shopping.pre_order_id'
+
+
+monolog:
+    channels: ['paygent_payment']
+    handlers:
+        paygent_payment:
+            type: fingers_crossed
+            action_level: error
+            passthru_level: info
+            handler: paygent_payment_rotating_file
+            channels: ['paygent_payment']
+        paygent_payment_rotating_file:
+            type: rotating_file
+            max_files: 60
+            path: '%kernel.logs_dir%/%kernel.environment%/paygent.log'
+            formatter: eccube.log.formatter.line
+            level: debug
+
