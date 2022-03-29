@@ -222,6 +222,8 @@ services:
         class: Plugin\VeriTrans4G\Service\Shopping\ConfirmExtensionService
         arguments:
             - '@service_container'
+            - '@Eccube\Repository\OrderRepository'
+            - '@Eccube\Repository\OrderItemRepository'
 
     vt4g_plugin.service.front.mypage.withdraw_extension:
         public: true

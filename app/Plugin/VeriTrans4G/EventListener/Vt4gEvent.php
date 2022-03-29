@@ -187,7 +187,6 @@ class Vt4gEvent implements EventSubscriberInterface
     /**
      * 注文確認画面表示前のイベント
      * @param  TemplateEvent $event
-     * @return void
      */
     public function shoppingConfirmRenderBefore(TemplateEvent $event)
     {
