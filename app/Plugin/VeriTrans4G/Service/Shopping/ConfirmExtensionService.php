@@ -103,7 +103,7 @@ class ConfirmExtensionService
                 $total += intval($Order['payment_total']);
             }
 
-            if ($total + $eventParam['Order']->getTotal() < $limit) {
+            if ($total + $eventParam['Order']->getTotal() >= $limit) {
                 $this->util->redirectToRoute('shopping')->send();
             }
         } else {

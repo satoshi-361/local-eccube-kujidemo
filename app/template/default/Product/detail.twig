@@ -346,6 +346,9 @@
             opacity: .75;
             color: black;
         }
+        input[name="ship_count"] {
+            display: none;
+        }
     </style>
     {% endblock %}
     
@@ -807,7 +810,8 @@
                                                             {{ 'ただいま品切れ中です。'|trans }}
                                                         </button>
                                                     </div>
-                                                {% endif %}							
+                                                {% endif %}
+                                                {{ form_rest(form) }}		
                                     </form>
                                     {% else %}
                                         <h4 style="font-weight: 800; text-align:center;">只今お取扱い出来ません。</h4>

@@ -590,14 +590,14 @@ class ProductController extends AbstractController
         $form = $builder->getForm();
         $form->handleRequest($request);
 
-        if (!$form->isValid()) {
-            $class_id = $Product->getProductClasses()->getValues()[0]->getId();
-            if ($class_id == null)
-                throw new NotFoundHttpException();
-            $quantity = 1;
-            $this->cartService->addProduct($class_id, $quantity);
-        }
-        else {
+        // if (!$form->isValid()) {
+        //     $class_id = $Product->getProductClasses()->getValues()[0]->getId();
+        //     if ($class_id == null)
+        //         throw new NotFoundHttpException();
+        //     $quantity = 1;
+        //     $this->cartService->addProduct($class_id, $quantity);
+        // }
+        // else {
             $addCartData = $form->getData();
             log_info(
                 'カート追加処理開始',
@@ -608,7 +608,7 @@ class ProductController extends AbstractController
                 ]
             );
             $this->cartService->addProduct($addCartData['product_class_id'], $addCartData['quantity'], $Product->getShipCount());
-        }
+        // }
         // カートへ追加
 
 

@@ -39,7 +39,7 @@ class Config extends \Eccube\Entity\AbstractEntity
     /**
      * @var string
      * 
-     * @ORM\Column(name="prizeName", type="string", nullable=false)
+     * @ORM\Column(name="prizeName", type="text", nullable=false)
      */
     private $prizeName;
 
